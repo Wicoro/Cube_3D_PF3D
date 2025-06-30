@@ -1,92 +1,82 @@
-CC = cc
+GREEN = \033[32m
+YELLOW = \033[33m
+BLUE = \033[36m
+RESET = \033[0m
+RED = \033[31m
+BOLD = \033[1m
+UNDERLINE = \033[4m
+ITALIC = \033[3m
 
-NAME		= cube_3d
+OBJ_DIR = obj/
+SRC_DIR = src/
 
-INC			= include
-INC_LIBFT	= libft/include
-CFLAGS		= -Wall -Wextra -g3 -Werror #-fsanitize=address
-RL_FLAGS	= -lreadline
-LIBFT		= libft
-LIBFT_A		= libft/libft.a
-MAKE_LIB	= make_lib
-
-
-SRC_DIR		= src/
-OBJ_DIR		= obj/
-
-DEF_COLOR	=	\033[0;37m
-GRAY		=	\033[0;90m
-RED			=	\033[0;91m
-GREEN		=	\033[0;92m
-YELLOW		=	\033[0;93m
-BLUE		=	\033[0;94m
-MAGENTA		=	\033[0;95m
-CYAN		=	\033[0;96m
-WHITE		=	\033[0;97m
-
-BOLD		=	\033[1m
-UNDERLINE	=	\033[4m
-
-SRC_LIST	= 	
-
-# BONUS_LIST	=
-
-SRCS		= 	$(addprefix $(SRC_DIR), $(SRC_LIST))
-OBJS		= 	$(addprefix $(OBJ_DIR), $(SRC_LIST:.c=.o))
-
-# SRCS_BONUS	=	$(addprefix $(BONUS_DIR), $(BONUS_LIST))
-# OBJS_BONUS	= 	$(addprefix $(BOBJ_DIR), $(BONUS_LIST:.c=.o))
+INCLUDE = headers/minishell.h
 
 
-all:		$(OBJ_DIR) $(NAME)
+SRC = main.c env.c \
+	$(addprefix $(BUILTIN_DIR), $(BUILTIN)) $(addprefix $(PARSING_DIR), $(PARSING)) \
+	$(addprefix $(HEREDOC_DIR), $(HEREDOC)) $(addprefix $(EXEC_DIR), $(EXEC)) \
+	$(addprefix $(FREE_DIR), $(FREE)) $(addprefix $(SIGNALS_DIR), $(SIGNALS))
 
-$(NAME):	logo $(MAKE_LIB) $(OBJS)
-			@$(CC) $(CFLAGS) -I $(INC) $(OBJS) $(LIBFT_A) -o $(NAME) $(RL_FLAGS)
-			@echo ""
-			@echo "$(GREEN)$(BOLD)		✅ $(NAME) compiled ✅$(DEF_COLOR)"
+OBJ = $(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
-# bonus:		logo $(MAKE_LIB) $(OBJS_BONUS)
-# 			@$(CC) $(CFLAGS) -I $(INC) $(OBJS_BONUS) $(LIBFT_A) -o $(NAME)
-# 			@echo ""
-# 			@echo "$(GREEN)$(BOLD)		✅ $(NAME)_bonus compiled ✅$(DEF_COLOR)"
+CFLAGS = -Wall -Wextra -Werror -g3
+EXTRAFLAGS = -lreadline
+FSANITIZE = -fsanitize=address
+MAKE = make --no-print-directory
 
-re:			fclean all
+LIBFT_DIR = libft
+LIBFT = $(LIBFT_DIR)/libft.a
 
-clean:
-			@echo " 🗑 $(YELLOW) Cleaning $(LIBFT) $(DEF_COLOR)"
-			@make clean --no-print-directory --silent -C $(LIBFT)
+NAME = minishell
 
-fclean:		clean
-			@echo " 🗑 $(YELLOW) Cleaning $(NAME) $(DEF_COLOR)"
-			@rm -rf $(OBJ_DIR)
-			@rm -rf $(NAME)
-			@make fclean --no-print-directory -C $(LIBFT)
-			@echo ""
-			@echo "$(GREEN)$(BOLD)		✅ $(NAME) files cleaned ✅$(DEF_COLOR)"
-
-logo:
-			@cat logo.txt
-
-$(MAKE_LIB):
-			@echo "		📚 $(CYAN)$(BOLD) Compiling $(LIBFT) 📚$(DEF_COLOR)"
-			@echo ""
-			@make --no-print-directory --silent -C $(LIBFT)
-			@echo "		💾$(CYAN)$(BOLD) Compiling $(NAME) $(DEF_COLOR)💾"
-			@echo ""
+all: $(NAME)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
-			@echo "$(YELLOW) 📦 Compiling $< $(DEF_COLOR)"
-			@mkdir -p $(dir $@)
-			@$(CC) $(CFLAGS) -I $(INC) -I $(INC_LIBFT) -c $< -o $@
+	@mkdir -p $(dir $@)
+	@echo "📦 $(ITALIC)$(YELLOW)Compiling $< $(RESET)"
+	@cc $(CFLAGS) -I $(INCLUDE) -c $< -o $@
 
-$(OBJ_DIR):
-			@mkdir -p $(OBJ_DIR)
 
-$(BOBJ_DIR)%.o: $(BONUS_DIR)%.c
-			@echo "$(YELLOW) 📦 Compiling $< $(DEF_COLOR)"
-			@$(CC) $(CFLAGS) -I $(INC) -I $(INC_LIBFT) -c $< -o $@
+$(NAME): $(LIBFT) $(OBJ)
+	@echo ""
+	@echo "		🚀 $(BOLD)$(YELLOW)Linking $(NAME)...$(RESET)"
+	@cc $(CFLAGS) $(OBJ) -o $(NAME) -I $(INCLUDE) $(LIBFT) $(EXTRAFLAGS)
+	@echo ""
+	@echo "	🎉 $(BOLD)$(GREEN)SUCCESS: $(NAME) has been created$(RESET) ✅ "
+	@echo ""
 
-$(BOBJ_DIR):
-			@mkdir -p $(BOBJ_DIR)
+$(LIBFT):
+	@$(MAKE) -C $(LIBFT_DIR)
+	@echo "		⚙ $(UNDERLINE)$(BOLD)Building $(NAME)$(RESET) ⚙"
+	@echo ""
 
-.PHONY:		all clean fclean re
+valgrind:
+	valgrind --leak-check=full --track-origins=yes --track-fds=yes \
+	--trace-children=yes ./minishell
+
+clean:
+	@echo ""
+	@echo "		🧹 $(BOLD)$(BLUE)Cleaning object files 🧹$(RESET)"
+	@echo ""
+	@$(MAKE) -C $(LIBFT_DIR) clean
+	@rm -rf $(OBJ_DIR)
+	@echo "🗑️ $(YELLOW)$(BOLD) minishell$(RESET)$(YELLOW) object files cleaned$(RESET)"
+
+
+
+fclean: clean
+	@echo ""
+	@echo "		🧹 $(BOLD)$(BLUE)Cleaning everything 🧹$(RESET)"
+	@echo ""
+	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@echo "💾 $(YELLOW)Cleaning $(NAME)$(RESET)"
+	@echo "↪️ $(YELLOW)$(BOLD)$(NAME) has been cleaned$(RESET) ✅"
+	@rm -f $(NAME)
+	@echo ""
+	@echo "	👉 $(BOLD)$(GREEN)Everything has been cleaned$(RESET) ❎"
+	@echo ""
+
+re: fclean $(NAME)
+
+.PHONY: all clean fclean re

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/06/30 14:58:41 by norban           ###   ########.fr       */
+/*   Updated: 2025/06/30 16:22:25 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ int	get_assets(t_data *data, int fd)
 				data->assets.ea_path = ft_strdup(split[1]);
 			else if (ft_strncmp(split[0], "WE", 3) == 0)
 				data->assets.we_path = ft_strdup(split[1]);
-			else if (ft_strncmp(split[0], "F", 2) == 0
-			)
 		}
 	}
 }
@@ -76,10 +74,6 @@ int	main(int ac, char *av)
 		return (print_eror(ARG_COUNT_ERROR), 1);
 	if (create_data(data, av[1]) == 1 || parsing(data) == 1)
 		return (1);
-	while (data)
-	{
-		
-	}
-	free(data);
+	execution(&data);
 	return (0);
 }
