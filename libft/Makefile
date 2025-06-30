@@ -6,7 +6,7 @@
 #    By: norban <norban@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/14 22:07:22 by norban            #+#    #+#              #
-#    Updated: 2025/06/05 15:10:20 by norban           ###   ########.fr        #
+#    Updated: 2025/06/30 13:39:49 by norban           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -93,7 +93,7 @@ NAME = libft.a
 all: $(OBJ_DIR) $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-			@echo "$(YELLOW) 📦 Compiling $< $(DEF_COLOR)"
+			# @echo "$(YELLOW) 📦 Compiling $< $(DEF_COLOR)"
 			@$(CC) $(CFLAGS) -I $(INC) -c $< -o $@
 
 $(NAME): $(OBJS)
