@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/06/30 14:02:03 by norban           ###   ########.fr       */
+/*   Updated: 2025/06/30 14:49:01 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,17 @@
 # include <errno.h>
 # include <fcntl.h>
 
+# define ARG_COUNT_ERROR 1
+# define ARG_ERROR 2
+# define MALLOC_ERROR 3
+
 typedef struct	s_data
 {
-	struct	s_asset	*asset;
-}	t_asset;
+	char	**map;
+	struct	s_assets	assets;
+}	t_data;
 
-typedef struct	s_asset
+typedef struct	s_assets
 {
 	char	*no_path;
 	char	*so_path;
@@ -32,6 +37,6 @@ typedef struct	s_asset
 	char	*we_path;
 	int		fl_color[3];
 	int		ce_color[3];
-}	t_asset;
+}	t_assets;
 
 #endif
