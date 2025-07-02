@@ -9,26 +9,25 @@ ITALIC = \033[3m
 
 OBJ_DIR = obj/
 SRC_DIR = src/
+STEF_DIR = stef/
 
-INCLUDE = headers/minishell.h
+INCLUDE = include/cub
 
-
-SRC = main.c env.c \
-	$(addprefix $(BUILTIN_DIR), $(BUILTIN)) $(addprefix $(PARSING_DIR), $(PARSING)) \
-	$(addprefix $(HEREDOC_DIR), $(HEREDOC)) $(addprefix $(EXEC_DIR), $(EXEC)) \
-	$(addprefix $(FREE_DIR), $(FREE)) $(addprefix $(SIGNALS_DIR), $(SIGNALS))
-
+STEF = execution.c create_map.c initialisation.c
+SRC = cub3d.c $(addprefix $(STEF_DIR), $(STEF))
 OBJ = $(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
 CFLAGS = -Wall -Wextra -Werror -g3
-EXTRAFLAGS = -lreadline
+EXTRAFLAGS = -lreadline -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 FSANITIZE = -fsanitize=address
 MAKE = make --no-print-directory
 
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
+MLX_DIR = minilibx-linux
+MLX = $(MLX_DIR)/libmlx_Linux.a
 
-NAME = minishell
+NAME = cub3D
 
 all: $(NAME)
 
@@ -38,7 +37,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@cc $(CFLAGS) -I $(INCLUDE) -c $< -o $@
 
 
-$(NAME): $(LIBFT) $(OBJ)
+$(NAME): logo $(LIBFT) $(MLX) $(OBJ)
 	@echo ""
 	@echo "		🚀 $(BOLD)$(YELLOW)Linking $(NAME)...$(RESET)"
 	@cc $(CFLAGS) $(OBJ) -o $(NAME) -I $(INCLUDE) $(LIBFT) $(EXTRAFLAGS)
@@ -48,18 +47,28 @@ $(NAME): $(LIBFT) $(OBJ)
 
 $(LIBFT):
 	@$(MAKE) -C $(LIBFT_DIR)
-	@echo "		⚙ $(UNDERLINE)$(BOLD)Building $(NAME)$(RESET) ⚙"
+	@echo "		⚙ $(UNDERLINE)$(BOLD)Building Minilibx $(RESET) ⚙"
 	@echo ""
 
-valgrind:
-	valgrind --leak-check=full --track-origins=yes --track-fds=yes \
-	--trace-children=yes ./minishell
+$(MLX):
+	@$(MAKE) -C $(MLX_DIR)
+	@echo ""
+	@echo "    📚 $(BOLD)$(BLUE)SUCCESS: Minilibx has been created$(RESET) 📚"
+	@echo ""
+	@echo "		⚙ $(UNDERLINE)$(BOLD)Building $(NAME) $(RESET) ⚙"
+	@echo ""
+
+logo:
+	@echo ""
+	@cat logo.txt
+	@echo ""
 
 clean:
 	@echo ""
 	@echo "		🧹 $(BOLD)$(BLUE)Cleaning object files 🧹$(RESET)"
 	@echo ""
 	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -C $(MLX_DIR) clean
 	@rm -rf $(OBJ_DIR)
 	@echo "🗑️ $(YELLOW)$(BOLD) minishell$(RESET)$(YELLOW) object files cleaned$(RESET)"
 
@@ -79,4 +88,4 @@ fclean: clean
 
 re: fclean $(NAME)
 
-.PHONY: all clean fclean re
+.PHONY: all logo clean fclean re

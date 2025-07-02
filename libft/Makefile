@@ -1,125 +1,74 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: norban <norban@student.42.fr>              +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/01/14 22:07:22 by norban            #+#    #+#              #
-#    Updated: 2025/06/30 13:39:49 by norban           ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
 
+GREEN = \033[32m
+YELLOW = \033[33m
+BLUE = \033[36m
+RESET = \033[0m
+BOLD = \033[1m
+UNDERLINE = \033[4m
 
+LIBFT_DIR = libft_original/
+PRINTF_DIR = Printf/
+GNL_DIR = GNL/
+OBJ_DIR = obj/
+
+NAME = libft.a 
+AR = ar rcs
 CC = cc
+CFLAGS = -Wall -Wextra -Werror -fPIC
 
-CFLAGS = -Wall -Wextra -Werror
-INC = include
+LIBFT_FILES = \
+    ft_isalpha ft_isdigit ft_isalnum ft_isascii ft_isprint \
+    ft_strlen ft_memset ft_bzero ft_memcpy ft_memmove \
+    ft_strlcpy ft_strlcat ft_toupper ft_tolower ft_strchr \
+    ft_strrchr ft_strcmp ft_memchr ft_memcmp ft_strnstr \
+    ft_atoi ft_calloc ft_strdup ft_substr ft_strjoin ft_strtrim \
+    ft_split ft_itoa ft_strmapi ft_striteri ft_putchar_fd \
+    ft_putendl_fd ft_putnbr_fd ft_putstr_fd \
+	ft_lstadd_front_bonus ft_lstnew_bonus ft_lstsize_bonus ft_lstlast_bonus \
+	ft_lstadd_back_bonus ft_lstdelone_bonus ft_lstclear_bonus ft_lstiter_bonus \
+	ft_lstmap_bonus ft_free ft_isspace ft_strndup ft_strncmp ft_msplit \
+	ft_swap ft_strlen_tab ft_atol
 
-SRC_DIR = src
-OBJ_DIR = obj
+PRINTF_FILES = \
+	ft_printf_char ft_printf ft_printf_hexa ft_printf_hexup \
+	ft_printf_integer ft_printf_string ft_printf_pointer	\
+	ft_printf_unsigned
 
-DEF_COLOR	=	\033[0;37m
-ORANGE		=	\033[0;33m
-GRAY		=	\033[0;90m
-RED			=	\033[0;91m
-GREEN		=	\033[1;92m
-YELLOW		=	\033[0;93m
-BLUE		=	\033[0;94m
-MAGENTA		=	\033[0;95m
-CYAN		=	\033[1;96m
-WHITE		=	\033[0;97m
+GNL_FILES = \
+	get_next_line get_next_line_utils
 
-SRCS_LIST = is/ft_islower.c \
-			is/ft_isalpha.c \
-			is/ft_isdigit.c \
-			is/ft_isalnum.c \
-			is/ft_isascii.c \
-			is/ft_isprint.c \
-			is/ft_isspace.c \
-			str/ft_strlen.c \
-			str/ft_strtrimlen.c \
-			mem/ft_memset.c \
-			mem/ft_bzero.c \
-			mem/ft_memcpy.c \
-			mem/ft_memmove.c \
-			mem/ft_memchr.c \
-			str/ft_strlcpy.c \
-			str/ft_strlcat.c \
-			to/ft_toupper.c \
-			to/ft_tolower.c \
-			str/ft_strchr.c \
-			str/ft_strrchr.c \
-			str/ft_strncmp.c \
-			mem/ft_memcmp.c \
-			str/ft_strnstr.c \
-			to/ft_atoi.c \
-			mem/ft_calloc.c \
-			str/ft_strdup.c \
-			is/ft_isupper.c \
-			str/ft_substr.c \
-			str/ft_strjoin.c \
-			str/ft_strjoin_nl.c \
-			str/ft_strtrim.c \
-			str/ft_strntrim.c \
-			str/sortstring.c \
-			str/ft_split.c \
-			str/ft_free_split.c \
-			str/str_replace.c \
-			to/ft_itoa.c \
-			str/ft_strmapi.c \
-			str/ft_striteri.c \
-			str/get_next_line.c \
-			str/get_next_line_utils.c \
-			put/ft_putchar_fd.c \
-			put/ft_putstr_fd.c \
-			put/ft_putendl_fd.c \
-			put/ft_putnbr_fd.c \
-			lst/ft_lstiter_bonus.c \
-			lst/ft_lstmap_bonus.c \
-			lst/ft_lstnew_bonus.c \
-			lst/ft_lstadd_front_bonus.c \
-			lst/ft_lstsize_bonus.c \
-			lst/ft_lstlast_bonus.c \
-			lst/ft_lstadd_back_bonus.c \
-			lst/ft_lstdelone_bonus.c \
-			lst/ft_lstclear_bonus.c
+SRC = $(addprefix $(LIBFT_DIR), $(addsuffix .c, $(LIBFT_FILES))) \
+      $(addprefix $(PRINTF_DIR), $(addsuffix .c, $(PRINTF_FILES))) \
+      $(addprefix $(GNL_DIR), $(addsuffix .c, $(GNL_FILES)))
 
-SRCS		= 	$(addprefix $(SRC_DIR)/, $(SRCS_LIST))
-OBJS		= 	$(addprefix $(OBJ_DIR)/, $(SRCS_LIST:.c=.o))
+OBJ = $(patsubst %.c, $(OBJ_DIR)%.o, $(SRC))
 
-NAME = libft.a
 
-all: $(OBJ_DIR) $(NAME)
+all: $(NAME)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-			# @echo "$(YELLOW) 📦 Compiling $< $(DEF_COLOR)"
-			@$(CC) $(CFLAGS) -I $(INC) -c $< -o $@
+$(OBJ_DIR)%.o: %.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJS)
-		@ar -rcs $(NAME) $(OBJS)
-		@echo ""
-		@echo "$(BOLD)$(GREEN)		✅ $(NAME) compiled ✅$(DEF_COLOR)"
-		@echo ""
+
+$(NAME): $(OBJ)
+	@echo ""
+	@echo "		⚙ $(UNDERLINE)$(BOLD)Building libft$(RESET) ⚙"
+	@$(AR) $(NAME) $(OBJ)
+	@ranlib $(NAME)
+	@echo ""
+	@echo "    📚 $(BOLD)$(BLUE)SUCCESS: $(NAME) has been created$(RESET) 📚"
+	@echo ""
 
 clean:
-		@rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR)
+	@echo "🗑️ $(YELLOW)$(BOLD) libft$(RESET)$(YELLOW) object files cleaned$(RESET)"
 
 fclean: clean
-		@rm -rf $(NAME)
-
-$(OBJ_DIR):
-		@mkdir -p $(OBJ_DIR)
-		@mkdir -p $(OBJ_DIR)/is
-		@mkdir -p $(OBJ_DIR)/str
-		@mkdir -p $(OBJ_DIR)/put
-		@mkdir -p $(OBJ_DIR)/mem
-		@mkdir -p $(OBJ_DIR)/to
-		@mkdir -p $(OBJ_DIR)/lst
+	@rm -f $(NAME)
+	@echo "💾 $(YELLOW)Cleaning $(NAME)$(RESET)"
+	@echo "↪️ $(BOLD)$(YELLOW)libft has been cleaned$(RESET) ✅"
 
 re: fclean all
 
-
-
-.PHONY:
-	re make all fclean clean bonus
+.PHONY: all clean fclean re

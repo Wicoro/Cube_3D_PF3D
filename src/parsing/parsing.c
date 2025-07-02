@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:26:18 by norban            #+#    #+#             */
-/*   Updated: 2025/06/30 14:33:02 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/02 13:42:10 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube_3d.h"
+#include "cub3d.h"
 
-int	parsing(t_data *data)
+/* int	parsing(t_data *data)
 {
 	int	*
-}
+} */
