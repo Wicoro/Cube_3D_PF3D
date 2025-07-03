@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 15:55:42 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/02 17:15:52 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/03 18:45:50 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	get_width_height(t_map *map, char *map_name)
 	close(fd);
 }
 
-char	**make_map(t_map *map)
+char	**alloc_map(t_map *map)
 {
 	char **map_tab;
 
@@ -82,7 +82,7 @@ void	print_map(char **map)
 void	create_map(t_data *data, char **av)
 {
 	get_width_height(data->map, av[1]);
-	data->map->map_tab = make_map(data->map);
+	data->map->map_tab = alloc_map(data->map);
 	fill_map(data->map, av[1]);
 /* 	print_map(data->map->map_tab); */
 }

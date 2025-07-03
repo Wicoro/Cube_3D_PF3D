@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/02 17:53:56 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/03 19:55:31 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libft/headers/libft.h"
 # include "../minilibx-linux/mlx.h"
 # include "../minilibx-linux/mlx_int.h"
+# include <math.h>
 # include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
@@ -24,9 +25,10 @@
 # define ARG_COUNT_ERROR 1
 # define ARG_ERROR 2
 # define MALLOC_ERROR 3
-# define HEIGHT 2000
-# define WIDTH 2000
-# define TILE_SIZE 100
+# define HEIGHT 1200
+# define WIDTH 1200
+# define TILE_SIZE 30
+
 
 typedef struct s_assets
 {
@@ -37,6 +39,14 @@ typedef struct s_assets
 	int			fl_color[3];
 	int			ce_color[3];
 }				t_assets;
+
+typedef struct s_player
+{
+	float		x;
+	float		y;
+	float		dir_x;
+	float		dir_y;
+}				t_player;
 
 typedef struct s_map
 {
@@ -58,6 +68,7 @@ typedef struct s_data
 {
 	void		*mlx_p;
 	void		*win_p;
+	t_player	*player;
 	t_map		*map;
 	t_imag		*img;
 	t_assets	assets;

@@ -29,7 +29,7 @@ MLX = $(MLX_DIR)/libmlx_Linux.a
 
 NAME = cub3D
 
-all: $(NAME)
+all: logo $(NAME)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@mkdir -p $(dir $@)
@@ -37,7 +37,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@cc $(CFLAGS) -I $(INCLUDE) -c $< -o $@
 
 
-$(NAME): logo $(LIBFT) $(MLX) $(OBJ)
+$(NAME): $(LIBFT) $(MLX) $(OBJ)
 	@echo ""
 	@echo "		🚀 $(BOLD)$(YELLOW)Linking $(NAME)...$(RESET)"
 	@cc $(CFLAGS) $(OBJ) -o $(NAME) -I $(INCLUDE) $(LIBFT) $(EXTRAFLAGS)
