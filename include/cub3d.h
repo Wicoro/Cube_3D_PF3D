@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/03 19:55:31 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/05 18:23:58 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 # include "../libft/headers/libft.h"
 # include "../minilibx-linux/mlx.h"
 # include "../minilibx-linux/mlx_int.h"
-# include <math.h>
 # include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <math.h>
 # include <stdio.h>
 
 # define ARG_COUNT_ERROR 1
@@ -28,7 +28,9 @@
 # define HEIGHT 1200
 # define WIDTH 1200
 # define TILE_SIZE 30
-
+# define SPEED 4
+# define FOV (60 * M_PI / 180)
+# define NUM_RAYS 100
 
 typedef struct s_assets
 {
@@ -47,6 +49,13 @@ typedef struct s_player
 	float		dir_x;
 	float		dir_y;
 }				t_player;
+
+typedef struct s_fov
+{
+	float		ray_angle;
+	float		ray_dir_x;
+	float		ray_dir_y;
+}				t_fov;
 
 typedef struct s_map
 {

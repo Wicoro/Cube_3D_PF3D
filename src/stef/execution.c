@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/03 19:56:53 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/05 18:33:24 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,20 @@ int	get_color(t_map *map, int x, int y)
 	char	c;
 
 	if (!map || !map->map_tab)
-		return (0x0);
+		return (0x000000);
 	else if (y < 0 || y >= map->height)
-		return (0x0);
+		return (0x000000);
 	else if (x < 0 || x >= map->width)
-		return (0x0);
+		return (0x000000);
 	c = map->map_tab[y][x];
 	if (c == ' ')
-		return (0x0);
+		return (0x000000);
 	else if (c == '1')
 		return (0x911010);
 	else if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E')
 		return (0xA0A0A0);
 	else
-		return (0x0);
+		return (0x000000);
 }
 
 void	put_pixel(t_imag *img, t_map *map, int x, int y, int check)
@@ -63,7 +63,7 @@ void	put_pixel(t_imag *img, t_map *map, int x, int y, int check)
 		*(unsigned int *)(img->addr + index) = get_color(map, x / TILE_SIZE, y
 				/ TILE_SIZE);
 	else if (check == 1)
-		*(unsigned int *)(img->addr + index) = 0x212f3d ; 
+		*(unsigned int *)(img->addr + index) =  0x28b463;
 }
 
 void	draw_tile(t_imag *img, t_map *map, int x, int y)
@@ -76,10 +76,10 @@ void	draw_tile(t_imag *img, t_map *map, int x, int y)
 	start_x = x * TILE_SIZE;
 	start_y = y * TILE_SIZE;
 	j = 1;
-	while (j < TILE_SIZE)
+	while (j <= TILE_SIZE)
 	{
 		i = 1;
-		while (i < TILE_SIZE)
+		while (i <= TILE_SIZE)
 		{
 			put_pixel(img, map, start_x + i, start_y + j, 0);
 			i++;
@@ -157,8 +157,8 @@ void	where_player(t_map *map, t_player *player)
 		{
 			if (!is_player(map->map_tab[y][x], player))
 			{
-				player->x = x * TILE_SIZE;
-				player->y = y * TILE_SIZE;
+				player->x = x * TILE_SIZE + (TILE_SIZE / 2);
+				player->y = y * TILE_SIZE + (TILE_SIZE / 2);
 			}
 			x++;
 		}
@@ -166,7 +166,23 @@ void	where_player(t_map *map, t_player *player)
 	}
 }
 
-void	draw_player_circle(float x, float y, t_imag *img, t_map *map)
+int	is_wall(t_map *map, float x, float y)
+{
+	char	c;
+	int		map_x;
+	int		map_y;
+
+	map_x = x / TILE_SIZE;
+	map_y = y / TILE_SIZE;
+	c = map->map_tab[map_y][map_x];
+	if (map_x < 0 || map_x >= map->width || map_y < 0 || map_y >= map->height)
+		return (1);
+	if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E')
+		return (0);
+	return (1);
+}
+
+void	draw_player_circle(t_imag *img, t_map *map, t_player *p)
 {
 	int	size;
 	int	j;
@@ -179,70 +195,74 @@ void	draw_player_circle(float x, float y, t_imag *img, t_map *map)
 		i = -size;
 		while (i <= size)
 		{
-			if ( i * i + j * j <= size * size)
-				put_pixel(img, map, x + i, y + j, 1);
+			if (i * i + j * j <= size * size)
+				put_pixel(img, map, p->x + i, p->y + j, 1);
 			i++;
 		}
 		j++;
 	}
 }
 
-void	draw_player_line(float x, float y, t_imag *img, t_player *p, t_map *map)
+void	draw_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 {
-	int i;
-	int px;
-	int py;
-	
+	int		i;
+	float	px;
+	float	py;
+
 	i = 0;
-	while (i < TILE_SIZE / 2.5)
+	while (1)
 	{
-		px = (x + (p->dir_x * i));
-		py = (y + (p->dir_y * i));
+		px = player->x + (fov->ray_dir_x * i);
+		py = player->y + (fov->ray_dir_y * i);
+		if (is_wall(map, px, py))
+			break ;
 		put_pixel(img, map, px, py, 1);
 		i++;
 	}
 }
 
-void	draw_player(t_player *player, t_imag *img, t_map *map)
+void	draw_player_fov(t_imag *img, t_player *p, t_map *map)
 {
-	float	x_sized;
-	float	y_sized;
+	t_fov	fov;
+	int		i;
+	float	step;
+	float	start_angle;
 
-	x_sized = (player->x) + (TILE_SIZE / 2);
-	y_sized = (player->y) + (TILE_SIZE / 2);
-	draw_player_circle(x_sized, y_sized, img, map);
-	draw_player_line(x_sized, y_sized, img, player, map);
+	step = FOV / NUM_RAYS;
+	start_angle = atan2(p->dir_y, p->dir_x) - (FOV / 2);
+	i = 0;
+	while (i < NUM_RAYS)
+	{
+		fov.ray_angle = start_angle + (i * step);
+		fov.ray_dir_x = cos(fov.ray_angle);
+		fov.ray_dir_y = sin(fov.ray_angle);
+		draw_ray(p, &fov, img, map);
+		i++;
+	}
 }
 
 void	put_player(t_map *map, t_imag *img, t_player *player)
 {
 	where_player(map, player);
-	draw_player(player, img, map);
+	draw_player_circle(img, map, player);
+	draw_player_fov(img, player, map);
 }
 
-int	is_wall(t_map *map, float x, float y)
+void	move_player(t_data *data, int up_or_down)
 {
-	char c;
-	int map_x;
-	int map_y;
-	
-	map_x = (x + (TILE_SIZE / 2)) / TILE_SIZE;
-	map_y = (y + (TILE_SIZE / 2)) / TILE_SIZE;
-	c = map->map_tab[map_y][map_x];
-	if (map_x < 0 || map_x >= map->width || map_y < 0 || map_y >= map->height)
-		return (1);
-	if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E')
-		return (0);
-	return (1);
-}
+	float	new_x;
+	float	new_y;
 
-void	move_player(t_data *data, float dx, float dy)
-{
-	float new_x;
-	float new_y;
-	
-	new_x = data->player->x + dx;
-	new_y = data->player->y + dy;
+	if (up_or_down == 1)
+	{
+		new_x = data->player->x + (data->player->dir_x * SPEED);
+		new_y = data->player->y + (data->player->dir_y * SPEED);
+	}
+	else
+	{
+		new_x = data->player->x - (data->player->dir_x * SPEED);
+		new_y = data->player->y - (data->player->dir_y * SPEED);
+	}
 	if (!is_wall(data->map, new_x, data->player->y))
 		data->player->x = new_x;
 	if (!is_wall(data->map, data->player->x, new_y))
@@ -251,14 +271,13 @@ void	move_player(t_data *data, float dx, float dy)
 
 void	rotate_player(t_player *player, float angle)
 {
-	float old_dir_x;
-	float old_dir_y;
-	
+	float	old_dir_x;
+	float	old_dir_y;
+
 	old_dir_x = player->dir_x;
 	old_dir_y = player->dir_y;
-	
 	player->dir_x = old_dir_x * cos(angle) - old_dir_y * sin(angle);
-	player->dir_y = old_dir_y * sin(angle) + old_dir_y * cos(angle);
+	player->dir_y = old_dir_x * sin(angle) + old_dir_y * cos(angle);
 }
 
 int	key_hook(int keycode, t_data *data)
@@ -266,15 +285,16 @@ int	key_hook(int keycode, t_data *data)
 	if (keycode == XK_Escape)
 		closer(data);
 	if (keycode == XK_w)
-			move_player(data, 0, -2);
+		move_player(data, 1);
 	if (keycode == XK_s)
-			move_player(data, 0, 2);
+		move_player(data, 0);
 	if (keycode == XK_a)
-			rotate_player(data->player, -0.05);
+		rotate_player(data->player, -0.10);
 	if (keycode == XK_d)
-			rotate_player(data->player, 0.05);
+		rotate_player(data->player, 0.10);
 	make_map(data->map, data->img);
-	draw_player(data->player, data->img, data->map);
+	draw_player_circle(data->img, data->map, data->player);
+	draw_player_fov(data->img, data->player, data->map);
 	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img->img_p, 0, 0);
 	return (0);
 }
