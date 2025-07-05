@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/05 18:23:58 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/05 18:45:59 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@
 # define WIDTH 1200
 # define TILE_SIZE 30
 # define SPEED 4
+#ifndef M_PI
+# define M_PI 3.14159265359
+#endif 
 # define FOV (60 * M_PI / 180)
 # define NUM_RAYS 100
 
