@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 16:56:43 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 17:42:53 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@
 # define MALLOC_ERROR 3
 # define HEIGHT 1440
 # define WIDTH 2560
-# define TILE_SIZE 20
+# define TILE_SIZE 15
 # define SPEED 4
+# define GREEN_C 0x2ecc71
+# define RED_C 0x7b241c  
 # ifndef M_PI
 #  define M_PI 3.14159265359
 # endif
@@ -94,5 +96,7 @@ void			print_error(int id);
 void			create_map(t_data *data, char **av);
 int				execution(t_data *data);
 void			initialisation(t_data *data);
+int				get_map(t_map *map, int fd);
+int				get_assets(t_assets *assets, int fd);
 
 #endif
