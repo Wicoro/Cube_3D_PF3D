@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/02 17:10:22 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 15:28:49 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/cub3d.h"
+#include "cub3d.h"
 
 void	print_error(int id)
 {
@@ -20,63 +20,49 @@ void	print_error(int id)
 	else if (id == ARG_ERROR)
 		ft_putstr_fd("Invalid .cub file, double check map and/or path\n", 2);
 	else if (id == MALLOC_ERROR)
-		ft_putstr_fd("Malloc error encountered\n",  2);
-}
-/* 
-int	get_assets(t_data *data, int fd)
-{
-	char	*line;
-	char	**split;
-	
-	line = get_next_line(fd);
-	while (line)
-	{
-		if (ft_strlen(line) != 0)
-		{
-			split = ft_split(line, ' ');
-			if (ft_strncmp(split[0], "NO", 3) == 0)
-				data->assets.no_path = ft_strdup(split[1]);
-			else if (ft_strncmp(split[0], "SO", 3) == 0)
-				data->assets.so_path = ft_strdup(split[1]);
-			else if (ft_strncmp(split[0], "EA", 3) == 0)
-				data->assets.ea_path = ft_strdup(split[1]);
-			else if (ft_strncmp(split[0], "WE", 3) == 0)
-				data->assets.we_path = ft_strdup(split[1]);
-		}
-	}
+		ft_putstr_fd("Malloc error encountered\n", 2);
 }
 
 int	create_data(t_data *data, char *path)
 {
 	int		fd;
-	
-	if (path[ft_strlen(path) - 3] == '.' && path[ft_strlen(path) - 2] == 'c'
-		&& path[ft_strlen(path) - 2] == 'u' && path[ft_strlen(path) - 1] == 'b')
+
+	if (path[ft_strlen(path) - 4] != '.' || path[ft_strlen(path) - 3] != 'c'
+		|| path[ft_strlen(path) - 2] != 'u' || path[ft_strlen(path) - 1] != 'b')
 		return (print_error(ARG_ERROR), 1);
-	data = malloc(sizeof(t_data));
-	if (!data)
-		return(print_error(MALLOC_ERROR), 1);
-	data->map = NULL;
+	data->assets.fl_color[0] = -1;
+	data->assets.ce_color[0] = -1;
 	fd = open(path, R_OK);
 	if (fd == -1)
-		return(print_error(ARG_ERROR), 1);
-	if (get_assets(data, fd) == 1 || get_map(data, fd) == 1);
-		return(print_error(ARG_ERROR), 1);
+		return (print_error(ARG_ERROR), 1);
+	if (get_assets(&data->assets, fd) == 1 || get_map(data, fd) == 1)
+		return (1);
+	if (!data->assets.no_path || !data->assets.so_path
+		|| !data->assets.ea_path || !data->assets.we_path
+		|| data->assets.fl_color[0] == -1 || data->assets.ce_color[0] == -1)
+		return (print_error(ARG_ERROR), 1);
 	return (0);
-} */
+}
 
 int	main(int ac, char **av)
 {
 	t_data	data;
-	
-	(void)ac;
-	initialisation(&data);
-/* 	if (ac == 1 || ac > 2)
-		return (print_eror(ARG_COUNT_ERROR), 1);
-	if (create_data(&data, av[1]) == 1 || parsing(&data) == 1)
-		return (1); */
-	
-	create_map(&data, av);
-	execution(&data);
+
+	ft_bzero(&data, sizeof(t_data));
+	if (ac == 1 || ac > 2)
+		return (print_error(ARG_COUNT_ERROR), 1);
+	if (create_data(&data, av[1]) == 1/* || parsing(&data) == 1*/)
+		return (1);
+	int i = -1;
+	while (data.map->map_tab[++i])
+	{
+		printf("%s", data.map->map_tab[i]);
+	}
+	printf("\n");
+	free(data.assets.no_path);
+	free(data.assets.so_path);
+	free(data.assets.ea_path);
+	free(data.assets.we_path);
+	ft_free_tab(&data.map->map_tab);
 	return (0);
 }

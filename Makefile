@@ -10,12 +10,22 @@ ITALIC = \033[3m
 OBJ_DIR = obj/
 SRC_DIR = src/
 STEF_DIR = stef/
+PARSING_DIR = parsing/
 
-INCLUDE = include/cub
+INCLUDE = include
 
-STEF = execution.c create_map.c initialisation.c
-SRC = cub3d.c $(addprefix $(STEF_DIR), $(STEF))
-OBJ = $(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
+PARSING =	get_assets.c \
+			get_map.c
+
+STEF = 		execution.c \
+			create_map.c \
+			initialisation.c
+
+SRC =		cub3d.c \
+			$(addprefix $(STEF_DIR), $(STEF)) \
+			$(addprefix $(PARSING_DIR), $(PARSING))
+
+OBJ = 		$(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
 CFLAGS = -Wall -Wextra -Werror -g3 
 EXTRAFLAGS = -lreadline -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz

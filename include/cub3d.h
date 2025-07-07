@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 14:53:34 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 15:20:20 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,7 @@ void			print_error(int id);
 void			create_map(t_data *data, char **av);
 int				execution(t_data *data);
 void			initialisation(t_data *data);
+int				get_map(t_data *data, int fd);
+int				get_assets(t_assets *assets, int fd);
 
 #endif
