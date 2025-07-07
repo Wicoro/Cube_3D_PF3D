@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 15:20:20 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 15:46:48 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,9 @@ typedef struct s_data
 {
 	void		*mlx_p;
 	void		*win_p;
-	t_player	*player;
-	t_map		*map;
-	t_imag		*img;
+	t_player	player;
+	t_map		map;
+	t_imag		img;
 	t_assets	assets;
 }				t_data;
 
