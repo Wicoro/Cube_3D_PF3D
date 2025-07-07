@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 14:53:34 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 16:40:08 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@
 # define WIDTH 2560
 # define TILE_SIZE 20
 # define SPEED 4
-#ifndef M_PI
-# define M_PI 3.14159265359
-#endif 
+# ifndef M_PI
+#  define M_PI 3.14159265359
+# endif
 # define FOV (60 * M_PI / 180)
-# define NUM_RAYS 2560
+# define NUM_RAYS 1280
 # define COLUMN_SIZE (WIDTH / NUM_RAYS)
 
 typedef struct s_assets
@@ -66,6 +66,7 @@ typedef struct s_fov
 typedef struct s_map
 {
 	char		**map_tab;
+	int			check_img;
 	int			width;
 	int			height;
 }				t_map;
@@ -85,7 +86,7 @@ typedef struct s_data
 	void		*win_p;
 	t_player	*player;
 	t_map		*map;
-	t_imag		*img;
+	t_imag		img[2];
 	t_assets	assets;
 }				t_data;
 

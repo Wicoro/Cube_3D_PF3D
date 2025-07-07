@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/07 14:52:05 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 16:53:21 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,15 @@ int	wind_init(t_data *data)
 	data->win_p = mlx_new_window(data->mlx_p, WIDTH, HEIGHT, "Cub3D");
 	if (!data->win_p)
 		return (print_error(3), mlx_destroy_display(data->mlx_p), 1);
-	data->img->img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
-	if (!data->img->img_p)
+	data->img[0].img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
+	if (!data->img[0].img_p)
 		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
 			mlx_destroy_display(data->mlx_p), 1);
+	data->img[1].img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
+	if (!data->img[1].img_p)
+		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
+			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
+				data->img[0].img_p), 1);
 	return (0);
 }
 
@@ -48,24 +53,29 @@ int	get_color(t_map *map, int x, int y)
 		return (0x000000);
 }
 
+
 void	put_pixel(t_imag *img, t_map *map, int x, int y, int check)
 {
 	int	x_sized;
 	int	y_sized;
 	int	index;
+	char *addr;
 
 	x_sized = x;
 	y_sized = y;
+	addr = img[map->check_img].addr;
+
+	addr = img[map->check_img].addr;
 	if (x_sized < 0 || x_sized >= WIDTH || y_sized < 0 || y_sized >= HEIGHT)
 		return ;
-	index = y_sized * img->line_lenght + (x_sized * (img->bits_per_pixel / 8));
+	index = y_sized * img[0].line_lenght + (x_sized * (img[0].bits_per_pixel / 8));
 	if (check == 0)
-		*(unsigned int *)(img->addr + index) = get_color(map, x / TILE_SIZE, y
+		*(unsigned int *)(addr + index) = get_color(map, x / TILE_SIZE, y
 				/ TILE_SIZE);
 	else if (check == 1)
-		*(unsigned int *)(img->addr + index) = 0x28b463;
+		*(unsigned int *)(addr + index) = 0x28b463;
 	else if (check == 2)
-		*(unsigned int *)(img->addr + index) = 0x911010;
+		*(unsigned int *)(addr + index) = 0x911010;
 }
 
 void	draw_tile(t_imag *img, t_map *map, int x, int y)
@@ -111,7 +121,8 @@ void	make_map(t_map *map, t_imag *img)
 int	closer(t_data *data)
 {
 	ft_printf("the ESC key or red cross has been pressed\n");
-	mlx_destroy_image(data->mlx_p, data->img->img_p);
+	mlx_destroy_image(data->mlx_p, data->img[0].img_p);
+	mlx_destroy_image(data->mlx_p, data->img[1].img_p);
 	mlx_destroy_window(data->mlx_p, data->win_p);
 	mlx_destroy_display(data->mlx_p);
 	exit(0);
@@ -223,7 +234,7 @@ void	draw_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 							- player->y), 2));
 			player_angle = atan2(player->dir_y, player->dir_x);
 			fov->distance *= cos(fov->ray_angle - player_angle);
-			fov->wall_height = (TILE_SIZE * HEIGHT / fov->distance) * (M_PI - (FOV * 2));
+			fov->wall_height = (TILE_SIZE * HEIGHT / fov->distance);
 			break ;
 		}
 		put_pixel(img, map, px, py, 1);
@@ -231,11 +242,11 @@ void	draw_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 	}
 }
 
-void	draw_wall(int x, t_fov *fov, t_imag *img, t_map *map)
+void	draw_wall(float x, t_fov *fov, t_imag *img, t_map *map)
 {
-	int draw_start;
-	int draw_end;
-	int i;
+	int	draw_start;
+	int	draw_end;
+	int	i;
 
 	draw_start = -fov->wall_height / 2 + HEIGHT / 2;
 	draw_end = fov->wall_height / 2 + HEIGHT / 2;
@@ -255,7 +266,7 @@ void	draw_wall(int x, t_fov *fov, t_imag *img, t_map *map)
 	}
 }
 
-void	draw_player_fov(t_imag *img, t_player *p, t_map *map)
+void	draw_player_fov(t_imag *img, t_player *p, t_map *map, int check)
 {
 	t_fov	fov;
 	int		i;
@@ -271,7 +282,8 @@ void	draw_player_fov(t_imag *img, t_player *p, t_map *map)
 		fov.ray_dir_x = cos(fov.ray_angle);
 		fov.ray_dir_y = sin(fov.ray_angle);
 		draw_ray(p, &fov, img, map);
- 		draw_wall(i * COLUMN_SIZE, &fov, img, map);
+		if (check == 0)
+			draw_wall(i * COLUMN_SIZE, &fov, img, map);
 		i++;
 	}
 }
@@ -280,7 +292,7 @@ void	put_player(t_map *map, t_imag *img, t_player *player)
 {
 	where_player(map, player);
 	draw_player_circle(img, map, player);
-	draw_player_fov(img, player, map);
+	draw_player_fov(img, player, map, 0);
 }
 
 void	move_player(t_data *data, int up_or_down)
@@ -315,12 +327,13 @@ void	rotate_player(t_player *player, float angle)
 	player->dir_y = old_dir_x * sin(angle) + old_dir_y * cos(angle);
 }
 
-void	clear_image(t_imag *img)
+void	clear_image(t_imag *img, t_map *map)
 {
 	int	img_size;
 
 	img_size = HEIGHT * WIDTH * 4;
-	ft_memset(img->addr, 0, img_size);
+	map->check_img = !map->check_img;
+	ft_memset(img[map->check_img].addr, 0, img_size);
 }
 
 int	key_hook(int keycode, t_data *data)
@@ -335,25 +348,29 @@ int	key_hook(int keycode, t_data *data)
 		rotate_player(data->player, -0.10);
 	if (keycode == XK_d)
 		rotate_player(data->player, 0.10);
-	clear_image(data->img);
+	printf("%d\n", data->map->check_img);
+	clear_image(data->img, data->map);
+	draw_player_fov(data->img, data->player, data->map, 0);
 	make_map(data->map, data->img);
 	draw_player_circle(data->img, data->map, data->player);
-	draw_player_fov(data->img, data->player, data->map);
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img->img_p, 0, 0);
+	draw_player_fov(data->img, data->player, data->map, 1);
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[data->map->check_img].img_p, 0, 0);
 	return (0);
 }
 
 int	execution(t_data *data)
 {
-	printf("%f\n", FOV);
 	if (wind_init(data))
 		return (1);
-	data->img->addr = mlx_get_data_addr(data->img->img_p,
-			&data->img->bits_per_pixel, &data->img->line_lenght,
-			&data->img->endian);
+	data->img[0].addr = mlx_get_data_addr(data->img[0].img_p,
+			&data->img[0].bits_per_pixel, &data->img[0].line_lenght,
+			&data->img[0].endian);
+	data->img[1].addr = mlx_get_data_addr(data->img[1].img_p,
+			&data->img[1].bits_per_pixel, &data->img[1].line_lenght,
+			&data->img[1].endian);
 	make_map(data->map, data->img);
 	put_player(data->map, data->img, data->player);
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img->img_p, 0, 0);
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[data->map->check_img].img_p, 0, 0);
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
 	mlx_loop(data->mlx_p);

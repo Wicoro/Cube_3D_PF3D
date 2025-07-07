@@ -11,13 +11,13 @@ OBJ_DIR = obj/
 SRC_DIR = src/
 STEF_DIR = stef/
 
-INCLUDE = include/cub
+INCLUDE = include/cub3d.h
 
 STEF = execution.c create_map.c initialisation.c
 SRC = cub3d.c $(addprefix $(STEF_DIR), $(STEF))
 OBJ = $(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
-CFLAGS = -Wall -Wextra -Werror -g3 
+CFLAGS = -Wall -Wextra -Werror -g3 -MMD -MP
 EXTRAFLAGS = -lreadline -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 FSANITIZE = -fsanitize=address
 MAKE = make --no-print-directory
@@ -89,3 +89,5 @@ fclean: clean
 re: fclean $(NAME)
 
 .PHONY: all logo clean fclean re
+
+-include $(OBJ:.o=.d)
