@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 16:23:57 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 16:50:37 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,8 @@ int	main(int ac, char **av)
 	int i = -1;
 	while (data.map.map_tab[++i])
 	{
-		printf("%s", data.map.map_tab[i]);
+		printf("|%s|\n", data.map.map_tab[i]);
 	}
-	printf("\n");
 	printf("%s", data.assets.no_path);
 	printf("%s", data.assets.so_path);
 	printf("%s", data.assets.ea_path);
