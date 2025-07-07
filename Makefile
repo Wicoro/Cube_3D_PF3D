@@ -15,7 +15,9 @@ PARSING_DIR = parsing/
 INCLUDE = include
 
 PARSING =	get_assets.c \
-			get_map.c
+			get_map.c \
+			get_squared_map.c \
+			parse_map_border.c
 
 STEF = 		execution.c
 

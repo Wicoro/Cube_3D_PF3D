@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 16:50:37 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 18:31:39 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	print_error(int id)
 		ft_putstr_fd("Invalid .cub file, double check map and/or path\n", 2);
 	else if (id == MALLOC_ERROR)
 		ft_putstr_fd("Malloc error encountered\n", 2);
+	else if (id == INVALID_MAP)
+		ft_putstr_fd("Invalid Map\n", 2);
 }
 
 int	create_data(t_data *data, char *path)
@@ -51,7 +53,7 @@ int	main(int ac, char **av)
 	ft_bzero(&data, sizeof(t_data));
 	if (ac == 1 || ac > 2)
 		return (print_error(ARG_COUNT_ERROR), 1);
-	if (create_data(&data, av[1]) == 1/* || parsing(&data) == 1*/)
+	if (create_data(&data, av[1]) == 1 || parse_map_border(&data.map) == 1)
 		return (1);
 	int i = -1;
 	while (data.map.map_tab[++i])

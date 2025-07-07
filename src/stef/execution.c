@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/07 17:38:17 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 17:48:06 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,14 +347,13 @@ int	key_hook(int keycode, t_data *data)
 	if (keycode == XK_a)
 		rotate_player(&data->player, -0.10);
 	if (keycode == XK_d)
-		rotate_player(data->player, 0.10);
-	printf("%d\n", data->map->check_img);
-	clear_image(data->img, data->map);
-	draw_player_fov(data->img, data->player, data->map, 0);
-	make_map(data->map, data->img);
-	draw_player_circle(data->img, data->map, data->player);
-	draw_player_fov(data->img, data->player, data->map, 1);
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[data->map->check_img].img_p, 0, 0);
+		rotate_player(&data->player, 0.10);
+	clear_image(data->img, &data->map);
+	draw_player_fov(data->img, &data->player, &data->map, 0);
+	make_map(&data->map, data->img);
+	draw_player_circle(data->img, &data->map, &data->player);
+	draw_player_fov(data->img, &data->player, &data->map, 1);
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[data->map.check_img].img_p, 0, 0);
 	return (0);
 }
 
@@ -368,9 +367,9 @@ int	execution(t_data *data)
 	data->img[1].addr = mlx_get_data_addr(data->img[1].img_p,
 			&data->img[1].bits_per_pixel, &data->img[1].line_lenght,
 			&data->img[1].endian);
-	make_map(data->map, data->img);
-	put_player(data->map, data->img, data->player);
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[data->map->check_img].img_p, 0, 0);
+	make_map(&data->map, data->img);
+	put_player(&data->map, data->img, &data->player);
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[data->map.check_img].img_p, 0, 0);
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
 	mlx_loop(data->mlx_p);

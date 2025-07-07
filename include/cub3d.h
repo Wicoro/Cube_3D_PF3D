@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 17:37:03 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 18:23:22 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # define ARG_COUNT_ERROR 1
 # define ARG_ERROR 2
 # define MALLOC_ERROR 3
+# define INVALID_MAP 4
+
 # define HEIGHT 1440
 # define WIDTH 2560
 # define TILE_SIZE 20
@@ -84,17 +86,17 @@ typedef struct s_data
 {
 	void		*mlx_p;
 	void		*win_p;
-	t_player	*player;
-	t_map		*map;
+	t_player	player;
+	t_map		map;
 	t_imag		img[2];
 	t_assets	assets;
 }				t_data;
 
 void			print_error(int id);
-void			create_map(t_data *data, char **av);
 int				execution(t_data *data);
-void			initialisation(t_data *data);
 int				get_map(t_map *map, int fd);
+int				get_squared_map(t_map *map);
+int				parse_map_border(t_map *map);
 int				get_assets(t_assets *assets, int fd);
 
 #endif
