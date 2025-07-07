@@ -6,12 +6,12 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/06/30 14:49:01 by norban           ###   ########.fr       */
+/*   Updated: 2025/06/30 18:06:36 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CUBE3D_H
-# define CUBE3D_H
+#ifndef CUBE_3D_H
+# define CUBE_3D_H
 
 # include "libft.h"
 # include <stdio.h>
@@ -23,13 +23,7 @@
 # define ARG_ERROR 2
 # define MALLOC_ERROR 3
 
-typedef struct	s_data
-{
-	char	**map;
-	struct	s_assets	assets;
-}	t_data;
-
-typedef struct	s_assets
+typedef struct s_assets
 {
 	char	*no_path;
 	char	*so_path;
@@ -38,5 +32,11 @@ typedef struct	s_assets
 	int		fl_color[3];
 	int		ce_color[3];
 }	t_assets;
+
+typedef struct s_data
+{
+	char				**map;
+	struct s_assets		assets;
+}	t_data;
 
 #endif
