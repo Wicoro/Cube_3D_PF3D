@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 15:46:48 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 16:28:25 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void			print_error(int id);
 void			create_map(t_data *data, char **av);
 int				execution(t_data *data);
 void			initialisation(t_data *data);
-int				get_map(t_data *data, int fd);
+int				get_map(t_map *map, int fd);
 int				get_assets(t_assets *assets, int fd);
 
 #endif

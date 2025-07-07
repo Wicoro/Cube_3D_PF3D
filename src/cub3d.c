@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 15:57:10 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 16:23:57 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	create_data(t_data *data, char *path)
 	fd = open(path, R_OK);
 	if (fd == -1)
 		return (print_error(ARG_ERROR), 1);
-	if (get_assets(&data->assets, fd) == 1 || get_map(data, fd) == 1)
+	if (get_assets(&data->assets, fd) == 1 || get_map(&data->map, fd) == 1)
 		return (1);
 	if (!data->assets.no_path || !data->assets.so_path
 		|| !data->assets.ea_path || !data->assets.we_path
@@ -54,15 +54,22 @@ int	main(int ac, char **av)
 	if (create_data(&data, av[1]) == 1/* || parsing(&data) == 1*/)
 		return (1);
 	int i = -1;
-	while (data.map->map_tab[++i])
+	while (data.map.map_tab[++i])
 	{
-		printf("%s", data.map->map_tab[i]);
+		printf("%s", data.map.map_tab[i]);
 	}
 	printf("\n");
+	printf("%s", data.assets.no_path);
+	printf("%s", data.assets.so_path);
+	printf("%s", data.assets.ea_path);
+	printf("%s", data.assets.we_path);
+	printf("h : %d", data.map.height);
+	printf(" | w : %d\n", data.map.width);
+	execution(&data);
 	free(data.assets.no_path);
 	free(data.assets.so_path);
 	free(data.assets.ea_path);
 	free(data.assets.we_path);
-	ft_free_tab(&data.map->map_tab);
+	ft_free_tab(&data.map.map_tab);
 	return (0);
 }

@@ -17,9 +17,7 @@ INCLUDE = include
 PARSING =	get_assets.c \
 			get_map.c
 
-STEF = 		execution.c \
-			create_map.c \
-			initialisation.c
+STEF = 		execution.c
 
 SRC =		cub3d.c \
 			$(addprefix $(STEF_DIR), $(STEF)) \
