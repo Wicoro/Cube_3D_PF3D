@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/02 17:10:22 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 17:02:14 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ int	main(int ac, char **av)
 	t_data	data;
 	
 	(void)ac;
-	initialisation(&data);
 /* 	if (ac == 1 || ac > 2)
 		return (print_eror(ARG_COUNT_ERROR), 1);
 	if (create_data(&data, av[1]) == 1 || parsing(&data) == 1)
