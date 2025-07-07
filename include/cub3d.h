@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 18:23:22 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 18:52:45 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@
 
 # define HEIGHT 1440
 # define WIDTH 2560
-# define TILE_SIZE 20
+# define TILE_SIZE 15
 # define SPEED 4
+# define GREEN_C 0x2ecc71
+# define RED_C 0x7b241c  
 # ifndef M_PI
 #  define M_PI 3.14159265359
 # endif
