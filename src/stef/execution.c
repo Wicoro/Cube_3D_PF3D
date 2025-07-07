@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/07 17:39:50 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 18:47:40 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	wind_init(t_data *data)
 	return (0);
 }
 
-int	get_color(t_map *map, int x, int y)
+int	get_color_tile(t_map *map, int x, int y)
 {
 	char	c;
 
@@ -86,7 +86,7 @@ void	draw_tile(t_imag *img, t_map *map, int x, int y)
 		i = 1;
 		while (i <= TILE_SIZE)
 		{
-			put_pixel(img, map, start_x + i, start_y + j, get_color(map, x,
+			put_pixel(img, map, start_x + i, start_y + j, get_color_tile(map, x,
 					y));
 			i++;
 		}
@@ -236,11 +236,17 @@ void	draw_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 	}
 }
 
-void	draw_wall(float x, t_fov *fov, t_imag *img, t_map *map)
+int	get_rgb_color(int *color)
+{
+	return (color[0] << 16 | color[1] << 8 | color[2]);
+}
+
+void	draw_wall(float x, t_fov *fov, t_data *data)
 {
 	int	draw_start;
 	int	draw_end;
 	int	i;
+	int j;
 
 	draw_start = -fov->wall_height / 2 + HEIGHT / 2;
 	draw_end = fov->wall_height / 2 + HEIGHT / 2;
@@ -248,19 +254,25 @@ void	draw_wall(float x, t_fov *fov, t_imag *img, t_map *map)
 		draw_start = 0;
 	if (draw_end >= HEIGHT)
 		draw_end = HEIGHT - 1;
-	while (draw_start <= draw_end)
+	i = 0;
+	while (i < HEIGHT)
 	{
-		i = 0;
-		while (i < COLUMN_SIZE)
+		j= 0;
+		while (j < COLUMN_SIZE)
 		{
-			put_pixel(img, map, x + i, draw_start, RED_C);
-			i++;
+			if (i < draw_start)
+				put_pixel(data->img, &data->map, x + j, i, get_rgb_color(data->assets.ce_color));
+			if (i >= draw_start && i <= draw_end)
+				put_pixel(data->img, &data->map, x + j, i, RED_C);
+			if (i > draw_end && i < HEIGHT)
+				put_pixel(data->img, &data->map, x + j, i, get_rgb_color(data->assets.fl_color));
+			j++;
 		}
-		draw_start++;
+		i++;
 	}
 }
 
-void	draw_player_fov(t_imag *img, t_player *p, t_map *map, int check)
+void	draw_player_fov(t_data *data, int check)
 {
 	t_fov	fov;
 	int		i;
@@ -268,25 +280,25 @@ void	draw_player_fov(t_imag *img, t_player *p, t_map *map, int check)
 	float	start_angle;
 
 	step = FOV / NUM_RAYS;
-	start_angle = atan2(p->dir_y, p->dir_x) - (FOV / 2);
+	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV / 2);
 	i = 0;
 	while (i < NUM_RAYS)
 	{
 		fov.ray_angle = start_angle + (i * step);
 		fov.ray_dir_x = cos(fov.ray_angle);
 		fov.ray_dir_y = sin(fov.ray_angle);
-		draw_ray(p, &fov, img, map);
+		draw_ray(&data->player, &fov, data->img, &data->map);
 		if (check == 0)
-			draw_wall(i * COLUMN_SIZE, &fov, img, map);
+			draw_wall(i * COLUMN_SIZE, &fov, data);
 		i++;
 	}
 }
 
-void	put_player(t_map *map, t_imag *img, t_player *player)
+void	put_player(t_data *data, t_map *map, t_imag *img, t_player *player)
 {
 	where_player(map, player);
 	draw_player_circle(img, map, player);
-	draw_player_fov(img, player, map, 0);
+	draw_player_fov(data, 0);
 }
 
 void	move_player(t_data *data, int up_or_down)
@@ -330,6 +342,7 @@ void	clear_image(t_imag *img, t_map *map)
 	ft_memset(img[map->check_img].addr, 0, img_size);
 }
 
+
 int	key_hook(int keycode, t_data *data)
 {
 	if (keycode == XK_Escape)
@@ -343,10 +356,10 @@ int	key_hook(int keycode, t_data *data)
 	if (keycode == XK_d)
 		rotate_player(&data->player, 0.10);
 	clear_image(data->img, &data->map);
-	draw_player_fov(data->img, &data->player, &data->map, 0);
+	draw_player_fov(data, 0);
 	make_map(&data->map, data->img);
 	draw_player_circle(data->img, &data->map, &data->player);
-	draw_player_fov(data->img, &data->player, &data->map, 1);
+	draw_player_fov(data, 1);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
 	return (0);
@@ -363,7 +376,7 @@ int	execution(t_data *data)
 			&data->img[1].bits_per_pixel, &data->img[1].line_lenght,
 			&data->img[1].endian);
 	make_map(&data->map, data->img);
-	put_player(&data->map, data->img, &data->player);
+	put_player(data, &data->map, data->img, &data->player);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
 	mlx_hook(data->win_p, 17, 0, closer, data);
