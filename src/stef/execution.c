@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/05 18:33:24 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 14:52:05 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ void	put_pixel(t_imag *img, t_map *map, int x, int y, int check)
 	int	y_sized;
 	int	index;
 
-	x_sized = x + WIDTH / 4;
-	y_sized = y + HEIGHT / 4;
+	x_sized = x;
+	y_sized = y;
 	if (x_sized < 0 || x_sized >= WIDTH || y_sized < 0 || y_sized >= HEIGHT)
 		return ;
 	index = y_sized * img->line_lenght + (x_sized * (img->bits_per_pixel / 8));
@@ -63,7 +63,9 @@ void	put_pixel(t_imag *img, t_map *map, int x, int y, int check)
 		*(unsigned int *)(img->addr + index) = get_color(map, x / TILE_SIZE, y
 				/ TILE_SIZE);
 	else if (check == 1)
-		*(unsigned int *)(img->addr + index) =  0x28b463;
+		*(unsigned int *)(img->addr + index) = 0x28b463;
+	else if (check == 2)
+		*(unsigned int *)(img->addr + index) = 0x911010;
 }
 
 void	draw_tile(t_imag *img, t_map *map, int x, int y)
@@ -208,6 +210,7 @@ void	draw_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 	int		i;
 	float	px;
 	float	py;
+	float	player_angle;
 
 	i = 0;
 	while (1)
@@ -215,9 +218,40 @@ void	draw_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 		px = player->x + (fov->ray_dir_x * i);
 		py = player->y + (fov->ray_dir_y * i);
 		if (is_wall(map, px, py))
+		{
+			fov->distance = sqrtf(pow((px - player->x), 2) + pow((py
+							- player->y), 2));
+			player_angle = atan2(player->dir_y, player->dir_x);
+			fov->distance *= cos(fov->ray_angle - player_angle);
+			fov->wall_height = (TILE_SIZE * HEIGHT / fov->distance) * (M_PI - (FOV * 2));
 			break ;
+		}
 		put_pixel(img, map, px, py, 1);
 		i++;
+	}
+}
+
+void	draw_wall(int x, t_fov *fov, t_imag *img, t_map *map)
+{
+	int draw_start;
+	int draw_end;
+	int i;
+
+	draw_start = -fov->wall_height / 2 + HEIGHT / 2;
+	draw_end = fov->wall_height / 2 + HEIGHT / 2;
+	if (draw_start < 0)
+		draw_start = 0;
+	if (draw_end >= HEIGHT)
+		draw_end = HEIGHT - 1;
+	while (draw_start <= draw_end)
+	{
+		i = 0;
+		while (i < COLUMN_SIZE)
+		{
+			put_pixel(img, map, x + i, draw_start, 2);
+			i++;
+		}
+		draw_start++;
 	}
 }
 
@@ -237,6 +271,7 @@ void	draw_player_fov(t_imag *img, t_player *p, t_map *map)
 		fov.ray_dir_x = cos(fov.ray_angle);
 		fov.ray_dir_y = sin(fov.ray_angle);
 		draw_ray(p, &fov, img, map);
+ 		draw_wall(i * COLUMN_SIZE, &fov, img, map);
 		i++;
 	}
 }
@@ -280,6 +315,14 @@ void	rotate_player(t_player *player, float angle)
 	player->dir_y = old_dir_x * sin(angle) + old_dir_y * cos(angle);
 }
 
+void	clear_image(t_imag *img)
+{
+	int	img_size;
+
+	img_size = HEIGHT * WIDTH * 4;
+	ft_memset(img->addr, 0, img_size);
+}
+
 int	key_hook(int keycode, t_data *data)
 {
 	if (keycode == XK_Escape)
@@ -292,6 +335,7 @@ int	key_hook(int keycode, t_data *data)
 		rotate_player(data->player, -0.10);
 	if (keycode == XK_d)
 		rotate_player(data->player, 0.10);
+	clear_image(data->img);
 	make_map(data->map, data->img);
 	draw_player_circle(data->img, data->map, data->player);
 	draw_player_fov(data->img, data->player, data->map);
@@ -301,6 +345,7 @@ int	key_hook(int keycode, t_data *data)
 
 int	execution(t_data *data)
 {
+	printf("%f\n", FOV);
 	if (wind_init(data))
 		return (1);
 	data->img->addr = mlx_get_data_addr(data->img->img_p,

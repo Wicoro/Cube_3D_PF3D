@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/05 18:45:59 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 14:53:34 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,16 @@
 # define ARG_COUNT_ERROR 1
 # define ARG_ERROR 2
 # define MALLOC_ERROR 3
-# define HEIGHT 1200
-# define WIDTH 1200
-# define TILE_SIZE 30
+# define HEIGHT 1440
+# define WIDTH 2560
+# define TILE_SIZE 20
 # define SPEED 4
 #ifndef M_PI
 # define M_PI 3.14159265359
 #endif 
 # define FOV (60 * M_PI / 180)
-# define NUM_RAYS 100
+# define NUM_RAYS 2560
+# define COLUMN_SIZE (WIDTH / NUM_RAYS)
 
 typedef struct s_assets
 {
@@ -58,6 +59,8 @@ typedef struct s_fov
 	float		ray_angle;
 	float		ray_dir_x;
 	float		ray_dir_y;
+	float		distance;
+	float		wall_height;
 }				t_fov;
 
 typedef struct s_map
