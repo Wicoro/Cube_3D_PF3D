@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/07 18:54:37 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 19:32:43 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ int	wind_init(t_data *data)
 		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
 			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
 				data->img[0].img_p), 1);
+	data->img[2].img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
+	if (!data->img[1].img_p)
+		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
+			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
+				data->img[0].img_p),
+				mlx_destroy_image(data->mlx_p, data->img[1].img_p), 1);
 	return (0);
 }
 
