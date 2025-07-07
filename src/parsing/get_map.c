@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:58:51 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 16:21:41 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/07 17:32:36 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,44 @@ void	get_map_dimension(t_map *map)
 	map->width = w;
 }
 
+int	get_squared_map(t_map *map)
+{
+	char	**new_map;
+	int		i;
+	
+	new_map = malloc(sizeof(char *) * (map->height + 1));
+	if (!new_map)
+		return (print_error(MALLOC_ERROR), 1);
+	ft_bzero(new_map, 0);
+	i = 0;
+	while (i < map->height)
+	{
+		new_map[i] = malloc(sizeof(char) * (map->width + 3));
+		if (!new_map[i])
+			return (print_error(MALLOC_ERROR), ft_free_tab(&new_map), 1);
+		ft_memset(new_map[i], 32, map->width + 2);
+		new_map[i][map->width + 2] = '\0';
+		//printf("test1 : |%s| => %d\n", new_map[i], ft_strlen(new_map[i]));
+		ft_memcpy(&new_map[i][1], map->map_tab[i], ft_strlen(map->map_tab[i]));
+		if (ft_strchr(new_map[i], '\n'))
+			ft_memset(ft_strchr(new_map[i], '\n'), 32, 1);
+		printf("test3 : |%s| => %d\n", new_map[i], ft_strlen(new_map[i]));
+		if (!new_map[i])
+			return (print_error(MALLOC_ERROR), ft_free_tab(&new_map), 1);
+		i++;
+	}
+	ft_free_tab(&map->map_tab);
+	map->map_tab = new_map;
+	return (0);
+}
+
 int	get_map(t_map *map, int fd)
 {
 	char	*line;
 
 	line = get_next_line(fd);
+	if (concat_map(&map->map_tab, " ") == 1)
+		return (1);
 	while (line)
 	{
 		if (!(ft_strlen(line) == 1 && line[0] == '\n')
@@ -89,6 +122,10 @@ int	get_map(t_map *map, int fd)
 		free(line);
 		line = get_next_line(fd);
 	}
+	if (concat_map(&map->map_tab, " ") == 1)
+		return (1);
 	get_map_dimension(map);
+	if (get_squared_map(map) == 1)
+		return (1);
 	return (0);
 }
