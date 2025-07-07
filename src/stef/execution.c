@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/07 18:47:40 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 19:26:54 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	put_pixel(t_imag *img, t_map *map, int x, int y, int color)
 	x_sized = x;
 	y_sized = y;
 	addr = img[map->check_img].addr;
-	addr = img[map->check_img].addr;
 	if (x_sized < 0 || x_sized >= WIDTH || y_sized < 0 || y_sized >= HEIGHT)
 		return ;
 	index = y_sized * img[0].line_lenght + (x_sized * (img[0].bits_per_pixel
@@ -94,7 +93,7 @@ void	draw_tile(t_imag *img, t_map *map, int x, int y)
 	}
 }
 
-void	make_map(t_map *map, t_imag *img)
+void	draw_minimap(t_map *map, t_imag *img)
 {
 	int	i;
 	int	j;
@@ -297,8 +296,10 @@ void	draw_player_fov(t_data *data, int check)
 void	put_player(t_data *data, t_map *map, t_imag *img, t_player *player)
 {
 	where_player(map, player);
-	draw_player_circle(img, map, player);
 	draw_player_fov(data, 0);
+	draw_minimap(map, img);
+	draw_player_circle(img, map, player);
+	draw_player_fov(data, 1);
 }
 
 void	move_player(t_data *data, int up_or_down)
@@ -357,7 +358,7 @@ int	key_hook(int keycode, t_data *data)
 		rotate_player(&data->player, 0.10);
 	clear_image(data->img, &data->map);
 	draw_player_fov(data, 0);
-	make_map(&data->map, data->img);
+	draw_minimap(&data->map, data->img);
 	draw_player_circle(data->img, &data->map, &data->player);
 	draw_player_fov(data, 1);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
@@ -375,7 +376,6 @@ int	execution(t_data *data)
 	data->img[1].addr = mlx_get_data_addr(data->img[1].img_p,
 			&data->img[1].bits_per_pixel, &data->img[1].line_lenght,
 			&data->img[1].endian);
-	make_map(&data->map, data->img);
 	put_player(data, &data->map, data->img, &data->player);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);

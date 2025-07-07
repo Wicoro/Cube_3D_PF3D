@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 17:42:53 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/07 19:29:05 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 #  define M_PI 3.14159265359
 # endif
 # define FOV (60 * M_PI / 180)
-# define NUM_RAYS 1280
+# define NUM_RAYS 2560
 # define COLUMN_SIZE (WIDTH / NUM_RAYS)
 
 typedef struct s_assets
