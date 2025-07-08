@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/08 18:24:46 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/08 18:40:40 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@
 
 # define HEIGHT 1440
 # define WIDTH 2560
-# define MINIMAP_H (20 * TILE_SIZE)
-# define MINIMAP_W (20 * TILE_SIZE)
+# define MINIMAP_H (30 * TILE_SIZE)
+# define MINIMAP_W (30 * TILE_SIZE)
 
 # define TILE_SIZE 15
 # define SPEED 4

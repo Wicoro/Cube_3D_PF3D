@@ -51,8 +51,8 @@ static void display_tiles(t_map *map, t_imag *img, t_player *player)
 		i = 0;
 		while (map->map_tab[j][i])
 		{
-			if (j > (player->y / TILE_SIZE) - 11 && j < (player->y / TILE_SIZE) + 11
-				&& i > (player->x / TILE_SIZE) - 11 && i < (player->x / TILE_SIZE) + 11)
+			if (j > (player->y / TILE_SIZE) - ((MINIMAP_H / 2) + 1) && j < (player->y / TILE_SIZE) + ((MINIMAP_H / 2) + 1)
+				&& i > (player->x / TILE_SIZE) - ((MINIMAP_W / 2) + 1) && i < (player->x / TILE_SIZE) + ((MINIMAP_W / 2) + 1))
 				display_map_tile(img, map, i, j, player->x - MINIMAP_W / 2, player->y - MINIMAP_H / 2);
 			i++;
 		}
