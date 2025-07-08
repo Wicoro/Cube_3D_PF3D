@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 19:29:00 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/08 18:24:46 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@
 
 # define HEIGHT 1440
 # define WIDTH 2560
+# define MINIMAP_H (20 * TILE_SIZE)
+# define MINIMAP_W (20 * TILE_SIZE)
+
 # define TILE_SIZE 15
 # define SPEED 4
 # define GREEN_C 0x2ecc71
@@ -97,8 +100,15 @@ typedef struct s_data
 void			print_error(int id);
 int				execution(t_data *data);
 int				get_map(t_map *map, int fd);
+void			remove_map_nl(t_map *map);
+void			get_map_dimension(t_map *map);
 int				get_squared_map(t_map *map);
 int				parse_map_border(t_map *map);
 int				get_assets(t_assets *assets, int fd);
+void			display_minimap(t_data *data);
+
+
+int	get_color_tile(t_map *map, int x, int y);
+int	is_wall(t_map *map, float x, float y);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/07 19:32:43 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/08 18:28:51 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int	wind_init(t_data *data)
 		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
 			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
 				data->img[0].img_p), 1);
-	data->img[2].img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
-	if (!data->img[1].img_p)
+	data->img[2].img_p = mlx_new_image(data->mlx_p, MINIMAP_W, MINIMAP_H);
+	if (!data->img[2].img_p)
 		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
 			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
 				data->img[0].img_p),
@@ -68,7 +68,6 @@ void	put_pixel(t_imag *img, t_map *map, int x, int y, int color)
 
 	x_sized = x;
 	y_sized = y;
-	addr = img[map->check_img].addr;
 	addr = img[map->check_img].addr;
 	if (x_sized < 0 || x_sized >= WIDTH || y_sized < 0 || y_sized >= HEIGHT)
 		return ;
@@ -188,7 +187,7 @@ int	is_wall(t_map *map, float x, float y)
 	map_x = x / TILE_SIZE;
 	map_y = y / TILE_SIZE;
 	c = map->map_tab[map_y][map_x];
-	if (map_x < 0 || map_x >= map->width || map_y < 0 || map_y >= map->height)
+	if (map_x < 0 || map_x > map->width || map_y < 0 || map_y > map->height)
 		return (1);
 	if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E')
 		return (0);
@@ -238,6 +237,7 @@ void	draw_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 			break ;
 		}
 		put_pixel(img, map, px, py, GREEN_C);
+		//(void)img;
 		i++;
 	}
 }
@@ -368,6 +368,7 @@ int	key_hook(int keycode, t_data *data)
 	draw_player_fov(data, 1);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
+	display_minimap(data);
 	return (0);
 }
 
@@ -381,6 +382,9 @@ int	execution(t_data *data)
 	data->img[1].addr = mlx_get_data_addr(data->img[1].img_p,
 			&data->img[1].bits_per_pixel, &data->img[1].line_lenght,
 			&data->img[1].endian);
+	data->img[2].addr = mlx_get_data_addr(data->img[2].img_p,
+			&data->img[2].bits_per_pixel, &data->img[2].line_lenght,
+			&data->img[2].endian);
 	make_map(&data->map, data->img);
 	put_player(data, &data->map, data->img, &data->player);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,

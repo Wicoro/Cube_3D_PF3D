@@ -1,16 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_squared_map.c                                  :+:      :+:    :+:   */
+/*   get_map_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 18:14:37 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 18:14:49 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/08 17:10:44 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+void	remove_map_nl(t_map *map)
+{
+	int	i;
+
+	i = -1;
+	while (map->map_tab[++i])
+	{
+		if (ft_strchr(map->map_tab[i], '\n'))
+			ft_memset(ft_strchr(map->map_tab[i], '\n'), '\0', 1);
+	}
+}
+
+void	get_map_dimension(t_map *map)
+{
+	int	h;
+	int	w;
+
+	h = 0;
+	w = 0;
+	while (map->map_tab[h])
+	{
+		if (w < ft_strlen(map->map_tab[h]))
+			w = ft_strlen(map->map_tab[h]);
+		h++;
+	}
+	map->height = h;
+	map->width = w;
+}
 
 int	get_squared_map(t_map *map)
 {
@@ -28,10 +57,8 @@ int	get_squared_map(t_map *map)
 		if (!new_map[i])
 			return (print_error(MALLOC_ERROR), ft_free_tab(&new_map), 1);
 		ft_memset(new_map[i], 32, map->width);
-		new_map[i][map->width + 2] = '\0';
+		new_map[i][map->width] = '\0';
 		ft_memcpy(new_map[i], map->map_tab[i], ft_strlen(map->map_tab[i]));
-		if (ft_strchr(new_map[i], '\n'))
-			ft_memset(ft_strchr(new_map[i], '\n'), 32, 1);
 		if (!new_map[i])
 			return (print_error(MALLOC_ERROR), ft_free_tab(&new_map), 1);
 		i++;
