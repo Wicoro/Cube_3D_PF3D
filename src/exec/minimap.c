@@ -124,7 +124,6 @@ void	display_player_fov(t_data *data)
 
 void	display_minimap(t_data *data)
 {
-	printf("x : %f; y : %f\n", data->player.x, data->player.y);
 	ft_memset(data->img[2].addr, 0, MINIMAP_H * MINIMAP_W * 4);
 	display_tiles(&data->map, data->img, &data->player);
 	display_player(data->img);
