@@ -11,21 +11,27 @@ OBJ_DIR = obj/
 SRC_DIR = src/
 STEF_DIR = stef/
 PARSING_DIR = parsing/
+EXEC_DIR = exec/
 
 INCLUDE = include
 
 PARSING =	get_assets.c \
-			get_map.c
+			get_map.c \
+			get_map_utils.c \
+			parse_map_border.c
 
 STEF = 		execution.c
 
+EXEC =		minimap.c
+
 SRC =		cub3d.c \
 			$(addprefix $(STEF_DIR), $(STEF)) \
-			$(addprefix $(PARSING_DIR), $(PARSING))
+			$(addprefix $(PARSING_DIR), $(PARSING)) \
+			$(addprefix $(EXEC_DIR), $(EXEC))
 
 OBJ = 		$(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
-CFLAGS = -Wall -Wextra -Werror -g3 -MMD -MP
+CFLAGS = -Wall -Wextra -Werror -O3 -march=native -flto -MMD -MP 
 EXTRAFLAGS = -lreadline -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 FSANITIZE = -fsanitize=address
 MAKE = make --no-print-directory

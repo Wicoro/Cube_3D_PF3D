@@ -1,4 +1,4 @@
-obj/parsing/get_assets.o: src/parsing/get_assets.c include/cub3d.h \
+obj/parsing/get_map_utils.o: src/parsing/get_map_utils.c include/cub3d.h \
  include/../libft/headers/libft.h include/../libft/headers/color.h \
  include/../libft/headers/utils.h \
  include/../libft/headers/get_next_line.h \
