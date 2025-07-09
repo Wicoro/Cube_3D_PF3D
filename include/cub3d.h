@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/09 17:10:50 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/09 17:59:32 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ typedef struct s_data
 {
 	void		*mlx_p;
 	void		*win_p;
+	int			last_mouse_x;
 	t_player	player;
 	t_map		map;
 	t_imag		img[3];

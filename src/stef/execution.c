@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/09 17:43:01 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/09 18:05:07 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,10 +339,32 @@ int	key_hook(int keycode, t_data *data)
 		move_player(data, 1);
 	if (keycode == XK_s)
 		move_player(data, 0);
-	if (keycode == XK_a)
+/* 	if (keycode == XK_a)
 		rotate_player(&data->player, -0.10);
 	if (keycode == XK_d)
-		rotate_player(&data->player, 0.10);
+		rotate_player(&data->player, 0.10); */
+	clear_image(data->img, &data->map);
+	draw_player_fov(data);
+	mlx_put_image_to_window(data->mlx_p, data->win_p,
+		data->img[data->map.check_img].img_p, 0, 0);
+	display_minimap(data);
+	return (0);
+}
+
+int	mouse_hook(int x, int y, void *param)
+{
+	t_data *data = (t_data *)param;
+	int delta_x;
+	double rot_speed;
+	(void)y;
+	
+	delta_x = x - data->last_mouse_x;
+	if (delta_x)
+	{
+		rot_speed = 0.0000003;
+		rotate_player(&data->player, delta_x * rot_speed);
+		data->last_mouse_x = x;
+	}
 	clear_image(data->img, &data->map);
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
@@ -369,8 +391,12 @@ int	execution(t_data *data)
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
 	display_minimap(data);
+	mlx_mouse_hide(data->mlx_p, data->win_p);
+	mlx_mouse_move(data->win_p, data->win_p, WIDTH / 2, HEIGHT / 2);
+	data->last_mouse_x = WIDTH / 2;
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
+	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
 	mlx_loop(data->mlx_p);
 	return (0);
 }
