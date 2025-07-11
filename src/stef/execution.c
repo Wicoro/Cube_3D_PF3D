@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/08 18:28:51 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/08 18:46:57 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@ void	draw_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 			fov->distance = sqrtf(pow((px - player->x), 2) + pow((py
 							- player->y), 2));
 			player_angle = atan2(player->dir_y, player->dir_x);
-			fov->distance *= cos(fov->ray_angle - player_angle);
+			fov->distance *= cosf(fov->ray_angle - player_angle);
 			fov->wall_height = (TILE_SIZE * HEIGHT / fov->distance);
 			break ;
 		}
