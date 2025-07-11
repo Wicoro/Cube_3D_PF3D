@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/09 13:20:27 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/11 14:12:35 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	main(int ac, char **av)
 {
 	t_data	data;
 
+	printf("%d\n", MINIMAP_H);
 	ft_bzero(&data, sizeof(t_data));
 	if (ac == 1 || ac > 2)
 		return (print_error(ARG_COUNT_ERROR), 1);

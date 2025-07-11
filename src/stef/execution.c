@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/11 13:31:12 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/11 14:39:08 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,14 @@ void	draw_player_fov(t_data *data)
 	int		i;
 	float	step;
 	float	start_angle;
-
+	
+	//reset map
+	ft_memset(data->img[2].addr, 0, MINIMAP_H * MINIMAP_W * 4);
+	display_tiles(&data->map, data->img, &data->player);
+	display_border(data->img);
+	display_player(data->img);
+	//end
+	
 	step = FOV / WIDTH;
 	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV / 2);
 	i = 0;
@@ -285,6 +292,9 @@ void	draw_player_fov(t_data *data)
 		fov.ray_dir_x = cos(fov.ray_angle);
 		fov.ray_dir_y = sin(fov.ray_angle);
 		draw_ray(&data->player, &fov, &data->map);
+		//draw ray on minimap
+		display_ray(&data->player, &fov, data->img, &data->map);
+		//end
 		draw_wall(i, &fov, data);
 		i++;
 	}
@@ -339,15 +349,16 @@ int	key_hook(int keycode, t_data *data)
 		move_player(data, 1);
 	if (keycode == XK_s)
 		move_player(data, 0);
-/* 	if (keycode == XK_a)
+	if (keycode == XK_a)
 		rotate_player(&data->player, -0.10);
 	if (keycode == XK_d)
-		rotate_player(&data->player, 0.10); */
+		rotate_player(&data->player, 0.10);
 	clear_image(data->img, &data->map);
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
-	display_minimap(data);
+	//display new minimap
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	return (0);
 }
 
@@ -369,7 +380,8 @@ int	mouse_hook(int x, int y, void *param)
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
-	display_minimap(data);
+	//display new minimap
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	return (0);
 }
 
@@ -390,13 +402,14 @@ int	execution(t_data *data)
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
-	display_minimap(data);
-	mlx_mouse_hide(data->mlx_p, data->win_p);
-	mlx_mouse_move(data->win_p, data->win_p, WIDTH / 2, HEIGHT / 2);
-	data->last_mouse_x = WIDTH / 2;
+	//display new minimap
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+	//mlx_mouse_hide(data->mlx_p, data->win_p);
+	//mlx_mouse_move(data->win_p, data->win_p, WIDTH / 2, HEIGHT / 2);
+	//data->last_mouse_x = WIDTH / 2;
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
-	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
+/* 	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data); */
 	mlx_loop(data->mlx_p);
 	return (0);
 }

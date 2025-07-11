@@ -1,6 +1,6 @@
 #include "../../include/cub3d.h"
 
-static void	add_pixel(t_imag *img, int x, int y, int color)
+static void	add_minimap_pixel(t_imag *img, int x, int y, int color)
 {
 	int		x_sized;
 	int		y_sized;
@@ -32,7 +32,7 @@ static void	display_map_tile(t_imag *img, t_map *map, int x, int y, int off_x, i
 		i = 1;
 		while (i <= TILE_SIZE)
 		{
-			add_pixel(img, start_x + i, start_y + j, get_color_tile(map, x,
+			add_minimap_pixel(img, start_x + i, start_y + j, get_color_tile(map, x,
 						y));
 			i++;
 		}
@@ -40,7 +40,7 @@ static void	display_map_tile(t_imag *img, t_map *map, int x, int y, int off_x, i
 	}
 }
 
-static void display_tiles(t_map *map, t_imag *img, t_player *player)
+void display_tiles(t_map *map, t_imag *img, t_player *player)
 {
 	int	i;
 	int	j;
@@ -73,7 +73,7 @@ void	display_player(t_imag *img)
 		while (i <= size)
 		{
 			if (i * i + j * j <= size * size)
-				add_pixel(img, MINIMAP_W / 2 + i, MINIMAP_H / 2 + j, GREEN_C);
+				add_minimap_pixel(img, MINIMAP_W / 2 + i, MINIMAP_H / 2 + j, GREEN_C);
 			i++;
 		}
 		j++;
@@ -97,36 +97,28 @@ void	display_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 		py_n = player->y + (fov->ray_dir_y * (i + 1));
 		if (is_wall(map, px, py) || is_wall(map, px_n, py_n))
 			break ;
-		add_pixel(img, (px - player->x) + MINIMAP_W / 2, (py - player->y) + MINIMAP_H / 2, GREEN_C);
+		add_minimap_pixel(img, (px - player->x) + MINIMAP_W / 2, (py - player->y) + MINIMAP_H / 2, GREEN_C);
 		i++;
 	}
 }
 
-void	display_player_fov(t_data *data)
+void	display_border(t_imag *img)
 {
-	t_fov	fov;
-	int		i;
-	float	step;
-	float	start_angle;
+	int	i;
+	int	j;
 
-	step = FOV / WIDTH;
-	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV / 2);
 	i = 0;
-	while (i < WIDTH)
+	while (i < MINIMAP_H)
 	{
-		fov.ray_angle = start_angle + (i * step);
-		fov.ray_dir_x = cos(fov.ray_angle);
-		fov.ray_dir_y = sin(fov.ray_angle);
-		display_ray(&data->player, &fov, data->img, &data->map);
+		j = 0;
+		while (j < MINIMAP_W)
+		{
+			if (i < MINIMAP_BORDER_SIZE || i > MINIMAP_H - MINIMAP_BORDER_SIZE)
+				add_minimap_pixel(img, i, j, GREEN_C);
+			else if (j < MINIMAP_BORDER_SIZE || j > MINIMAP_W - MINIMAP_BORDER_SIZE)
+				add_minimap_pixel(img, i, j, GREEN_C);
+			j++;
+		}
 		i++;
 	}
-}
-
-void	display_minimap(t_data *data)
-{
-	ft_memset(data->img[2].addr, 0, MINIMAP_H * MINIMAP_W * 4);
-	display_tiles(&data->map, data->img, &data->player);
-	display_player(data->img);
-	display_player_fov(data);
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH - MINIMAP_W, HEIGHT - MINIMAP_H);
 }
