@@ -31,7 +31,7 @@ SRC =		cub3d.c \
 
 OBJ = 		$(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
-CFLAGS = -Wall -Wextra -Werror -g3 -MMD -MP
+CFLAGS = -Wall -Wextra -Werror -O3 -march=native -flto -MMD -MP 
 EXTRAFLAGS = -lreadline -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 FSANITIZE = -fsanitize=address
 MAKE = make --no-print-directory

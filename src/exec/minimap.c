@@ -1,4 +1,4 @@
-#include "cub3d.h"
+#include "../../include/cub3d.h"
 
 static void	add_pixel(t_imag *img, int x, int y, int color)
 {
@@ -109,10 +109,10 @@ void	display_player_fov(t_data *data)
 	float	step;
 	float	start_angle;
 
-	step = FOV / NUM_RAYS;
+	step = FOV / WIDTH;
 	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV / 2);
 	i = 0;
-	while (i < NUM_RAYS)
+	while (i < WIDTH)
 	{
 		fov.ray_angle = start_angle + (i * step);
 		fov.ray_dir_x = cos(fov.ray_angle);

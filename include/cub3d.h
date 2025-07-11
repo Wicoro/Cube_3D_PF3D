@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/08 18:40:40 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/09 17:59:32 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,11 @@
 # define TILE_SIZE 15
 # define SPEED 4
 # define GREEN_C 0x2ecc71
-# define RED_C 0x7b241c  
+# define RED_C 0x7b241c
 # ifndef M_PI
 #  define M_PI 3.14159265359
 # endif
 # define FOV (60 * M_PI / 180)
-# define NUM_RAYS 1280
-# define COLUMN_SIZE (WIDTH / NUM_RAYS)
 
 typedef struct s_assets
 {
@@ -67,12 +65,21 @@ typedef struct s_fov
 	float		ray_dir_x;
 	float		ray_dir_y;
 	float		distance;
+	float		delta_dist_x;
+	float		delta_dist_y;
+	float		side_dist_x;
+	float		side_dist_y;
 	float		wall_height;
+	int			nbr_rays;
 }				t_fov;
 
 typedef struct s_map
 {
 	char		**map_tab;
+	int 		map_x;
+	int			map_y;
+	int			step_x;
+	int			step_y;
 	int			check_img;
 	int			width;
 	int			height;
@@ -91,6 +98,7 @@ typedef struct s_data
 {
 	void		*mlx_p;
 	void		*win_p;
+	int			last_mouse_x;
 	t_player	player;
 	t_map		map;
 	t_imag		img[3];
@@ -106,9 +114,9 @@ int				get_squared_map(t_map *map);
 int				parse_map_border(t_map *map);
 int				get_assets(t_assets *assets, int fd);
 void			display_minimap(t_data *data);
+void			draw_wall(float x, t_fov *fov, t_data *data);
 
-
-int	get_color_tile(t_map *map, int x, int y);
-int	is_wall(t_map *map, float x, float y);
+int				get_color_tile(t_map *map, int x, int y);
+int				is_wall(t_map *map, float x, float y);
 
 #endif
