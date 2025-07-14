@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/14 17:24:16 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/14 19:44:04 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -405,32 +405,32 @@ int	key_hook(int keycode, t_data *data)
 	return (0);
 }
 
-/* int	mouse_hook(int x, int y, void *param)
-{
-	t_data	*data;
-	double	delta_x;
-	double	rot_speed;
+// int	mouse_hook(int x, int y, void *param)
+// {
+// 	t_data	*data;
+// 	double	delta_x;
+// 	double	rot_speed;
 
-	if (!param || x < 0)
-		return (0);
-	data = (t_data *)param;
-	(void)y;
-	delta_x = x - data->last_mouse_x;
-	if (delta_x)
-	{
-		rot_speed = 0.1;
-		rotate_player(&data->player, delta_x * rot_speed);
-		data->last_mouse_x = x;
-	}
-	clear_image(data->img, &data->map);
-	draw_player_fov(data);
-	mlx_put_image_to_window(data->mlx_p, data->win_p,
-		data->img[data->map.check_img].img_p, 0, 0);
-	// display new minimap
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
-		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
-	return (0);
-} */
+// 	if (!param || x < 0)
+// 		return (0);
+// 	data = (t_data *)param;
+// 	(void)y;
+// 	delta_x = x - data->last_mouse_x;
+// 	if (delta_x)
+// 	{
+// 		rot_speed = 0.01;
+// 		rotate_player(&data->player, delta_x * rot_speed);
+// 		data->last_mouse_x = x;
+// 	}
+// 	clear_image(data->img, &data->map);
+// 	draw_player_fov(data);
+// 	mlx_put_image_to_window(data->mlx_p, data->win_p,
+// 		data->img[data->map.check_img].img_p, 0, 0);
+// 	// display new minimap
+// 	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
+// 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+// 	return (0);
+// }
 
 int	execution(t_data *data)
 {
@@ -454,9 +454,9 @@ int	execution(t_data *data)
 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
-/* 	data->last_mouse_x = WIDTH / 2;
-	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
-	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data); */
+	// data->last_mouse_x = WIDTH / 2;
+	// mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
+	// mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
 	mlx_loop(data->mlx_p);
 	return (0);
 }

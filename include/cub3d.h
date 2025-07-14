@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/14 13:41:14 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/14 19:44:31 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 # define MALLOC_ERROR 3
 # define INVALID_MAP 4
 
-# define HEIGHT 1440
-# define WIDTH 2560
+# define HEIGHT 1000
+# define WIDTH 1400
 # define MINIMAP_H ((HEIGHT / 100) * 30)
 # define MINIMAP_W MINIMAP_H
 # define MINIMAP_BORDER_SIZE 5
