@@ -35,7 +35,7 @@ int	parse_map_border(t_map *map)
 		j = -1;
 		while (map->map_tab[i][++j])
 		{
-			if (ft_strchr("NSEW0", map->map_tab[i][j])
+			if (ft_strchr("NSEW02", map->map_tab[i][j])
 				&& check_surround(map->map_tab, j, i) == 1)
 				return (print_error(INVALID_MAP), 1);
 			if (ft_strchr("NSEW", map->map_tab[i][j]))
