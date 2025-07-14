@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/14 13:49:15 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/14 16:45:32 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int	get_color_tile(t_map *map, int x, int y)
 		return (RED_C);
 	else if (c == '2')
 		return (0x0000FF);
+	else if (c == '3')
+		return (0x7F00FF);
 	else if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E')
 		return (0xA0A0A0);
 	else
@@ -83,6 +85,7 @@ int	closer(t_data *data)
 	ft_printf("the ESC key or red cross has been pressed\n");
 	mlx_destroy_image(data->mlx_p, data->img[0].img_p);
 	mlx_destroy_image(data->mlx_p, data->img[1].img_p);
+	mlx_destroy_image(data->mlx_p, data->img[2].img_p);
 	mlx_destroy_window(data->mlx_p, data->win_p);
 	mlx_destroy_display(data->mlx_p);
 	exit(0);
@@ -150,7 +153,7 @@ int	is_wall(t_map *map, float x, float y)
 	if (map_x < 0 || map_x > map->width || map_y < 0 || map_y > map->height)
 		return (1);
 	c = map->map_tab[map_y][map_x];
-	if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E')
+	if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E' || c == '3')
 		return (0);
 	return (1);
 }
@@ -226,15 +229,13 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 			hit = 1;
 	}
 	if (side == 0)
-		fov->distance = (map->map_x - (player->x / TILE_SIZE) + (1 - map->step_x) / 2)
-			/ fov->ray_dir_x;
+		fov->distance = (map->map_x - (player->x / TILE_SIZE) + (1
+					- map->step_x) / 2) / fov->ray_dir_x;
 	else
-		fov->distance = (map->map_y - (player->y / TILE_SIZE) + (1 - map->step_y) / 2)
-			/ fov->ray_dir_y;
-
+		fov->distance = (map->map_y - (player->y / TILE_SIZE) + (1
+					- map->step_y) / 2) / fov->ray_dir_y;
 	if (fov->distance == 0)
 		fov->distance = 0.0001;
-
 	fov->distance *= cos(fov->ray_angle - atan2(player->dir_y, player->dir_x));
 	fov->wall_height = HEIGHT / fov->distance;
 }
@@ -277,14 +278,13 @@ void	draw_player_fov(t_data *data)
 	int		i;
 	float	step;
 	float	start_angle;
-	
-	//reset map
+
+	// reset map
 	ft_memset(data->img[2].addr, 0, MINIMAP_H * MINIMAP_W * 4);
 	display_tiles(&data->map, data->img, &data->player);
 	display_border(data->img);
 	display_player(data->img);
-	//end
-	
+	// end
 	step = FOV / WIDTH;
 	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV / 2);
 	i = 0;
@@ -294,9 +294,9 @@ void	draw_player_fov(t_data *data)
 		fov.ray_dir_x = cos(fov.ray_angle);
 		fov.ray_dir_y = sin(fov.ray_angle);
 		draw_ray(&data->player, &fov, &data->map);
-		//draw ray on minimap
+		// draw ray on minimap
 		display_ray(&data->player, &fov, data->img, &data->map);
-		//end
+		// end
 		draw_wall(i, &fov, data);
 		i++;
 	}
@@ -343,6 +343,44 @@ void	clear_image(t_imag *img, t_map *map)
 	ft_memset(img[map->check_img].addr, 0, img_size);
 }
 
+void	open_door(t_data *data)
+{
+	int		i;
+	double	x;
+	double	y;
+	int		map_player_x;
+	int		map_player_y;
+
+	i = 0;
+	x = data->player.x;
+	y = data->player.y;
+	map_player_x = data->player.x / TILE_SIZE;
+	map_player_y = data->player.y / TILE_SIZE;
+	while (i <= (TILE_SIZE * 2))
+	{
+		x += data->player.dir_x;
+		y += data->player.dir_y;
+		data->map.map_x = x / TILE_SIZE;
+		data->map.map_y = y / TILE_SIZE;
+		if (data->map.map_x == map_player_x && data->map.map_y == map_player_y)
+		{
+			i++;
+			continue ;
+		}
+		if (data->map.map_tab[data->map.map_y][data->map.map_x] == '2')
+		{
+			data->map.map_tab[data->map.map_y][data->map.map_x] = '3';
+			break ;
+		}
+		else if (data->map.map_tab[data->map.map_y][data->map.map_x] == '3')
+		{
+			data->map.map_tab[data->map.map_y][data->map.map_x] = '2';
+			break ;
+		}
+		i++;
+	}
+}
+
 int	key_hook(int keycode, t_data *data)
 {
 	if (keycode == XK_Escape)
@@ -355,22 +393,26 @@ int	key_hook(int keycode, t_data *data)
 		rotate_player(&data->player, -0.10);
 	if (keycode == XK_d)
 		rotate_player(&data->player, 0.10);
+	if (keycode == XK_space)
+		open_door(data);
 	clear_image(data->img, &data->map);
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
-	//display new minimap
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+	// display new minimap
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
+		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	return (0);
 }
 
 int	mouse_hook(int x, int y, void *param)
 {
-	t_data *data = (t_data *)param;
-	int delta_x;
-	double rot_speed;
+	t_data	*data;
+	int		delta_x;
+	double	rot_speed;
+
+	data = (t_data *)param;
 	(void)y;
-	
 	delta_x = x - data->last_mouse_x;
 	if (delta_x)
 	{
@@ -382,8 +424,9 @@ int	mouse_hook(int x, int y, void *param)
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
-	//display new minimap
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+	// display new minimap
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
+		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	return (0);
 }
 
@@ -404,14 +447,15 @@ int	execution(t_data *data)
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
-	//display new minimap
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
-/* 	mlx_mouse_hide(data->mlx_p, data->win_p);
-	mlx_mouse_move(data->win_p, data->win_p, WIDTH / 2, HEIGHT / 2); */
+	// display new minimap
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
+		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+	mlx_mouse_hide(data->mlx_p, data->win_p);
+	mlx_mouse_move(data->win_p, data->win_p, WIDTH / 2, HEIGHT / 2); 
 	data->last_mouse_x = WIDTH / 2;
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
-/* 	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data); */
+	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
 	mlx_loop(data->mlx_p);
 	return (0);
 }

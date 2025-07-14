@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:26:18 by norban            #+#    #+#             */
-/*   Updated: 2025/07/11 16:26:40 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/14 14:49:19 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	parse_map_border(t_map *map)
 				return (print_error(INVALID_MAP), 1);
 			if (ft_strchr("NSEW", map->map_tab[i][j]))
 				player++;
-			else if (!ft_strchr("01 ", map->map_tab[i][j]))
+			else if (!ft_strchr("012 ", map->map_tab[i][j]))
 				return (print_error(INVALID_MAP), 1);
 		}
 	}
