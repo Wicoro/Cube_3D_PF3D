@@ -59,6 +59,7 @@ void display_tiles(t_map *map, t_imag *img, t_player *player)
 		j++;
 	}
 }
+
 void	display_player(t_imag *img)
 {
 	int	size;

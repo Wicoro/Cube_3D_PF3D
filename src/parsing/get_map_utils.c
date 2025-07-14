@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_map_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 18:14:37 by norban            #+#    #+#             */
-/*   Updated: 2025/07/08 17:10:44 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/11 16:42:38 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "../../include/cub3d.h"
 
 void	remove_map_nl(t_map *map)
 {
@@ -49,7 +49,7 @@ int	get_squared_map(t_map *map)
 	new_map = malloc(sizeof(char *) * (map->height + 1));
 	if (!new_map)
 		return (print_error(MALLOC_ERROR), 1);
-	ft_bzero(new_map, 0);
+	ft_bzero(new_map, sizeof(char *) * (map->height + 1));
 	i = 0;
 	while (i < map->height)
 	{

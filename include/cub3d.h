@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/11 14:26:03 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/14 13:41:14 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,30 +54,31 @@ typedef struct s_assets
 
 typedef struct s_player
 {
-	float		x;
-	float		y;
-	float		dir_x;
-	float		dir_y;
+	double		x;
+	double		y;
+	double		dir_x;
+	double		dir_y;
+	double		angle;
 }				t_player;
 
 typedef struct s_fov
 {
-	float		ray_angle;
-	float		ray_dir_x;
-	float		ray_dir_y;
-	float		distance;
-	float		delta_dist_x;
-	float		delta_dist_y;
-	float		side_dist_x;
-	float		side_dist_y;
-	float		wall_height;
+	double		ray_angle;
+	double		ray_dir_x;
+	double		ray_dir_y;
+	double		distance;
+	double		delta_dist_x;
+	double		delta_dist_y;
+	double		side_dist_x;
+	double		side_dist_y;
+	double		wall_height;
 	int			nbr_rays;
 }				t_fov;
 
 typedef struct s_map
 {
 	char		**map_tab;
-	int 		map_x;
+	int			map_x;
 	int			map_y;
 	int			step_x;
 	int			step_y;
@@ -88,7 +89,7 @@ typedef struct s_map
 
 typedef struct s_imag
 {
-	char		*img_p;
+	void		*img_p;
 	char		*addr;
 	int			bits_per_pixel;
 	int			line_lenght;
@@ -114,15 +115,13 @@ void			get_map_dimension(t_map *map);
 int				get_squared_map(t_map *map);
 int				parse_map_border(t_map *map);
 int				get_assets(t_assets *assets, int fd);
+void			display_minimap(t_data *data);
 void			draw_wall(float x, t_fov *fov, t_data *data);
-
+void			display_border(t_imag *img);
 int				get_color_tile(t_map *map, int x, int y);
 int				is_wall(t_map *map, float x, float y);
-
-void	display_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map);
-void	display_player(t_imag *img);
-void 	display_tiles(t_map *map, t_imag *img, t_player *player);
-void	display_border(t_imag *img);
-
-
+void			display_ray(t_player *player, t_fov *fov, t_imag *img,
+					t_map *map);
+void			display_player(t_imag *img);
+void			display_tiles(t_map *map, t_imag *img, t_player *player);
 #endif

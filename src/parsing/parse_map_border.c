@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map_border.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:26:18 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 18:45:50 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/11 16:26:40 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "../../include/cub3d.h"
 
 static int	check_surround(char **map, int x, int y)
 {

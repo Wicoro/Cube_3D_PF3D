@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_map.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:58:51 by norban            #+#    #+#             */
-/*   Updated: 2025/07/08 16:57:57 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/11 16:26:44 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "../../include/cub3d.h"
 
 static int	exit_helper(char ***map, char ***new_map)
 {

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_assets.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:57:39 by norban            #+#    #+#             */
-/*   Updated: 2025/07/07 15:37:42 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/11 16:26:50 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "../../include/cub3d.h"
 
 static int	get_rgb_assets(t_assets *assets, char *line, char id)
 {

@@ -31,9 +31,9 @@ SRC =		cub3d.c \
 
 OBJ = 		$(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
-CFLAGS = -Wall -Wextra -Werror -O3 -march=native -flto -MMD -MP 
+CFLAGS = -Wall -Wextra -Werror -O3 -march=native -flto -MMD -MP
 EXTRAFLAGS = -lreadline -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
-FSANITIZE = -fsanitize=address
+FSANITIZE = -g #-fsanitize=address
 MAKE = make --no-print-directory
 
 LIBFT_DIR = libft
@@ -48,13 +48,13 @@ all: logo $(NAME)
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@mkdir -p $(dir $@)
 	@echo "📦 $(ITALIC)$(YELLOW)Compiling $< $(RESET)"
-	@cc $(CFLAGS) -I $(INCLUDE) -c $< -o $@
+	@cc $(CFLAGS) $(FSANITIZE) -I $(INCLUDE) -c $< -o $@
 
 
 $(NAME): $(LIBFT) $(MLX) $(OBJ)
 	@echo ""
 	@echo "		🚀 $(BOLD)$(YELLOW)Linking $(NAME)...$(RESET)"
-	@cc $(CFLAGS) $(OBJ) -o $(NAME) -I $(INCLUDE) $(LIBFT) $(EXTRAFLAGS)
+	@cc $(CFLAGS) $(FSANITIZE) $(OBJ) -o $(NAME) -I $(INCLUDE) $(LIBFT) $(EXTRAFLAGS)
 	@echo ""
 	@echo "	🎉 $(BOLD)$(GREEN)SUCCESS: $(NAME) has been created$(RESET) ✅ "
 	@echo ""

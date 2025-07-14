@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/11 14:39:08 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/14 13:49:15 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,9 +404,9 @@ int	execution(t_data *data)
 		data->img[data->map.check_img].img_p, 0, 0);
 	//display new minimap
 	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
-	//mlx_mouse_hide(data->mlx_p, data->win_p);
-	//mlx_mouse_move(data->win_p, data->win_p, WIDTH / 2, HEIGHT / 2);
-	//data->last_mouse_x = WIDTH / 2;
+/* 	mlx_mouse_hide(data->mlx_p, data->win_p);
+	mlx_mouse_move(data->win_p, data->win_p, WIDTH / 2, HEIGHT / 2); */
+	data->last_mouse_x = WIDTH / 2;
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
 /* 	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data); */
