@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/14 16:45:32 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/14 17:24:16 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,8 +200,8 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 {
 	int		hit;
 	int		side;
-	float	ray_x;
-	float	ray_y;
+	double	ray_x;
+	double	ray_y;
 
 	map->map_x = player->x / TILE_SIZE;
 	map->map_y = player->y / TILE_SIZE;
@@ -276,8 +276,8 @@ void	draw_player_fov(t_data *data)
 {
 	t_fov	fov;
 	int		i;
-	float	step;
-	float	start_angle;
+	double	step;
+	double	start_angle;
 
 	// reset map
 	ft_memset(data->img[2].addr, 0, MINIMAP_H * MINIMAP_W * 4);
@@ -304,8 +304,8 @@ void	draw_player_fov(t_data *data)
 
 void	move_player(t_data *data, int up_or_down)
 {
-	float	new_x;
-	float	new_y;
+	double	new_x;
+	double	new_y;
 
 	if (up_or_down == 1)
 	{
@@ -323,10 +323,10 @@ void	move_player(t_data *data, int up_or_down)
 		data->player.y = new_y;
 }
 
-void	rotate_player(t_player *player, float angle)
+void	rotate_player(t_player *player, double angle)
 {
-	float	old_dir_x;
-	float	old_dir_y;
+	double	old_dir_x;
+	double	old_dir_y;
 
 	old_dir_x = player->dir_x;
 	old_dir_y = player->dir_y;
@@ -405,18 +405,20 @@ int	key_hook(int keycode, t_data *data)
 	return (0);
 }
 
-int	mouse_hook(int x, int y, void *param)
+/* int	mouse_hook(int x, int y, void *param)
 {
 	t_data	*data;
-	int		delta_x;
+	double	delta_x;
 	double	rot_speed;
 
+	if (!param || x < 0)
+		return (0);
 	data = (t_data *)param;
 	(void)y;
 	delta_x = x - data->last_mouse_x;
 	if (delta_x)
 	{
-		rot_speed = 0.0000003;
+		rot_speed = 0.1;
 		rotate_player(&data->player, delta_x * rot_speed);
 		data->last_mouse_x = x;
 	}
@@ -428,7 +430,7 @@ int	mouse_hook(int x, int y, void *param)
 	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	return (0);
-}
+} */
 
 int	execution(t_data *data)
 {
@@ -450,12 +452,11 @@ int	execution(t_data *data)
 	// display new minimap
 	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
-	mlx_mouse_hide(data->mlx_p, data->win_p);
-	mlx_mouse_move(data->win_p, data->win_p, WIDTH / 2, HEIGHT / 2); 
-	data->last_mouse_x = WIDTH / 2;
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
-	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
+/* 	data->last_mouse_x = WIDTH / 2;
+	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
+	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data); */
 	mlx_loop(data->mlx_p);
 	return (0);
 }
