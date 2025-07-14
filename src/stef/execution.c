@@ -53,6 +53,8 @@ int	get_color_tile(t_map *map, int x, int y)
 		return (0x000000);
 	else if (c == '1')
 		return (RED_C);
+	else if (c == '2')
+		return (0x0000FF);
 	else if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E')
 		return (0xA0A0A0);
 	else
