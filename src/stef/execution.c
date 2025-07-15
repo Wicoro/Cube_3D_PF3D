@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/14 19:44:04 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/15 14:55:25 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/cub3d.h"
+
+int	init_texture(t_data *data, char *path, int i)
+{
+	data->textures[i].img = mlx_xpm_file_to_image(data->mlx_p, path, &data->textures[i].width, &data->textures[i].height);
+	if (!data->textures[i].img)
+		return (1);
+	data->textures[i].addr = mlx_get_data_addr(data->textures[i].img,
+		&data->textures[i].bits_per_pixel, &data->textures[i].line_length,
+		&data->textures[i].endian);
+	return (0);
+}
+
+int init_textures(t_data *data)
+{
+	if (init_texture(data, data->assets.no_path, 0) == 1)
+		return (1);
+	init_texture(data, data->assets.so_path, 1);
+	init_texture(data, data->assets.ea_path, 2);
+	init_texture(data, data->assets.we_path, 3);
+	return (0);
+}
 
 int	wind_init(t_data *data)
 {
@@ -20,6 +41,9 @@ int	wind_init(t_data *data)
 	data->win_p = mlx_new_window(data->mlx_p, WIDTH, HEIGHT, "Cub3D");
 	if (!data->win_p)
 		return (print_error(3), mlx_destroy_display(data->mlx_p), 1);
+	if (init_textures(data) == 1)
+		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
+			mlx_destroy_display(data->mlx_p), 1);
 	data->img[0].img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
 	if (!data->img[0].img_p)
 		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
@@ -196,53 +220,140 @@ void	get_step_side_dist(t_fov *fov, t_map *map, t_player *p)
 	}
 }
 
-void	draw_ray(t_player *player, t_fov *fov, t_map *map)
+void draw_ray(t_player *player, t_fov *fov, t_map *map)
 {
-	int		hit;
-	int		side;
-	double	ray_x;
-	double	ray_y;
+    int hit;
+    int side;
+    double ray_x;
+    double ray_y;
 
-	map->map_x = player->x / TILE_SIZE;
-	map->map_y = player->y / TILE_SIZE;
-	get_delta_dist(fov);
-	get_step_side_dist(fov, map, player);
-	hit = 0;
-	side = 0;
-	while (hit == 0)
-	{
-		if (fov->side_dist_x < fov->side_dist_y)
-		{
-			fov->side_dist_x += fov->delta_dist_x;
-			map->map_x += map->step_x;
-			side = 0;
-		}
-		else
-		{
-			fov->side_dist_y += fov->delta_dist_y;
-			map->map_y += map->step_y;
-			side = 1;
-		}
-		ray_x = map->map_x * TILE_SIZE;
-		ray_y = map->map_y * TILE_SIZE;
-		if (is_wall(map, ray_x, ray_y))
-			hit = 1;
-	}
-	if (side == 0)
-		fov->distance = (map->map_x - (player->x / TILE_SIZE) + (1
-					- map->step_x) / 2) / fov->ray_dir_x;
-	else
-		fov->distance = (map->map_y - (player->y / TILE_SIZE) + (1
-					- map->step_y) / 2) / fov->ray_dir_y;
-	if (fov->distance == 0)
-		fov->distance = 0.0001;
-	fov->distance *= cos(fov->ray_angle - atan2(player->dir_y, player->dir_x));
-	fov->wall_height = HEIGHT / fov->distance;
+    map->map_x = player->x / TILE_SIZE;
+    map->map_y = player->y / TILE_SIZE;
+
+    get_delta_dist(fov);
+    get_step_side_dist(fov, map, player);
+
+    hit = 0;
+    side = 0;
+
+    while (hit == 0)
+    {
+        if (fov->side_dist_x < fov->side_dist_y)
+        {
+            fov->side_dist_x += fov->delta_dist_x;
+            map->map_x += map->step_x;
+            side = 0;
+        }
+        else
+        {
+            fov->side_dist_y += fov->delta_dist_y;
+            map->map_y += map->step_y;
+            side = 1;
+        }
+
+        ray_x = map->map_x * TILE_SIZE;
+        ray_y = map->map_y * TILE_SIZE;
+
+        if (is_wall(map, ray_x, ray_y))
+            hit = 1;
+    }
+
+    fov->side = side;
+
+    if (side == 0)
+        fov->distance = (map->map_x - (player->x / TILE_SIZE) + (1 - map->step_x) / 2) / fov->ray_dir_x;
+    else
+        fov->distance = (map->map_y - (player->y / TILE_SIZE) + (1 - map->step_y) / 2) / fov->ray_dir_y;
+
+    if (fov->distance == 0)
+        fov->distance = 0.0001;
+
+    // --- CORRECTED FISHEYE FIX ---
+    // Calculate player viewing angle once (cache for speed)
+    double player_angle = atan2(player->dir_y, player->dir_x);
+
+    // Cosine of angle difference between ray and player view
+    double angle_diff = fov->ray_angle - player_angle;
+
+    // Normalize angle_diff to range [-PI, PI] to avoid errors
+    while (angle_diff > M_PI) angle_diff -= 2 * M_PI;
+    while (angle_diff < -M_PI) angle_diff += 2 * M_PI;
+
+    // Apply cosine fisheye correction
+    fov->distance *= cos(angle_diff);
+
+    // Calculate wall height for this ray
+    fov->wall_height = HEIGHT / fov->distance;
+
+    // Calculate exact hit position on the wall for texture mapping
+    if (side == 0)
+        fov->wall_hit_x = player->y / TILE_SIZE + fov->distance * fov->ray_dir_y;
+    else
+        fov->wall_hit_x = player->x / TILE_SIZE + fov->distance * fov->ray_dir_x;
+
+    fov->wall_hit_x -= floor(fov->wall_hit_x);
 }
+
 
 int	get_rgb_color(int *color)
 {
 	return (color[0] << 16 | color[1] << 8 | color[2]);
+}
+
+void	display_wall(int x, t_fov *fov, t_data *data)
+{
+	t_textures	*tex;
+	if (fov->side == 0)
+	{
+		if (fov->ray_dir_x > 0)
+			tex = &data->textures[3];
+		else
+			tex = &data->textures[2];
+	}
+	else
+	{
+		if (fov->ray_dir_y > 0)
+			tex = &data->textures[1];
+		else
+			tex = &data->textures[0];
+	}
+	int			draw_start, draw_end, wall_height;
+	int			tex_x, tex_y, index;
+	double		wall_x;
+	unsigned int color;
+
+	if (!tex->addr)
+		return;
+
+	wall_height = (int)(HEIGHT / fov->distance);
+	draw_start = -wall_height / 2 + HEIGHT / 2;
+	if (draw_start < 0)
+		draw_start = 0;
+	draw_end = wall_height / 2 + HEIGHT / 2;
+	if (draw_end >= HEIGHT)
+		draw_end = HEIGHT - 1;
+
+	// ✅ Calculate texture X coordinate (wall_x should be passed from raycasting!)
+	wall_x = fmod(fov->wall_hit_x, 1.0); // fractional hit pos on wall
+	tex_x = (int)(wall_x * (double)tex->width);
+	if (tex_x < 0)
+		tex_x = 0;
+	if (tex_x >= tex->width)
+		tex_x = tex->width - 1;
+
+	for (int i = draw_start; i <= draw_end; i++)
+	{
+		// ✅ Corresponding texture y-coordinate
+		tex_y = ((i - draw_start) * tex->height) / wall_height;
+
+		// Avoid invalid access
+		if (tex_y >= tex->height)
+			tex_y = tex->height - 1;
+
+		index = tex_y * tex->line_length + tex_x * (tex->bits_per_pixel / 8);
+		color = *(unsigned int *)(tex->addr + index);
+		put_pixel(&data->img[0], &data->map, x, i, color);
+	}
 }
 
 void	draw_wall(float x, t_fov *fov, t_data *data)
@@ -264,7 +375,9 @@ void	draw_wall(float x, t_fov *fov, t_data *data)
 			put_pixel(data->img, &data->map, x, i,
 				get_rgb_color(data->assets.ce_color));
 		if (i >= draw_start && i <= draw_end)
-			put_pixel(data->img, &data->map, x, i, RED_C);
+		{
+			display_wall(x, fov, data);
+		}
 		if (i > draw_end && i < HEIGHT)
 			put_pixel(data->img, &data->map, x, i,
 				get_rgb_color(data->assets.fl_color));
@@ -287,6 +400,7 @@ void	draw_player_fov(t_data *data)
 	// end
 	step = FOV / WIDTH;
 	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV / 2);
+	// Example for camera plane (2D vector perpendicular to player direction)
 	i = 0;
 	while (i < WIDTH)
 	{

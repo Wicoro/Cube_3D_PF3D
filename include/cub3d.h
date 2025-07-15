@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/14 19:44:31 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/15 14:35:39 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,17 @@ typedef struct s_assets
 	int			ce_color[3];
 }				t_assets;
 
+typedef struct s_textures
+{
+	void	*img;
+	char	*addr;
+	int		width;
+	int		height;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}			t_textures;
+
 typedef struct s_player
 {
 	double		x;
@@ -72,7 +83,9 @@ typedef struct s_fov
 	double		side_dist_x;
 	double		side_dist_y;
 	double		wall_height;
+	double		wall_hit_x;
 	int			nbr_rays;
+	int			side;
 }				t_fov;
 
 typedef struct s_map
@@ -105,6 +118,7 @@ typedef struct s_data
 	t_map		map;
 	t_imag		img[3];
 	t_assets	assets;
+	t_textures	textures[4];
 }				t_data;
 
 void			print_error(int id);

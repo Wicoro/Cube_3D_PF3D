@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_assets.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:57:39 by norban            #+#    #+#             */
-/*   Updated: 2025/07/11 16:26:50 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/15 13:57:59 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ static int	get_rgb_assets(t_assets *assets, char *line, char id)
 static int	compare_assets(t_assets *assets, char **split)
 {
 	if (ft_strncmp(split[0], "NO", 3) == 0)
-		assets->no_path = ft_strdup(split[1]);
+		assets->no_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
 	else if (ft_strncmp(split[0], "SO", 3) == 0)
-		assets->so_path = ft_strdup(split[1]);
+		assets->so_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
 	else if (ft_strncmp(split[0], "EA", 3) == 0)
-		assets->ea_path = ft_strdup(split[1]);
+		assets->ea_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
 	else if (ft_strncmp(split[0], "WE", 3) == 0)
-		assets->we_path = ft_strdup(split[1]);
+		assets->we_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
 	else if (ft_strncmp(split[0], "F", 2) == 0
 		|| ft_strncmp(split[0], "C", 2) == 0)
 	{
