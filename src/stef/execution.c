@@ -6,11 +6,33 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/15 15:05:01 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/15 18:31:39 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/cub3d.h"
+
+int	init_texture(t_data *data, char *path, int i)
+{
+	data->textures[i].img = mlx_xpm_file_to_image(data->mlx_p, path,
+			&data->textures[i].width, &data->textures[i].height);
+	if (!data->textures[i].img)
+		return (1);
+	data->textures[i].addr = mlx_get_data_addr(data->textures[i].img,
+			&data->textures[i].bits_per_pixel, &data->textures[i].line_length,
+			&data->textures[i].endian);
+	return (0);
+}
+
+int	init_textures(t_data *data)
+{
+	if (init_texture(data, data->assets.no_path, 0) == 1)
+		return (1);
+	init_texture(data, data->assets.so_path, 1);
+	init_texture(data, data->assets.ea_path, 2);
+	init_texture(data, data->assets.we_path, 3);
+	return (0);
+}
 
 int	wind_init(t_data *data)
 {
@@ -20,6 +42,9 @@ int	wind_init(t_data *data)
 	data->win_p = mlx_new_window(data->mlx_p, WIDTH, HEIGHT, "Cub3D");
 	if (!data->win_p)
 		return (print_error(3), mlx_destroy_display(data->mlx_p), 1);
+	if (init_textures(data) == 1)
+		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
+			mlx_destroy_display(data->mlx_p), 1);
 	data->img[0].img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
 	if (!data->img[0].img_p)
 		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
@@ -37,7 +62,6 @@ int	wind_init(t_data *data)
 				data->img[1].img_p), 1);
 	return (0);
 }
-
 
 int	get_color_tile(t_map *map, int x, int y)
 {
@@ -76,8 +100,8 @@ void	put_pixel(t_imag *img, t_map *map, int x, int y, int color)
 	addr = img[map->check_img].addr;
 	if (x_sized < 0 || x_sized >= WIDTH || y_sized < 0 || y_sized >= HEIGHT)
 		return ;
-	index = y_sized * img[map->check_img].line_lenght + (x_sized * (img[map->check_img].bits_per_pixel
-				/ 8));
+	index = y_sized * img[map->check_img].line_lenght + (x_sized
+			* (img[map->check_img].bits_per_pixel / 8));
 	*(unsigned int *)(addr + index) = color;
 }
 
@@ -203,6 +227,8 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 	int		side;
 	double	ray_x;
 	double	ray_y;
+	double	player_angle;
+	double	angle_diff;
 
 	map->map_x = player->x / TILE_SIZE;
 	map->map_y = player->y / TILE_SIZE;
@@ -229,6 +255,7 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 		if (is_wall(map, ray_x, ray_y))
 			hit = 1;
 	}
+	fov->side = side;
 	if (side == 0)
 		fov->distance = (map->map_x - (player->x / TILE_SIZE) + (1
 					- map->step_x) / 2) / fov->ray_dir_x;
@@ -237,13 +264,81 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 					- map->step_y) / 2) / fov->ray_dir_y;
 	if (fov->distance == 0)
 		fov->distance = 0.0001;
-	fov->distance *= cos(fov->ray_angle - atan2(player->dir_y, player->dir_x));
+	// --- CORRECTED FISHEYE FIX ---
+	// Calculate player viewing angle once (cache for speed)
+	player_angle = atan2(player->dir_y, player->dir_x);
+	// Cosine of angle difference between ray and player view
+	angle_diff = fov->ray_angle - player_angle;
+	// Normalize angle_diff to range [-PI, PI] to avoid errors
+	while (angle_diff > M_PI)
+		angle_diff -= 2 * M_PI;
+	while (angle_diff < -M_PI)
+		angle_diff += 2 * M_PI;
+	// Apply cosine fisheye correction
+	fov->distance *= cos(angle_diff);
+	// Calculate wall height for this ray
 	fov->wall_height = HEIGHT / fov->distance;
+	// Calculate exact hit position on the wall for texture mapping
+	if (side == 0)
+		fov->wall_hit_x = player->y / TILE_SIZE + fov->distance
+			* fov->ray_dir_y;
+	else
+		fov->wall_hit_x = player->x / TILE_SIZE + fov->distance
+			* fov->ray_dir_x;
+	fov->wall_hit_x -= floor(fov->wall_hit_x);
 }
 
 int	get_rgb_color(int *color)
 {
 	return (color[0] << 16 | color[1] << 8 | color[2]);
+}
+
+void	display_wall(int i, int x, t_fov *fov, t_data *data)
+{
+	t_textures		*tex;
+	double			wall_x;
+	unsigned int	color;
+
+	if (fov->side == 0)
+	{
+		if (fov->ray_dir_x > 0)
+			tex = &data->textures[3];
+		else
+			tex = &data->textures[2];
+	}
+	else
+	{
+		if (fov->ray_dir_y > 0)
+			tex = &data->textures[1];
+		else
+			tex = &data->textures[0];
+	}
+	int draw_start, draw_end, wall_height;
+	int tex_x, tex_y, index;
+	if (!tex->addr)
+		return ;
+	wall_height = (int)(HEIGHT / fov->distance);
+	draw_start = -wall_height / 2 + HEIGHT / 2;
+	if (draw_start < 0)
+		draw_start = 0;
+	draw_end = wall_height / 2 + HEIGHT / 2;
+	if (draw_end >= HEIGHT)
+		draw_end = HEIGHT - 1;
+	// ✅ Calculate texture X coordinate (wall_x should be passed from raycasting!)
+	wall_x = fmod(fov->wall_hit_x, 1.0); // fractional hit pos on wall
+	tex_x = (int)(wall_x * (double)tex->width);
+	if (tex_x < 0)
+		tex_x = 0;
+	if (tex_x >= tex->width)
+		tex_x = tex->width - 1;
+	// ✅ Corresponding texture y-coordinate
+	tex_y = ((i - draw_start) * tex->height) / wall_height;
+	// Avoid invalid access
+	if (tex_y >= tex->height)
+		tex_y = tex->height - 1;
+	index = tex_y * tex->line_length + tex_x * (tex->bits_per_pixel / 8);
+	color = *(unsigned int *)(tex->addr + index);
+	put_pixel(&data->img[0], &data->map, x, i, color);
 }
 
 void	draw_wall(float x, t_fov *fov, t_data *data)
@@ -265,7 +360,9 @@ void	draw_wall(float x, t_fov *fov, t_data *data)
 			put_pixel(data->img, &data->map, x, i,
 				get_rgb_color(data->assets.ce_color));
 		if (i >= draw_start && i <= draw_end)
-			put_pixel(data->img, &data->map, x, i, RED_C);
+		{
+			display_wall(i, x, fov, data);
+		}
 		if (i > draw_end && i < HEIGHT)
 			put_pixel(data->img, &data->map, x, i,
 				get_rgb_color(data->assets.fl_color));
@@ -287,7 +384,8 @@ void	draw_player_fov(t_data *data)
 	display_player(data->img);
 	// end
 	step = FOV / WIDTH;
-	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV / 2);
+	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV * 0.5);
+	// Example for camera plane (2D vector perpendicular to player direction)
 	i = 0;
 	while (i < WIDTH)
 	{
@@ -365,8 +463,8 @@ void	clear_image(t_imag *img, t_map *map)
 	int	img_size;
 
 	img_size = HEIGHT * WIDTH * 4;
-	ft_memset(img[map->check_img].addr, 0, img_size);
 	map->check_img = !map->check_img;
+	ft_memset(img[map->check_img].addr, 0, img_size);
 }
 
 void	open_door(t_data *data)
@@ -411,19 +509,19 @@ int	key_hook(int keycode, t_data *data)
 {
 	if (keycode == XK_Escape)
 		closer(data);
-	if (keycode == XK_w)
+	else if (keycode == XK_w)
 		move_player(data, 1);
-	if (keycode == XK_s)
+	else if (keycode == XK_s)
 		move_player(data, 0);
-	if (keycode == XK_d)
+	else if (keycode == XK_d)
 		strafe_player(data, 1);
-	if (keycode == XK_a)
+	else if (keycode == XK_a)
 		strafe_player(data, 0);
-	if (keycode == XK_Left)
+	else if (keycode == XK_Left)
 		rotate_player(&data->player, -0.10);
-	if (keycode == XK_Right)
+	else if (keycode == XK_Right)
 		rotate_player(&data->player, 0.10);
-	if (keycode == XK_space)
+	else if (keycode == XK_space)
 		open_door(data);
 	clear_image(data->img, &data->map);
 	draw_player_fov(data);
@@ -437,9 +535,10 @@ int	key_hook(int keycode, t_data *data)
 
 /* int	mouse_hook(int x, int y, void *param)
 {
-	t_data	*data;
-	double	delta_x;
-	double	rot_speed;
+	t_data			*data;
+	double			delta_x;
+	double			rot_speed;
+	struct timeval	tv;
 
 	if (!param || x < 0)
 		return (0);
@@ -462,9 +561,27 @@ int	key_hook(int keycode, t_data *data)
 	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
 	return (0);
 } */
+long	get_time_in_ms(void)
+{
+	struct timeval tv;
+	
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000L + tv.tv_usec / 1000L);
+}
+
+void	wait_ft(t_data *data)
+{
+	long	time;
+
+	time = get_time_in_ms();
+	while (time - data->time < 32)
+		time = get_time_in_ms();
+	data->time = time;
+}
 
 int	execution(t_data *data)
 {
+	data->time = get_time_in_ms();
 	if (wind_init(data))
 		return (1);
 	data->img[0].addr = mlx_get_data_addr(data->img[0].img_p,
@@ -485,8 +602,9 @@ int	execution(t_data *data)
 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
-/* 	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
-	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data); */
+	// data->last_mouse_x = WIDTH / 2;
+	// mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
+	// mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
 	mlx_loop(data->mlx_p);
 	return (0);
 }

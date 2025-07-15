@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/15 13:57:16 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/15 17:25:49 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <limits.h>
 # include <math.h>
 # include <stdio.h>
+# include <sys/time.h>
 
 # define ARG_COUNT_ERROR 1
 # define ARG_ERROR 2
@@ -55,6 +56,17 @@ typedef struct s_assets
 	int			ce_color[3];
 }				t_assets;
 
+typedef struct s_textures
+{
+	void	*img;
+	char	*addr;
+	int		width;
+	int		height;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}			t_textures;
+
 typedef struct s_player
 {
 	double		x;
@@ -75,7 +87,9 @@ typedef struct s_fov
 	double		side_dist_x;
 	double		side_dist_y;
 	double		wall_height;
+	double		wall_hit_x;
 	int			nbr_rays;
+	int			side;
 }				t_fov;
 
 typedef struct s_map
@@ -107,6 +121,8 @@ typedef struct s_data
 	t_map		map;
 	t_imag		img[3];
 	t_assets	assets;
+	t_textures	textures[4];
+	long		time;
 }				t_data;
 
 void			print_error(int id);

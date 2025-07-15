@@ -1,7 +1,7 @@
-NO ./path_to_the_north_texture
-SO ./path_to_the_south_texture
-WE ./path_to_the_west_texture
-EA ./path_to_the_east_texture
+NO texture/wood.xpm
+SO texture/blue_stone.xpm
+EA texture/color_stone.xpm
+WE texture/mossy.xpm
 
 F 102,104,0
 C 0,128,255
@@ -17,7 +17,7 @@ C 0,128,255
    10000022222200000000000001
    1011111111111000000000001
    101         100000000001
-   101        10000E000001
+   101        10000S000001
   11011      100000000001
  1000001     100000000001
 100000001     10000000001111111
