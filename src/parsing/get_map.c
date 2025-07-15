@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_map.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:58:51 by norban            #+#    #+#             */
-/*   Updated: 2025/07/11 16:26:44 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/15 16:23:40 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,15 @@ int	get_map(t_map *map, int fd)
 	char	*line;
 
 	line = get_next_line(fd);
+	while (ft_strlen(line) == 1 && line[0] == '\n')
+	{
+		free(line);
+		line = get_next_line(fd);
+	}
 	while (line)
 	{
-		if (!(ft_strlen(line) == 1 && line[0] == '\n')
-			&& concat_map(&map->map_tab, line) == 1)
+		if ((ft_strlen(line) == 1 && line[0] == '\n')
+			|| concat_map(&map->map_tab, line) == 1)
 			return (1);
 		free(line);
 		line = get_next_line(fd);

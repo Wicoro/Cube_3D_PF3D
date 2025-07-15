@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/15 15:12:44 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/15 16:20:43 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	init_texture(t_data *data, char *path, int i)
 {
+	//printf("|%s|\n", path);
 	data->textures[i].img = mlx_xpm_file_to_image(data->mlx_p, path, &data->textures[i].width, &data->textures[i].height);
 	if (!data->textures[i].img)
 		return (1);
@@ -30,6 +31,7 @@ int init_textures(t_data *data)
 	init_texture(data, data->assets.so_path, 1);
 	init_texture(data, data->assets.ea_path, 2);
 	init_texture(data, data->assets.we_path, 3);
+	init_texture(data, data->assets.do_path, 4);
 	return (0);
 }
 
@@ -179,6 +181,8 @@ int	is_wall(t_map *map, float x, float y)
 	c = map->map_tab[map_y][map_x];
 	if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E' || c == '3')
 		return (0);
+	if (c == '2')
+		return (2);
 	return (1);
 }
 
@@ -226,6 +230,7 @@ void draw_ray(t_player *player, t_fov *fov, t_map *map)
     int side;
     double ray_x;
     double ray_y;
+	int		flag;
 
     map->map_x = player->x / TILE_SIZE;
     map->map_y = player->y / TILE_SIZE;
@@ -254,8 +259,12 @@ void draw_ray(t_player *player, t_fov *fov, t_map *map)
         ray_x = map->map_x * TILE_SIZE;
         ray_y = map->map_y * TILE_SIZE;
 
-        if (is_wall(map, ray_x, ray_y))
+		fov->isdoor = 0;
+		flag = is_wall(map, ray_x, ray_y);
+        if (flag == 1 || flag == 2)
             hit = 1;
+		if (flag == 2)
+			fov->isdoor = 1;
     }
 
     fov->side = side;
@@ -303,7 +312,9 @@ int	get_rgb_color(int *color)
 void	display_wall(int x, t_fov *fov, t_data *data)
 {
 	t_textures	*tex;
-	if (fov->side == 0)
+	if (fov->isdoor == 1)
+		tex = &data->textures[4];
+	else if (fov->side == 0)
 	{
 		if (fov->ray_dir_x > 0)
 			tex = &data->textures[3];
@@ -333,8 +344,7 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 	if (draw_end >= HEIGHT)
 		draw_end = HEIGHT - 1;
 
-	// ✅ Calculate texture X coordinate (wall_x should be passed from raycasting!)
-	wall_x = fmod(fov->wall_hit_x, 1.0); // fractional hit pos on wall
+	wall_x = fmod(fov->wall_hit_x, 1.0);
 	tex_x = (int)(wall_x * (double)tex->width);
 	if (tex_x < 0)
 		tex_x = 0;
@@ -343,10 +353,21 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 
 	for (int i = draw_start; i <= draw_end; i++)
 	{
-		// ✅ Corresponding texture y-coordinate
-		tex_y = ((i - draw_start) * tex->height) / wall_height;
+		int wall_height = fov->wall_height;
+		int draw_start = -wall_height / 2 + HEIGHT / 2;
+		int draw_end = wall_height / 2 + HEIGHT / 2;
+		int tex_y_offset = 0;
 
-		// Avoid invalid access
+		if (draw_start < 0)
+		{
+			tex_y_offset = -draw_start; // how much of the texture's top is clipped
+			draw_start = 0;
+		}
+		if (draw_end >= HEIGHT)
+			draw_end = HEIGHT - 1;
+
+		// then inside your loop:
+		tex_y = ((i - draw_start + tex_y_offset) * tex->height) / wall_height;
 		if (tex_y >= tex->height)
 			tex_y = tex->height - 1;
 

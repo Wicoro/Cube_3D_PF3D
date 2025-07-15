@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/15 15:07:50 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/15 15:53:15 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_assets
 	char		*so_path;
 	char		*ea_path;
 	char		*we_path;
+	char		*do_path;
 	int			fl_color[3];
 	int			ce_color[3];
 }				t_assets;
@@ -87,6 +88,7 @@ typedef struct s_fov
 	double		wall_hit_x;
 	int			nbr_rays;
 	int			side;
+	int			isdoor;
 }				t_fov;
 
 typedef struct s_map
@@ -119,7 +121,7 @@ typedef struct s_data
 	t_map		map;
 	t_imag		img[3];
 	t_assets	assets;
-	t_textures	textures[4];
+	t_textures	textures[5];
 	long		time;
 }				t_data;
 

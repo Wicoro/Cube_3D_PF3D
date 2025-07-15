@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:57:39 by norban            #+#    #+#             */
-/*   Updated: 2025/07/15 13:57:59 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/15 15:45:16 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ static int	compare_assets(t_assets *assets, char **split)
 		assets->ea_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
 	else if (ft_strncmp(split[0], "WE", 3) == 0)
 		assets->we_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
+	else if (ft_strncmp(split[0], "DO", 3) == 0)
+		assets->do_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
 	else if (ft_strncmp(split[0], "F", 2) == 0
 		|| ft_strncmp(split[0], "C", 2) == 0)
 	{
@@ -70,7 +72,7 @@ int	get_assets(t_assets *assets, int fd)
 
 	count = 0;
 	line = get_next_line(fd);
-	while (line && count < 6)
+	while (line && count < 7)
 	{
 		if (ft_strlen(line) != 0 && !(ft_strlen(line) == 1 && line[0] == '\n'))
 		{
@@ -83,10 +85,10 @@ int	get_assets(t_assets *assets, int fd)
 			count++;
 		}
 		ft_free_str(&line);
-		if (count < 6)
+		if (count < 7)
 			line = get_next_line(fd);
 	}
-	if (count < 6)
+	if (count < 7)
 		return (free(line), print_error(ARG_ERROR), 1);
 	return (free(line), 0);
 }
