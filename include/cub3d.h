@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/14 19:44:31 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/15 13:57:16 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@
 
 # define TILE_SIZE 15
 # define SPEED 4
+# define ROT_SPEED
+# define ROT_THRESHOLD (WID)
+# define MAX_ROTATION_PER_FRAME 0.05
 # define GREEN_C 0x2ecc71
 # define RED_C 0x7b241c
 # ifndef M_PI
@@ -82,7 +85,7 @@ typedef struct s_map
 	int			map_y;
 	int			step_x;
 	int			step_y;
-	int			check_img;
+	Bool		check_img;
 	int			width;
 	int			height;
 }				t_map;
@@ -100,7 +103,6 @@ typedef struct s_data
 {
 	void		*mlx_p;
 	void		*win_p;
-	int			last_mouse_x;
 	t_player	player;
 	t_map		map;
 	t_imag		img[3];
