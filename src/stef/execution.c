@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/15 14:55:25 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/15 15:12:44 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -546,8 +546,27 @@ int	key_hook(int keycode, t_data *data)
 // 	return (0);
 // }
 
+long	get_time_in_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000L + tv.tv_usec / 1000L);
+}
+
+void	wait_ft(t_data *data)
+{
+	long	time;
+	
+	time = get_time_in_ms();
+	while (time - data->time < 32)
+		time = get_time_in_ms();
+	data->time = time;
+}
+
 int	execution(t_data *data)
 {
+	data->time = get_time_in_ms();
 	if (wind_init(data))
 		return (1);
 	data->img[0].addr = mlx_get_data_addr(data->img[0].img_p,
@@ -571,6 +590,7 @@ int	execution(t_data *data)
 	// data->last_mouse_x = WIDTH / 2;
 	// mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
 	// mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
+	wait_ft(data);
 	mlx_loop(data->mlx_p);
 	return (0);
 }

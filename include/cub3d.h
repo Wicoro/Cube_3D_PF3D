@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/15 14:35:39 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/15 15:07:50 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <limits.h>
 # include <math.h>
 # include <stdio.h>
+# include <sys/time.h>
 
 # define ARG_COUNT_ERROR 1
 # define ARG_ERROR 2
@@ -119,6 +120,7 @@ typedef struct s_data
 	t_imag		img[3];
 	t_assets	assets;
 	t_textures	textures[4];
+	long		time;
 }				t_data;
 
 void			print_error(int id);
