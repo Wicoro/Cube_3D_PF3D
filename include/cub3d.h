@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/16 17:01:15 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/16 17:38:51 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # define MINIMAP_OFFSET_Y (HEIGHT - MINIMAP_H - MINIMAP_H / 10)
 
 # define MAX_DOORS 64
-# define DOOR_MAX_STATE 50
+# define DOOR_MAX_STATE 10
 
 # define TILE_SIZE 15
 # define SPEED 4
@@ -77,9 +77,7 @@ typedef struct s_door
 {
 	int	x;
 	int	y;
-	int	active;
 	int	state;
-	int	direction;
 }	t_door;
 
 typedef struct s_player

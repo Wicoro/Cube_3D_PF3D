@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/16 17:08:25 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/16 17:42:31 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@ void init_doors(t_data *data)
 				data->doors[data->door_count].x = x;
 				data->doors[data->door_count].y = y;
 				data->doors[data->door_count].state = 0;
-				data->doors[data->door_count].direction = 0;
-				data->doors[data->door_count].active = 1;
 				data->door_count++;
 				printf("%d\n", data->door_count);
 			}
@@ -354,9 +352,23 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 	int				index;
 	int				draw_start, draw_end, wall_height;
 	int				y;
+	int				vertical_offset = 0;
 
 	if (fov->isdoor == 1)
+	{
 		tex = &data->textures[4];
+
+		// === Add this: compute vertical offset for animation ===
+		for (int i = 0; i < data->door_count; i++)
+		{
+			if (data->doors[i].x == data->map.map_x &&
+				data->doors[i].y == data->map.map_y)
+			{
+				vertical_offset = (tex->height * data->doors[i].state) / DOOR_MAX_STATE;
+				break;
+			}
+		}
+	}
 	else if (fov->side == 0)
 		tex = (fov->ray_dir_x > 0) ? &data->textures[3] : &data->textures[2];
 	else
@@ -379,7 +391,7 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 	for (y = draw_start; y <= draw_end; y++)
 	{
 		int d = y * 256 - HEIGHT * 128 + wall_height * 128;
-		tex_y = ((d * tex->height) / wall_height) / 256;
+		tex_y = ((d * tex->height) / wall_height) / 256 + vertical_offset;
 		if (tex_y >= tex->height)
 			tex_y = tex->height - 1;
 		if (tex_y < 0)
@@ -394,7 +406,7 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 void	draw_wall(float x, t_fov *fov, t_data *data)
 {
 	int	draw_start;
-	int	draw_end;
+	int	draw_end; 
 	int	i;
 
 	draw_start = -fov->wall_height / 2 + HEIGHT / 2;
@@ -559,18 +571,40 @@ void	animate_door_open(t_data *data, int door_index)
 	if (door->state >= DOOR_MAX_STATE)
 		return;
 
-	door->direction = 1;
 	while (door->state < DOOR_MAX_STATE)
 	{
 		door->state++;
-		printf("state = %d\n", door->state);
-		ft_sleep(1);
 		clear_image(data->img, &data->map);
 		draw_player_fov(data);
 		mlx_put_image_to_window(data->mlx_p, data->win_p,
 			data->img[data->map.check_img].img_p, 0, 0);
 		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
 			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+		mlx_do_sync(data->mlx_p);
+		ft_sleep(30);
+	}
+	data->map.map_tab[data->doors[door_index].y][data->doors[door_index].x] = '3'; 
+}
+
+void	animate_door_close(t_data *data, int door_index)
+{
+	t_door	*door = &data->doors[door_index];
+
+	if (door->state <= 0)
+		return;
+
+	data->map.map_tab[data->doors[door_index].y][data->doors[door_index].x] = '2'; 
+	while (door->state > 0)
+	{
+		door->state--;
+		clear_image(data->img, &data->map);
+		draw_player_fov(data);
+		mlx_put_image_to_window(data->mlx_p, data->win_p,
+			data->img[data->map.check_img].img_p, 0, 0);
+		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
+			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+		mlx_do_sync(data->mlx_p);
+		ft_sleep(30);
 	}
 }
 
@@ -597,12 +631,11 @@ void	open_door(t_data *data)
 			t_door *door = &data->doors[j];
 			if (door->x == tx && door->y == ty)
 			{
-				printf("j = %d\n", j);
+
 				if (door->state == 0)
 					animate_door_open(data, j);
 				else if (door->state == DOOR_MAX_STATE)
-					; // Could implement closing animation the same way
-				data->map.map_tab[data->doors[j].x][data->doors[j].y] = 3; 
+					animate_door_close(data, j);
 				return;
 			}
 		}
