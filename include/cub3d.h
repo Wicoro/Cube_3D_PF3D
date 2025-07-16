@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/16 17:06:12 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/16 18:27:57 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,16 @@
 # define MALLOC_ERROR 3
 # define INVALID_MAP 4
 
-# define HEIGHT 1000
-# define WIDTH 1400
+# define HEIGHT 1080
+# define WIDTH 1920
 # define MINIMAP_H ((HEIGHT / 100) * 30)
 # define MINIMAP_W MINIMAP_H
 # define MINIMAP_BORDER_SIZE 5
+# define MINIMAP_OFFSET_X (WIDTH - MINIMAP_W - MINIMAP_W / 10)
+# define MINIMAP_OFFSET_Y (HEIGHT - MINIMAP_H - MINIMAP_H / 10)
+
+# define MAX_DOORS 64
+# define DOOR_MAX_STATE 50
 
 # define TILE_SIZE 16
 # define SPEED 0.2
@@ -59,14 +64,23 @@ typedef struct s_assets
 
 typedef struct s_textures
 {
-	void	*img;
-	char	*addr;
-	int		width;
-	int		height;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}			t_textures;
+	void		*img;
+	char		*addr;
+	int			width;
+	int			height;
+	int			bits_per_pixel;
+	int			line_length;
+	int			endian;
+}				t_textures;
+
+typedef struct s_door
+{
+	int			x;
+	int			y;
+	int			active;
+	int			state;
+	int			direction;
+}				t_door;
 
 typedef struct s_player
 {
@@ -115,6 +129,12 @@ typedef struct s_imag
 	int			endian;
 }				t_imag;
 
+typedef struct s_mouse
+{
+	int			delta_x;
+	int			prev_x;
+}				t_mouse;
+
 typedef struct s_data
 {
 	void		*mlx_p;
@@ -124,7 +144,10 @@ typedef struct s_data
 	t_imag		img[3];
 	t_assets	assets;
 	t_textures	textures[5];
+	t_mouse		mouse;
 	long		time;
+	t_door		doors[MAX_DOORS];
+	int			door_count;
 }				t_data;
 
 void			print_error(int id);
@@ -144,4 +167,5 @@ void			display_ray(t_player *player, t_fov *fov, t_imag *img,
 					t_map *map);
 void			display_player(t_imag *img);
 void			display_tiles(t_map *map, t_imag *img, t_player *player);
+
 #endif
