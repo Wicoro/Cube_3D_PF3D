@@ -1,22 +1,16 @@
 obj/cub3d.o: src/cub3d.c src/..//include/cub3d.h \
-  include/../libft/headers/libft.h include/../libft/headers/color.h \
-  include/../libft/headers/utils.h \
-  include/../libft/headers/get_next_line.h \
-  include/../libft/headers/ft_printf.h include/../minilibx-linux/mlx.h \
-  include/../minilibx-linux/mlx_int.h
-
+ src/..//include/../libft/headers/libft.h \
+ src/..//include/../libft/headers/color.h \
+ src/..//include/../libft/headers/utils.h \
+ src/..//include/../libft/headers/get_next_line.h \
+ src/..//include/../libft/headers/ft_printf.h \
+ src/..//include/../minilibx-linux/mlx.h \
+ src/..//include/../minilibx-linux/mlx_int.h
 src/..//include/cub3d.h:
-
-include/../libft/headers/libft.h:
-
-include/../libft/headers/color.h:
-
-include/../libft/headers/utils.h:
-
-include/../libft/headers/get_next_line.h:
-
-include/../libft/headers/ft_printf.h:
-
-include/../minilibx-linux/mlx.h:
-
-include/../minilibx-linux/mlx_int.h:
+src/..//include/../libft/headers/libft.h:
+src/..//include/../libft/headers/color.h:
+src/..//include/../libft/headers/utils.h:
+src/..//include/../libft/headers/get_next_line.h:
+src/..//include/../libft/headers/ft_printf.h:
+src/..//include/../minilibx-linux/mlx.h:
+src/..//include/../minilibx-linux/mlx_int.h:

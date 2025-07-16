@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: shokahn <shokahn@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/15 17:25:49 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/16 12:55:28 by shokahn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 # define MALLOC_ERROR 3
 # define INVALID_MAP 4
 
-# define HEIGHT 1000
-# define WIDTH 1400
+# define HEIGHT 600
+# define WIDTH 600
 # define MINIMAP_H ((HEIGHT / 100) * 30)
 # define MINIMAP_W MINIMAP_H
 # define MINIMAP_BORDER_SIZE 5
@@ -137,7 +137,7 @@ void			display_minimap(t_data *data);
 void			draw_wall(float x, t_fov *fov, t_data *data);
 void			display_border(t_imag *img);
 int				get_color_tile(t_map *map, int x, int y);
-int				is_wall(t_map *map, float x, float y);
+int				is_wall(t_map *map, int x, int y);
 void			display_ray(t_player *player, t_fov *fov, t_imag *img,
 					t_map *map);
 void			display_player(t_imag *img);
