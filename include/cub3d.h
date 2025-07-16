@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/16 14:08:19 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/16 17:06:12 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@
 # define MINIMAP_W MINIMAP_H
 # define MINIMAP_BORDER_SIZE 5
 
-# define TILE_SIZE 15
-# define SPEED 4
+# define TILE_SIZE 16
+# define SPEED 0.2
 # define ROT_SPEED
 # define ROT_THRESHOLD (WID)
 # define MAX_ROTATION_PER_FRAME 0.05
@@ -139,7 +139,7 @@ void			display_minimap(t_data *data);
 void			draw_wall(float x, t_fov *fov, t_data *data);
 void			display_border(t_imag *img);
 int				get_color_tile(t_map *map, int x, int y);
-int				is_wall(t_map *map, float x, float y);
+int				is_wall(t_map *map, int x, int y);
 void			display_ray(t_player *player, t_fov *fov, t_imag *img,
 					t_map *map);
 void			display_player(t_imag *img);

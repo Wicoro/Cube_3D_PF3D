@@ -32,9 +32,9 @@ SRC =		cub3d.c \
 OBJ = 		$(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
 CFLAGS = -Wall -Wextra -Werror -MMD -MP
-OPTIFLAGS = #-O3
+OPTIFLAGS = -O3
 EXTRAFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
-FSANITIZE = -g3 -pg #-fsanitize=address
+FSANITIZE = #-g3 -fsanitize=address
 MAKE = make --no-print-directory
 
 LIBFT_DIR = libft

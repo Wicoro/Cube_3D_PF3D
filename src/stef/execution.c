@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/16 14:09:21 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/16 17:05:46 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,8 +159,8 @@ void	where_player(t_map *map, t_player *player)
 		{
 			if (!is_player(map->map_tab[y][x], player))
 			{
-				player->x = x * TILE_SIZE + (TILE_SIZE / 2);
-				player->y = y * TILE_SIZE + (TILE_SIZE / 2);
+				player->x = x + 0.5;
+				player->y = y + 0.5;
 			}
 			x++;
 		}
@@ -168,17 +168,13 @@ void	where_player(t_map *map, t_player *player)
 	}
 }
 
-int	is_wall(t_map *map, float x, float y)
+int	is_wall(t_map *map, int x, int y)
 {
 	char	c;
-	int		map_x;
-	int		map_y;
-
-	map_x = x / TILE_SIZE;
-	map_y = y / TILE_SIZE;
-	if (map_x < 0 || map_x > map->width || map_y < 0 || map_y > map->height)
+    
+	if (x < 0 || x >= map->width || y < 0 || y >= map->height)
 		return (1);
-	c = map->map_tab[map_y][map_x];
+    c = map->map_tab[y][x];
 	if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E' || c == '3')
 		return (0);
 	if (c == '2')
@@ -203,23 +199,23 @@ void	get_step_side_dist(t_fov *fov, t_map *map, t_player *p)
 	if (fov->ray_dir_x < 0)
 	{
 		map->step_x = -1;
-		fov->side_dist_x = (p->x / TILE_SIZE - map->map_x) * fov->delta_dist_x;
+		fov->side_dist_x = (p->x - map->map_x) * fov->delta_dist_x;
 	}
 	else
 	{
 		map->step_x = 1;
-		fov->side_dist_x = (map->map_x + 1.0 - p->x / TILE_SIZE)
+		fov->side_dist_x = (map->map_x + 1.0 - p->x)
 			* fov->delta_dist_x;
 	}
 	if (fov->ray_dir_y < 0)
 	{
 		map->step_y = -1;
-		fov->side_dist_y = (p->y / TILE_SIZE - map->map_y) * fov->delta_dist_y;
+		fov->side_dist_y = (p->y - map->map_y) * fov->delta_dist_y;
 	}
 	else
 	{
 		map->step_y = 1;
-		fov->side_dist_y = (map->map_y + 1.0 - p->y / TILE_SIZE)
+		fov->side_dist_y = (map->map_y + 1.0 - p->y)
 			* fov->delta_dist_y;
 	}
 }
@@ -228,13 +224,11 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 {
 	int		hit;
 	int		side;
-	double	ray_x;
-	double	ray_y;
 	double	player_angle;
 	double	angle_diff;
 
-	map->map_x = player->x / TILE_SIZE;
-	map->map_y = player->y / TILE_SIZE;
+	map->map_x = player->x;
+	map->map_y = player->y;
 	get_delta_dist(fov);
 	get_step_side_dist(fov, map, player);
 	hit = 0;
@@ -253,18 +247,16 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 			map->map_y += map->step_y;
 			side = 1;
 		}
-		ray_x = map->map_x * TILE_SIZE;
-		ray_y = map->map_y * TILE_SIZE;
-		if (is_wall(map, ray_x, ray_y))
+		if (is_wall(map, map->map_x, map->map_y))
 			hit = 1;
 	}
 	fov->side = side;
 	if (side == 0)
-		fov->distance = (map->map_x - (player->x / TILE_SIZE) + (1
-					- map->step_x) / 2) / fov->ray_dir_x;
+		fov->distance = (map->map_x - (player->x) + (1
+					- map->step_x) * 0.5) / fov->ray_dir_x;
 	else
-		fov->distance = (map->map_y - (player->y / TILE_SIZE) + (1
-					- map->step_y) / 2) / fov->ray_dir_y;
+		fov->distance = (map->map_y - (player->y) + (1
+					- map->step_y) * 0.5) / fov->ray_dir_y;
 	if (fov->distance == 0)
 		fov->distance = 0.0001;
 	// --- CORRECTED FISHEYE FIX ---
@@ -283,10 +275,10 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 	fov->wall_height = HEIGHT / fov->distance;
 	// Calculate exact hit position on the wall for texture mapping
 	if (side == 0)
-		fov->wall_hit_x = player->y / TILE_SIZE + fov->distance
+		fov->wall_hit_x = player->y + fov->distance
 			* fov->ray_dir_y;
 	else
-		fov->wall_hit_x = player->x / TILE_SIZE + fov->distance
+		fov->wall_hit_x = player->x + fov->distance
 			* fov->ray_dir_x;
 	fov->wall_hit_x -= floor(fov->wall_hit_x);
 }
@@ -321,10 +313,10 @@ void	display_wall(int i, int x, t_fov *fov, t_data *data)
 	if (!tex->addr)
 		return ;
 	wall_height = (int)(HEIGHT / fov->distance);
-	draw_start = -wall_height / 2 + HEIGHT / 2;
+	draw_start = -wall_height * 0.5 + HEIGHT * 0.5;
 	if (draw_start < 0)
 		draw_start = 0;
-	draw_end = wall_height / 2 + HEIGHT / 2;
+	draw_end = wall_height * 0.5 + HEIGHT * 0.5;
 	if (draw_end >= HEIGHT)
 		draw_end = HEIGHT - 1;
 	// ✅ Calculate texture X coordinate (wall_x should be passed from raycasting!)
@@ -350,8 +342,8 @@ void	draw_wall(float x, t_fov *fov, t_data *data)
 	int	draw_end;
 	int	i;
 
-	draw_start = -fov->wall_height / 2 + HEIGHT / 2;
-	draw_end = fov->wall_height / 2 + HEIGHT / 2;
+	draw_start = -fov->wall_height * 0.5 + HEIGHT * 0.5;
+	draw_end = fov->wall_height * 0.5 + HEIGHT * 0.5;
 	if (draw_start < 0)
 		draw_start = 0;
 	if (draw_end >= HEIGHT)
@@ -419,9 +411,9 @@ void	move_player(t_data *data, int up_or_down)
 		new_x = data->player.x - (data->player.dir_x * SPEED);
 		new_y = data->player.y - (data->player.dir_y * SPEED);
 	}
-	if (!is_wall(&data->map, new_x, data->player.y))
+	if (!is_wall(&data->map, (int)new_x, (int)data->player.y))
 		data->player.x = new_x;
-	if (!is_wall(&data->map, data->player.x, new_y))
+	if (!is_wall(&data->map, (int)data->player.x, (int)new_y))
 		data->player.y = new_y;
 }
 
@@ -444,9 +436,9 @@ void	strafe_player(t_data *data, int right_or_left)
 		new_x = data->player.x - (perp_x * SPEED);
 		new_y = data->player.y - (perp_y * SPEED);
 	}
-	if (!is_wall(&data->map, new_x, data->player.y))
+	if (!is_wall(&data->map, (int)new_x, (int)data->player.y))
 		data->player.x = new_x;
-	if (!is_wall(&data->map, data->player.x, new_y))
+	if (!is_wall(&data->map, (int)data->player.x, (int)new_y))
 		data->player.y = new_y;
 }
 
@@ -481,14 +473,14 @@ void	open_door(t_data *data)
 	i = 0;
 	x = data->player.x;
 	y = data->player.y;
-	map_player_x = data->player.x / TILE_SIZE;
-	map_player_y = data->player.y / TILE_SIZE;
+	map_player_x = data->player.x;
+	map_player_y = data->player.y;
 	while (i <= (TILE_SIZE * 2))
 	{
 		x += data->player.dir_x;
 		y += data->player.dir_y;
-		data->map.map_x = x / TILE_SIZE;
-		data->map.map_y = y / TILE_SIZE;
+		data->map.map_x = x;
+		data->map.map_y = y;
 		if (data->map.map_x == map_player_x && data->map.map_y == map_player_y)
 		{
 			i++;
@@ -547,7 +539,7 @@ int	key_hook(int keycode, t_data *data)
 		return (0);
 	data = (t_data *)param;
 	(void)y;
-	delta_x = x - (WIDTH / 2);
+	delta_x = x - (WIDTH * 0.5);
 	if (fabs(delta_x) > (WIDTH / 500))
 	{
 		rot_speed = 0.001;
@@ -556,12 +548,12 @@ int	key_hook(int keycode, t_data *data)
 		draw_player_fov(data);
 		mlx_put_image_to_window(data->mlx_p, data->win_p,
 			data->img[data->map.check_img].img_p, 0, 0);
-		mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
+		mlx_mouse_move(data->mlx_p, data->win_p, WIDTH * 0.5, HEIGHT * 0.5);
 		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
 			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H
 			/ 10);
 	}
-	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
+	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH * 0.5, HEIGHT * 0.5);
 	return (0);
 } */
 long	get_time_in_ms(void)
@@ -605,8 +597,8 @@ int	execution(t_data *data)
 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
-	// data->last_mouse_x = WIDTH / 2;
-	// mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
+	// data->last_mouse_x = WIDTH * 0.5;
+	// mlx_mouse_move(data->mlx_p, data->win_p, WIDTH * 0.5, HEIGHT * 0.5);
 	// mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
 	mlx_loop(data->mlx_p);
 	return (0);
