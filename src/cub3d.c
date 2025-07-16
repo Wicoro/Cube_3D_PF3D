@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/11 16:38:56 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/16 16:59:55 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,7 @@ int	create_data(t_data *data, char *path)
 int	main(int ac, char **av)
 {
 	t_data	data;
-
-	printf("%d\n", MINIMAP_H);
+	
 	ft_memset(&data, 0, sizeof(t_data));
 	if (ac == 1 || ac > 2)
 		return (print_error(ARG_COUNT_ERROR), 1);

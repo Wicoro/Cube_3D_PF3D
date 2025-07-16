@@ -56,7 +56,7 @@ void display_tiles(t_map *map, t_imag *img, t_player *player)
 		while (map->map_tab[j][i])
 		{
 			if (fabs(i - player->x) <= range_x && fabs(j - player->y) <= range_y)
-				display_map_tile(img, map, i, j, player->x - MINIMAP_W * 0.5, player->y - MINIMAP_H * 0.5);
+				display_map_tile(img, map, i, j, (player->x * TILE_SIZE) - MINIMAP_W * 0.5, (player->y * TILE_SIZE) - MINIMAP_H * 0.5);
 			i++;
 		}
 		j++;
@@ -87,21 +87,21 @@ void	display_player(t_imag *img)
 void	display_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map)
 {
 	int		i;
+	float	rx;
+	float	ry;
 	float	px;
-	float	px_n;
 	float	py;
-	float	py_n;
 
 	i = 0;
+	px = player->x * TILE_SIZE;
+	py = player->y * TILE_SIZE;
 	while (1)
 	{
-		px = player->x + (fov->ray_dir_x * i);
-		px_n = player->x + (fov->ray_dir_x * (i + 1));
-		py = player->y + (fov->ray_dir_y * i);
-		py_n = player->y + (fov->ray_dir_y * (i + 1));
-		if (is_wall(map, (int)px, (int)py) || is_wall(map, (int)px_n, (int)py_n))
+		rx = px + (fov->ray_dir_x * i);
+		ry = py + (fov->ray_dir_y * i);
+		if (is_wall(map, (int)(rx / TILE_SIZE), (int)(ry / TILE_SIZE)))
 			break ;
-		add_minimap_pixel(img, (int)(px - player->x) + MINIMAP_W * 0.5, (int)(py - player->y) + MINIMAP_H * 0.5, GREEN_C);
+		add_minimap_pixel(img, (int)((rx - px)) + MINIMAP_W * 0.5, (int)((ry - py)) + MINIMAP_H * 0.5, GREEN_C);
 		i++;
 	}
 }

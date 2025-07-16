@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shokahn <shokahn@student.42.fr>            +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/16 12:55:28 by shokahn          ###   ########.fr       */
+/*   Updated: 2025/07/16 17:01:14 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@
 # define MALLOC_ERROR 3
 # define INVALID_MAP 4
 
-# define HEIGHT 600
-# define WIDTH 600
+# define HEIGHT 1000
+# define WIDTH 1400
 # define MINIMAP_H ((HEIGHT / 100) * 30)
 # define MINIMAP_W MINIMAP_H
 # define MINIMAP_BORDER_SIZE 5
 
-# define TILE_SIZE 15
-# define SPEED 4
+# define TILE_SIZE 16
+# define SPEED 0.2
 # define ROT_SPEED
 # define ROT_THRESHOLD (WID)
 # define MAX_ROTATION_PER_FRAME 0.05
