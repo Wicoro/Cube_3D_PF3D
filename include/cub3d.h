@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/16 14:08:19 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/16 17:01:15 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@
 # define MINIMAP_H ((HEIGHT / 100) * 30)
 # define MINIMAP_W MINIMAP_H
 # define MINIMAP_BORDER_SIZE 5
+# define MINIMAP_OFFSET_X (WIDTH - MINIMAP_W - MINIMAP_W / 10)
+# define MINIMAP_OFFSET_Y (HEIGHT - MINIMAP_H - MINIMAP_H / 10)
+
+# define MAX_DOORS 64
+# define DOOR_MAX_STATE 50
 
 # define TILE_SIZE 15
 # define SPEED 4
@@ -67,6 +72,15 @@ typedef struct s_textures
 	int		line_length;
 	int		endian;
 }			t_textures;
+
+typedef struct s_door
+{
+	int	x;
+	int	y;
+	int	active;
+	int	state;
+	int	direction;
+}	t_door;
 
 typedef struct s_player
 {
@@ -125,6 +139,8 @@ typedef struct s_data
 	t_assets	assets;
 	t_textures	textures[5];
 	long		time;
+	t_door		doors[MAX_DOORS];
+	int			door_count;
 }				t_data;
 
 void			print_error(int id);
@@ -144,4 +160,6 @@ void			display_ray(t_player *player, t_fov *fov, t_imag *img,
 					t_map *map);
 void			display_player(t_imag *img);
 void			display_tiles(t_map *map, t_imag *img, t_player *player);
+
+
 #endif
