@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/21 15:56:57 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:13:57 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@ void	init_doors(t_data *data)
 				data->doors[data->door_count].x = x;
 				data->doors[data->door_count].y = y;
 				data->doors[data->door_count].state = 0;
-				data->doors[data->door_count].direction = 0;
-				data->doors[data->door_count].active = 1;
 				data->door_count++;
 			}
 		}
@@ -340,11 +338,25 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 	int				tex_y;
 	int				index;
 	int				y;
-	int				d;
+	int				horizontal_offset = 0;
+	int 			d;
 
 	int draw_start, draw_end, wall_height;
 	if (fov->isdoor == 1)
+	{
 		tex = &data->textures[4];
+
+		// === Add this: compute vertical offset for animation ===
+		for (int i = 0; i < data->door_count; i++)
+		{
+			if (data->doors[i].x == data->map.map_x &&
+				data->doors[i].y == data->map.map_y)
+			{
+				horizontal_offset = (tex->height * data->doors[i].state) / DOOR_MAX_STATE;
+				break;
+			}
+		}
+	}
 	else if (fov->side == 0)
 		tex = (fov->ray_dir_x > 0) ? &data->textures[3] : &data->textures[2];
 	else
@@ -359,7 +371,9 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 	if (draw_end >= HEIGHT)
 		draw_end = HEIGHT - 1;
 	wall_x = fmod(fov->wall_hit_x, 1.0);
-	tex_x = (int)(wall_x * tex->width);
+	tex_x = (int)(fov->wall_hit_x * tex->width) - horizontal_offset;
+	if ((fov->side == 0 && fov->ray_dir_x > 0) || (fov->side == 1 && fov->ray_dir_y < 0))
+    	tex_x = tex->width - tex_x - 1;
 	if (tex_x < 0)
 		tex_x = 0;
 	if (tex_x >= tex->width)
@@ -381,7 +395,7 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 void	draw_wall(float x, t_fov *fov, t_data *data)
 {
 	int	draw_start;
-	int	draw_end;
+	int	draw_end; 
 	int	i;
 
 	draw_start = -fov->wall_height * 0.5 + HEIGHT * 0.5;
@@ -501,7 +515,7 @@ void	clear_image(t_imag *img, t_map *map)
 	ft_memset(img[map->check_img].addr, 0, img_size);
 }
 
-void	open_door(t_data *data)
+/* void	open_door(t_data *data)
 {
 	int		i;
 	double	x;
@@ -532,51 +546,68 @@ void	open_door(t_data *data)
 		}
 		i++;
 	}
-}
+} */
 
-/* void	animate_door_open(t_data *data, int door_index)
+void	animate_door_open(t_data *data, int door_index)
 {
 	t_door	*door;
 
 	door = &data->doors[door_index];
 	if (door->state >= DOOR_MAX_STATE)
-		return ;
-	door->direction = 1;
+		return;
 	while (door->state < DOOR_MAX_STATE)
 	{
 		door->state++;
-		printf("state = %d\n", door->state);
-		ft_sleep(1);
 		clear_image(data->img, &data->map);
 		draw_player_fov(data);
 		mlx_put_image_to_window(data->mlx_p, data->win_p,
 			data->img[data->map.check_img].img_p, 0, 0);
 		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
-			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H
-				/ 10);
+			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+		mlx_do_sync(data->mlx_p);
+		ft_sleep(30);
+	}
+	data->map.map_tab[data->doors[door_index].y][data->doors[door_index].x] = '3'; 
+}
+
+void	animate_door_close(t_data *data, int door_index)
+{
+	t_door	*door = &data->doors[door_index];
+
+	if (door->state <= 0)
+		return;
+
+	data->map.map_tab[data->doors[door_index].y][data->doors[door_index].x] = '2'; 
+	while (door->state > 0)
+	{
+		door->state--;
+		clear_image(data->img, &data->map);
+		draw_player_fov(data);
+		mlx_put_image_to_window(data->mlx_p, data->win_p,
+			data->img[data->map.check_img].img_p, 0, 0);
+		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
+			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+		mlx_do_sync(data->mlx_p);
+		ft_sleep(30);
 	}
 }
 
 void	open_door(t_data *data)
 {
-	double	x;
-	double	y;
-	int		map_player_x;
-	int		map_player_y;
-	int		tx;
-	int		ty;
-	t_door	*door;
+	double	x = data->player.x;
+	double	y = data->player.y;
+	int		map_player_x = x;
+	int		map_player_y = y;
+	t_door *door;
 
-	x = data->player.x;
-	y = data->player.y;
-	map_player_x = x / TILE_SIZE;
-	map_player_y = y / TILE_SIZE;
 	for (int i = 0; i < TILE_SIZE * 2; i++)
 	{
 		x += data->player.dir_x;
 		y += data->player.dir_y;
-		tx = x;
-		ty = y;
+
+		int tx = x;
+		int ty = y;
+
 		if (tx == map_player_x && ty == map_player_y)
 			continue ;
 		for (int j = 0; j < data->door_count; j++)
@@ -584,17 +615,16 @@ void	open_door(t_data *data)
 			door = &data->doors[j];
 			if (door->x == tx && door->y == ty)
 			{
-				printf("j = %d\n", j);
+
 				if (door->state == 0)
 					animate_door_open(data, j);
 				else if (door->state == DOOR_MAX_STATE)
-					; // Could implement closing animation the same way
-				data->map.map_tab[data->doors[j].x][data->doors[j].y] = 3;
-				return ;
+					animate_door_close(data, j);
+				return;
 			}
 		}
 	}
-} */
+}
 int	key_hook(int keycode, t_data *data)
 {
 	if (keycode == XK_Escape)
