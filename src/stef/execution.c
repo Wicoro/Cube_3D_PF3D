@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/21 16:27:46 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:51:59 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -445,6 +445,17 @@ void	draw_player_fov(t_data *data)
 	}
 }
 
+void	render(t_data *data, Bool check)
+{
+	if (check)
+		clear_image(data->img, &data->map);
+	draw_player_fov(data);
+	mlx_put_image_to_window(data->mlx_p, data->win_p,
+		data->img[data->map.check_img].img_p, 0, 0);
+	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
+		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+}
+
 void	move_player(t_data *data, int up_or_down)
 {
 	double	new_x;
@@ -511,39 +522,6 @@ void	clear_image(t_imag *img, t_map *map)
 	ft_memset(img[map->check_img].addr, 0, img_size);
 }
 
-/* void	open_door(t_data *data)
-{
-	int		i;
-	double	x;
-	double	y;
-
-	i = 0;
-	x = data->player.x;
-	y = data->player.y;
-	while (i <= (TILE_SIZE * 2))
-	{
-		x += data->player.dir_x;
-		y += data->player.dir_y;
-		if (data->map.map_x == data->player.x
-			&& data->map.map_y == data->player.y)
-		{
-			i++;
-			continue ;
-		}
-		if (data->map.map_tab[(int)y][(int)x] == '2')
-		{
-			data->map.map_tab[(int)y][(int)x] = '3';
-			break ;
-		}
-		else if (data->map.map_tab[(int)y][(int)x] == '3')
-		{
-			data->map.map_tab[(int)y][(int)x] = '2';
-			break ;
-		}
-		i++;
-	}
-} */
-
 void	animate_door_open(t_data *data, int door_index)
 {
 	t_door	*door;
@@ -554,12 +532,7 @@ void	animate_door_open(t_data *data, int door_index)
 	while (door->state < DOOR_MAX_STATE)
 	{
 		door->state++;
-		clear_image(data->img, &data->map);
-		draw_player_fov(data);
-		mlx_put_image_to_window(data->mlx_p, data->win_p,
-			data->img[data->map.check_img].img_p, 0, 0);
-		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
-			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+		render(data, 1);
 		mlx_do_sync(data->mlx_p);
 		ft_sleep(30);
 	}
@@ -577,12 +550,7 @@ void	animate_door_close(t_data *data, int door_index)
 	while (door->state > 0)
 	{
 		door->state--;
-		clear_image(data->img, &data->map);
-		draw_player_fov(data);
-		mlx_put_image_to_window(data->mlx_p, data->win_p,
-			data->img[data->map.check_img].img_p, 0, 0);
-		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
-			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+		render(data, 1);
 		mlx_do_sync(data->mlx_p);
 		ft_sleep(30);
 	}
@@ -639,41 +607,7 @@ int	key_hook(int keycode, t_data *data)
 		rotate_player(&data->player, 0.10);
 	else if (keycode == XK_space)
 		open_door(data);
-	clear_image(data->img, &data->map);
-	draw_player_fov(data);
-	mlx_put_image_to_window(data->mlx_p, data->win_p,
-		data->img[data->map.check_img].img_p, 0, 0);
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
-		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
-	return (0);
-}
-
-int	mouse_hook(int x, int y, void *param)
-{
-	t_data	*data;
-	double	delta_x;
-	double	rot_speed;
-
-	(void)y;
-	if (!param || x < 0)
-		return (0);
-	data = (t_data *)param;
-	delta_x = x - WIDTH / 2;
-	if (fabs(delta_x) > 20)
-	{
-		rot_speed = 0.0005;
-		if (delta_x > 200)
-			delta_x = 200;
-		rotate_player(&data->player, delta_x * rot_speed);
-		clear_image(data->img, &data->map);
-		draw_player_fov(data);
-		mlx_put_image_to_window(data->mlx_p, data->win_p,
-			data->img[data->map.check_img].img_p, 0, 0);
-		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
-			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H
-				/ 10);
-		mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
-	}
+	render(data, 1);
 	return (0);
 }
 
@@ -685,21 +619,15 @@ int	execution(t_data *data)
 	if (wind_init(data))
 		return (1);
 	init_doors(data);
-	data->img[0].addr = mlx_get_data_addr(data->img[0].img_p,
-			&data->img[0].bits_per_pixel, &data->img[0].line_lenght,
-			&data->img[0].endian);
-	data->img[1].addr = mlx_get_data_addr(data->img[1].img_p,
-			&data->img[1].bits_per_pixel, &data->img[1].line_lenght,
-			&data->img[1].endian);
-	data->img[2].addr = mlx_get_data_addr(data->img[2].img_p,
-			&data->img[2].bits_per_pixel, &data->img[2].line_lenght,
-			&data->img[2].endian);
+	while (i < 3)
+	{
+		data->img[i].addr = mlx_get_data_addr(data->img[i].img_p,
+			&data->img[i].bits_per_pixel, &data->img[i].line_lenght,
+			&data->img[i].endian);
+		i++;
+	}
 	where_player(&data->map, &data->player);
-	draw_player_fov(data);
-	mlx_put_image_to_window(data->mlx_p, data->win_p,
-		data->img[data->map.check_img].img_p, 0, 0);
-	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
-		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+	render(data, 0);
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
 	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH * 0.5, HEIGHT * 0.5);
