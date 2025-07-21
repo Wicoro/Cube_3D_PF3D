@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/21 16:27:46 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/21 17:16:06 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,175 +222,9 @@ int	is_wall(t_map *map, int x, int y)
 	return (1);
 }
 
-void	get_delta_dist(t_fov *fov)
-{
-	if (fov->ray_dir_x == 0)
-		fov->delta_dist_x = 1e30;
-	else
-		fov->delta_dist_x = fabs(1 / fov->ray_dir_x);
-	if (fov->ray_dir_y == 0)
-		fov->delta_dist_y = 1e30;
-	else
-		fov->delta_dist_y = fabs(1 / fov->ray_dir_y);
-}
-
-void	get_step_side_dist(t_fov *fov, t_map *map, t_player *p)
-{
-	if (fov->ray_dir_x < 0)
-	{
-		map->step_x = -1;
-		fov->side_dist_x = (p->x - map->map_x) * fov->delta_dist_x;
-	}
-	else
-	{
-		map->step_x = 1;
-		fov->side_dist_x = (map->map_x + 1.0 - p->x) * fov->delta_dist_x;
-	}
-	if (fov->ray_dir_y < 0)
-	{
-		map->step_y = -1;
-		fov->side_dist_y = (p->y - map->map_y) * fov->delta_dist_y;
-	}
-	else
-	{
-		map->step_y = 1;
-		fov->side_dist_y = (map->map_y + 1.0 - p->y) * fov->delta_dist_y;
-	}
-}
-
-void	draw_ray(t_player *player, t_fov *fov, t_map *map)
-{
-	int		hit;
-	int		side;
-	double	player_angle;
-	double	angle_diff;
-		int tmp;
-
-	map->map_x = player->x;
-	map->map_y = player->y;
-	get_delta_dist(fov);
-	get_step_side_dist(fov, map, player);
-	hit = 0;
-	side = 0;
-	fov->isdoor = 0;
-
-	while (hit == 0)
-	{
-		if (fov->side_dist_x < fov->side_dist_y)
-		{
-			fov->side_dist_x += fov->delta_dist_x;
-			map->map_x += map->step_x;
-			side = 0;
-		}
-		else
-		{
-			fov->side_dist_y += fov->delta_dist_y;
-			map->map_y += map->step_y;
-			side = 1;
-		}
-		tmp = is_wall(map, map->map_x, map->map_y);
-		if (tmp == 1 || tmp == 2)
-			hit = 1;
-		if (tmp == 2)
-			fov->isdoor = 1;
-	}
-	fov->side = side;
-	if (side == 0)
-		fov->distance = (map->map_x - (player->x) + (1 - map->step_x) * 0.5)
-			/ fov->ray_dir_x;
-	else
-		fov->distance = (map->map_y - (player->y) + (1 - map->step_y) * 0.5)
-			/ fov->ray_dir_y;
-	if (fov->distance == 0)
-		fov->distance = 0.0001;
-	// --- CORRECTED FISHEYE FIX ---
-	// Calculate player viewing angle once (cache for speed)
-	player_angle = atan2(player->dir_y, player->dir_x);
-	// Cosine of angle difference between ray and player view
-	angle_diff = fov->ray_angle - player_angle;
-	// Normalize angle_diff to range [-PI, PI] to avoid errors
-	while (angle_diff > M_PI)
-		angle_diff -= 2 * M_PI;
-	while (angle_diff < -M_PI)
-		angle_diff += 2 * M_PI;
-	// Apply cosine fisheye correction
-	fov->distance *= cos(angle_diff);
-	// Calculate wall height for this ray
-	fov->wall_height = HEIGHT / fov->distance;
-	// Calculate exact hit position on the wall for texture mapping
-	if (side == 0)
-		fov->wall_hit_x = player->y + (fov->side_dist_x - fov->delta_dist_x)
-			* fov->ray_dir_y;
-	else
-		fov->wall_hit_x = player->x + (fov->side_dist_y - fov->delta_dist_y)
-			* fov->ray_dir_x;
-	fov->wall_hit_x -= floor(fov->wall_hit_x);
-}
-
 int	get_rgb_color(int *color)
 {
 	return (color[0] << 16 | color[1] << 8 | color[2]);
-}
-
-void	display_wall(int x, t_fov *fov, t_data *data)
-{
-	t_textures		*tex;
-	unsigned int	color;
-	int				tex_x;
-	int				tex_y;
-	int				index;
-	int				y;
-	int				horizontal_offset = 0;
-	int 			d;
-
-	int draw_start, draw_end, wall_height;
-	if (fov->isdoor == 1)
-	{
-		tex = &data->textures[4];
-
-		// === Add this: compute vertical offset for animation ===
-		for (int i = 0; i < data->door_count; i++)
-		{
-			if (data->doors[i].x == data->map.map_x &&
-				data->doors[i].y == data->map.map_y)
-			{
-				horizontal_offset = (tex->height * data->doors[i].state) / DOOR_MAX_STATE;
-				break;
-			}
-		}
-	}
-	else if (fov->side == 0)
-		tex = (fov->ray_dir_x > 0) ? &data->textures[3] : &data->textures[2];
-	else
-		tex = (fov->ray_dir_y > 0) ? &data->textures[1] : &data->textures[0];
-	if (!tex || !tex->addr)
-		return ;
-	wall_height = (int)(HEIGHT / fov->distance);
-	draw_start = -wall_height * 0.5 + HEIGHT * 0.5;
-	if (draw_start < 0)
-		draw_start = 0;
-	draw_end = wall_height * 0.5 + HEIGHT * 0.5;
-	if (draw_end >= HEIGHT)
-		draw_end = HEIGHT - 1;
-	tex_x = (int)(fov->wall_hit_x * tex->width) - horizontal_offset;
-	if ((fov->side == 0 && fov->ray_dir_x > 0) || (fov->side == 1 && fov->ray_dir_y < 0))
-    	tex_x = tex->width - tex_x - 1;
-	if (tex_x < 0)
-		tex_x = 0;
-	if (tex_x >= tex->width)
-		tex_x = tex->width - 1;
-	for (y = draw_start; y <= draw_end; y++)
-	{
-		d = y * 256 - HEIGHT * 128 + wall_height * 128;
-		tex_y = ((d * tex->height) / wall_height) / 256;
-		if (tex_y >= tex->height)
-			tex_y = tex->height - 1;
-		if (tex_y < 0)
-			tex_y = 0;
-		index = tex_y * tex->line_length + tex_x * (tex->bits_per_pixel / 8);
-		color = *(unsigned int *)(tex->addr + index);
-		put_pixel(data->img, &data->map, x, y, color);
-	}
 }
 
 void	draw_wall(float x, t_fov *fov, t_data *data)
@@ -510,39 +344,6 @@ void	clear_image(t_imag *img, t_map *map)
 	map->check_img = !map->check_img;
 	ft_memset(img[map->check_img].addr, 0, img_size);
 }
-
-/* void	open_door(t_data *data)
-{
-	int		i;
-	double	x;
-	double	y;
-
-	i = 0;
-	x = data->player.x;
-	y = data->player.y;
-	while (i <= (TILE_SIZE * 2))
-	{
-		x += data->player.dir_x;
-		y += data->player.dir_y;
-		if (data->map.map_x == data->player.x
-			&& data->map.map_y == data->player.y)
-		{
-			i++;
-			continue ;
-		}
-		if (data->map.map_tab[(int)y][(int)x] == '2')
-		{
-			data->map.map_tab[(int)y][(int)x] = '3';
-			break ;
-		}
-		else if (data->map.map_tab[(int)y][(int)x] == '3')
-		{
-			data->map.map_tab[(int)y][(int)x] = '2';
-			break ;
-		}
-		i++;
-	}
-} */
 
 void	animate_door_open(t_data *data, int door_index)
 {

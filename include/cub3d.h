@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/21 16:10:58 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/21 17:02:44 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,5 +165,8 @@ void			display_ray(t_player *player, t_fov *fov, t_imag *img,
 					t_map *map);
 void			display_player(t_imag *img);
 void			display_tiles(t_map *map, t_imag *img, t_player *player);
+void			display_wall(int x, t_fov *fov, t_data *data);
+void			put_pixel(t_imag *img, t_map *map, int x, int y, int color);
+void			draw_ray(t_player *player, t_fov *fov, t_map *map);
 
 #endif
