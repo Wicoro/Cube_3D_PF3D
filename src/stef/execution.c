@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/16 18:14:17 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/21 15:02:29 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,6 +274,7 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 	hit = 0;
 	side = 0;
 	fov->isdoor = 0;
+
 	while (hit == 0)
 	{
 		if (fov->side_dist_x < fov->side_dist_y)
@@ -320,10 +321,10 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 	fov->wall_height = HEIGHT / fov->distance;
 	// Calculate exact hit position on the wall for texture mapping
 	if (side == 0)
-		fov->wall_hit_x = player->y + fov->distance
+		fov->wall_hit_x = player->y + (fov->side_dist_x - fov->delta_dist_x)
 			* fov->ray_dir_y;
 	else
-		fov->wall_hit_x = player->x + fov->distance
+		fov->wall_hit_x = player->x + (fov->side_dist_y - fov->delta_dist_y)
 			* fov->ray_dir_x;
 	fov->wall_hit_x -= floor(fov->wall_hit_x);
 }
@@ -336,7 +337,6 @@ int	get_rgb_color(int *color)
 void	display_wall(int x, t_fov *fov, t_data *data)
 {
 	t_textures		*tex;
-	double			wall_x;
 	unsigned int	color;
 	int				tex_x;
 	int				tex_y;
@@ -373,7 +373,6 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 	draw_end = wall_height * 0.5 + HEIGHT * 0.5;
 	if (draw_end >= HEIGHT)
 		draw_end = HEIGHT - 1;
-	wall_x = fmod(fov->wall_hit_x, 1.0);
 	tex_x = (int)(fov->wall_hit_x * tex->width) - horizontal_offset;
 	if ((fov->side == 0 && fov->ray_dir_x > 0) || (fov->side == 1 && fov->ray_dir_y < 0))
     	tex_x = tex->width - tex_x - 1;
