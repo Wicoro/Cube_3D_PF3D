@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   display_wall.c                                     :+:      :+:    :+:   */
+/*   display_wall_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:27:08 by norban            #+#    #+#             */
-/*   Updated: 2025/07/21 16:55:35 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/21 17:53:14 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,27 @@ static void	get_texture(t_fov *fov, t_data *data, t_textures **tex)
 static int	check_door(t_fov *fov, t_data *data, t_textures *tex)
 {
 	int	horizontal_offset;
-	
+	int	i;
+
 	horizontal_offset = 0;
 	if (fov->isdoor == 1)
 	{
-		for (int i = 0; i < data->door_count; i++)
+		i = -1;
+		while (++i < data->door_count)
 		{
-			if (data->doors[i].x == data->map.map_x &&
-				data->doors[i].y == data->map.map_y)
+			if (data->doors[i].x == data->map.map_x
+				&& data->doors[i].y == data->map.map_y)
 			{
 				horizontal_offset = (tex->height * data->doors[i].state)
 					/ DOOR_MAX_STATE;
-				break;
+				break ;
 			}
 		}
 	}
 	return (horizontal_offset);
 }
 
-static int get_draw_index(int wall_height, int flag)
+static int	get_draw_index(int wall_height, int flag)
 {
 	int	index;
 
@@ -55,37 +57,38 @@ static int get_draw_index(int wall_height, int flag)
 	{
 		index = -wall_height * 0.5 + HEIGHT * 0.5;
 		if (index < 0)
-			index = 0;	
+			index = 0;
 	}
 	if (flag == 1)
 	{
 		index = wall_height * 0.5 + HEIGHT * 0.5;
 		if (index >= HEIGHT)
-			index = HEIGHT - 1;	
+			index = HEIGHT - 1;
 	}
 	return (index);
 }
 
-static void	put_wall_pixels(int x, int wall_height, t_data *data, int tex_x, t_textures *tex)
+static void	put_wall_pixels(int x, int wall_height,
+	t_data *data, t_textures *tex)
 {
 	int				y;
 	unsigned int	color;
-	int				index;
 	int				draw_end;
 	int				tex_y;
-	
+
 	y = get_draw_index(wall_height, 0) - 1;
 	draw_end = get_draw_index(wall_height, 1);
 	while (++y <= draw_end)
 	{
-		int d = y * 256 - HEIGHT * 128 + wall_height * 128;
-		tex_y = ((d * tex->height) / wall_height) / 256;
+		tex_y = (((y * 256 - HEIGHT * 128 + wall_height * 128)
+					* tex->height) / wall_height) / 256;
 		if (tex_y >= tex->height)
 			tex_y = tex->height - 1;
 		if (tex_y < 0)
 			tex_y = 0;
-		index = tex_y * tex->line_length + tex_x * (tex->bits_per_pixel / 8);
-		color = *(unsigned int *)(tex->addr + index);
+		color = *(unsigned int *)(tex->addr
+				+ (tex_y * tex->line_length + tex->tex_x
+					* (tex->bits_per_pixel / 8)));
 		put_pixel(data->img, &data->map, x, y, color);
 	}
 }
@@ -102,11 +105,13 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 		return ;
 	wall_height = (int)(HEIGHT / fov->distance);
 	tex_x = (int)(fov->wall_hit_x * tex->width) - check_door(fov, data, tex);
-	if ((fov->side == 0 && fov->ray_dir_x > 0) || (fov->side == 1 && fov->ray_dir_y < 0))
-    	tex_x = tex->width - tex_x - 1;
+	if ((fov->side == 0 && fov->ray_dir_x > 0)
+		|| (fov->side == 1 && fov->ray_dir_y < 0))
+		tex_x = tex->width - tex_x - 1;
 	if (tex_x < 0)
 		tex_x = 0;
 	if (tex_x >= tex->width)
 		tex_x = tex->width - 1;
-	put_wall_pixels(x, wall_height, data, tex_x, tex);
+	tex->tex_x = tex_x;
+	put_wall_pixels(x, wall_height, data, tex);
 }

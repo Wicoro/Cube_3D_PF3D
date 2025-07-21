@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/21 17:02:44 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/21 18:08:35 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_textures
 	int			bits_per_pixel;
 	int			line_length;
 	int			endian;
+	int			tex_x;
 }				t_textures;
 
 typedef struct s_door
@@ -148,6 +149,12 @@ typedef struct s_data
 	int			door_count;
 }				t_data;
 
+typedef struct s_map_coord
+{
+	int	x;
+	int	y;
+}	t_map_coord;
+
 void			print_error(int id);
 int				execution(t_data *data);
 int				get_map(t_map *map, int fd);
@@ -168,5 +175,13 @@ void			display_tiles(t_map *map, t_imag *img, t_player *player);
 void			display_wall(int x, t_fov *fov, t_data *data);
 void			put_pixel(t_imag *img, t_map *map, int x, int y, int color);
 void			draw_ray(t_player *player, t_fov *fov, t_map *map);
+void			interact_door(t_data *data);
+void			add_minimap_pixel(t_imag *img, int x, int y, int color);
+int				get_color_tile(t_map *map, int x, int y);
+
+
+void	draw_player_fov(t_data *data);
+void	ft_sleep(int ms);
+void	clear_image(t_imag *img, t_map *map);
 
 #endif

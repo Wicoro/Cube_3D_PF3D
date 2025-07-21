@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:57:07 by norban            #+#    #+#             */
-/*   Updated: 2025/07/21 17:13:56 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/21 17:20:51 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	dda_processing(t_fov *fov, t_map *map, int *side)
 {
 	int	hit;
 	int	tmp;
-	
+
 	hit = 0;
 	while (hit == 0)
 	{
@@ -74,20 +74,20 @@ static void	dda_processing(t_fov *fov, t_map *map, int *side)
 	}
 }
 
-static	void	get_wall_distance(int side, t_map *map, t_player *player, t_fov *fov)
+static void	get_wall_distance(int side, t_map *map, t_player *p, t_fov *fov)
 {
 	double	player_angle;
 	double	angle_diff;
-	
+
 	if (side == 0)
-		fov->distance = (map->map_x - (player->x) + (1 - map->step_x) * 0.5)
+		fov->distance = (map->map_x - (p->x) + (1 - map->step_x) * 0.5)
 			/ fov->ray_dir_x;
 	else
-		fov->distance = (map->map_y - (player->y) + (1 - map->step_y) * 0.5)
+		fov->distance = (map->map_y - (p->y) + (1 - map->step_y) * 0.5)
 			/ fov->ray_dir_y;
 	if (fov->distance == 0)
 		fov->distance = 0.0001;
-	player_angle = atan2(player->dir_y, player->dir_x);
+	player_angle = atan2(p->dir_y, p->dir_x);
 	angle_diff = fov->ray_angle - player_angle;
 	while (angle_diff > M_PI)
 		angle_diff -= 2 * M_PI;

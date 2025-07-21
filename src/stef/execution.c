@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/21 17:16:06 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/21 18:08:21 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,31 +102,6 @@ int	wind_init(t_data *data)
 				data->img[0].img_p), mlx_destroy_image(data->mlx_p,
 				data->img[1].img_p), 1);
 	return (0);
-}
-
-int	get_color_tile(t_map *map, int x, int y)
-{
-	char	c;
-
-	if (!map || !map->map_tab)
-		return (0x000000);
-	else if (y < 0 || y >= map->height)
-		return (0x000000);
-	else if (x < 0 || x >= map->width)
-		return (0x000000);
-	c = map->map_tab[y][x];
-	if (c == ' ')
-		return (0x000000);
-	else if (c == '1')
-		return (RED_C);
-	else if (c == '2')
-		return (0x0000FF);
-	else if (c == '3')
-		return (0x7F00FF);
-	else if (c == '0' || c == 'N' || c == 'S' || c == 'W' || c == 'E')
-		return (0xA0A0A0);
-	else
-		return (0x000000);
 }
 
 void	put_pixel(t_imag *img, t_map *map, int x, int y, int color)
@@ -345,83 +320,6 @@ void	clear_image(t_imag *img, t_map *map)
 	ft_memset(img[map->check_img].addr, 0, img_size);
 }
 
-void	animate_door_open(t_data *data, int door_index)
-{
-	t_door	*door;
-
-	door = &data->doors[door_index];
-	if (door->state >= DOOR_MAX_STATE)
-		return;
-	while (door->state < DOOR_MAX_STATE)
-	{
-		door->state++;
-		clear_image(data->img, &data->map);
-		draw_player_fov(data);
-		mlx_put_image_to_window(data->mlx_p, data->win_p,
-			data->img[data->map.check_img].img_p, 0, 0);
-		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
-			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
-		mlx_do_sync(data->mlx_p);
-		ft_sleep(30);
-	}
-	data->map.map_tab[data->doors[door_index].y][data->doors[door_index].x] = '3'; 
-}
-
-void	animate_door_close(t_data *data, int door_index)
-{
-	t_door	*door = &data->doors[door_index];
-
-	if (door->state <= 0)
-		return;
-
-	data->map.map_tab[data->doors[door_index].y][data->doors[door_index].x] = '2'; 
-	while (door->state > 0)
-	{
-		door->state--;
-		clear_image(data->img, &data->map);
-		draw_player_fov(data);
-		mlx_put_image_to_window(data->mlx_p, data->win_p,
-			data->img[data->map.check_img].img_p, 0, 0);
-		mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p,
-			WIDTH - MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
-		mlx_do_sync(data->mlx_p);
-		ft_sleep(30);
-	}
-}
-
-void	open_door(t_data *data)
-{
-	double	x = data->player.x;
-	double	y = data->player.y;
-	int		map_player_x = x;
-	int		map_player_y = y;
-	t_door *door;
-
-	for (int i = 0; i < TILE_SIZE * 2; i++)
-	{
-		x += data->player.dir_x;
-		y += data->player.dir_y;
-
-		int tx = x;
-		int ty = y;
-
-		if (tx == map_player_x && ty == map_player_y)
-			continue ;
-		for (int j = 0; j < data->door_count; j++)
-		{
-			door = &data->doors[j];
-			if (door->x == tx && door->y == ty)
-			{
-
-				if (door->state == 0)
-					animate_door_open(data, j);
-				else if (door->state == DOOR_MAX_STATE)
-					animate_door_close(data, j);
-				return;
-			}
-		}
-	}
-}
 int	key_hook(int keycode, t_data *data)
 {
 	if (keycode == XK_Escape)
@@ -439,7 +337,7 @@ int	key_hook(int keycode, t_data *data)
 	else if (keycode == XK_Right)
 		rotate_player(&data->player, 0.10);
 	else if (keycode == XK_space)
-		open_door(data);
+		interact_door(data);
 	clear_image(data->img, &data->map);
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
