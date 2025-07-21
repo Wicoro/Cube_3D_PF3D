@@ -55,7 +55,7 @@ void display_tiles(t_map *map, t_imag *img, t_player *player)
 		i = 0;
 		while (map->map_tab[j][i])
 		{
-			if (fabs(i - player->x) <= (range_x + 1) && fabs(j - player->y) <= (range_y + 1))
+			if (fabs(i - player->x) <= (range_x + 2) && fabs(j - player->y) <= (range_y + 2))
 				display_map_tile(img, map, i, j, (player->x * TILE_SIZE) - MINIMAP_W * 0.5, (player->y * TILE_SIZE) - MINIMAP_H * 0.5);
 			i++;
 		}

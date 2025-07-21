@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/16 18:30:48 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/21 15:56:57 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -623,7 +623,7 @@ int	key_hook(int keycode, t_data *data)
 	return (0);
 }
 
-/* int	mouse_hook(int x, int y, void *param)
+int	mouse_hook(int x, int y, void *param)
 {
 	t_data	*data;
 	double	delta_x;
@@ -634,12 +634,11 @@ int	key_hook(int keycode, t_data *data)
 		return (0);
 	data = (t_data *)param;
 	delta_x = x - WIDTH / 2;
-	data->mouse.prev_x = x;
-	if (fabs(delta_x) > (WIDTH / 100))
+	if (fabs(delta_x) > 20)
 	{
-		rot_speed = 0.0001;
-		if (delta_x > 100)
-			delta_x = 100;
+		rot_speed = 0.0005;
+		if (delta_x > 200)
+			delta_x = 200;
 		rotate_player(&data->player, delta_x * rot_speed);
 		clear_image(data->img, &data->map);
 		draw_player_fov(data);
@@ -650,8 +649,10 @@ int	key_hook(int keycode, t_data *data)
 				/ 10);
 		mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
 	}
+			
 	return (0);
-} */
+}
+
 int	execution(t_data *data)
 {
 	data->time = get_time_in_ms();
@@ -676,8 +677,8 @@ int	execution(t_data *data)
 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
-	/* 	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH * 0.5, HEIGHT * 0.5);
-		mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data); */
+	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH * 0.5, HEIGHT * 0.5);
+	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
 	mlx_loop(data->mlx_p);
 	return (0);
 }
