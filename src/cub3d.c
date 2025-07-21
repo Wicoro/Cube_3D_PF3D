@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/16 17:05:40 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/21 17:43:00 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,27 +24,6 @@ void	print_error(int id)
 		ft_putstr_fd("Invalid Map\n", 2);
 }
 
-int	create_data(t_data *data, char *path)
-{
-	int		fd;
-
-	if (path[ft_strlen(path) - 4] != '.' || path[ft_strlen(path) - 3] != 'c'
-		|| path[ft_strlen(path) - 2] != 'u' || path[ft_strlen(path) - 1] != 'b')
-		return (print_error(ARG_ERROR), 1);
-	data->assets.fl_color[0] = -1;
-	data->assets.ce_color[0] = -1;
-	fd = open(path, R_OK);
-	if (fd == -1)
-		return (print_error(ARG_ERROR), 1);
-	if (get_assets(&data->assets, fd) == 1 || get_map(&data->map, fd) == 1)
-		return (1);
-	if (!data->assets.no_path || !data->assets.so_path
-		|| !data->assets.ea_path || !data->assets.we_path
-		|| data->assets.fl_color[0] == -1 || data->assets.ce_color[0] == -1)
-		return (print_error(ARG_ERROR), 1);
-	return (0);
-}
-
 int	main(int ac, char **av)
 {
 	t_data	data;
@@ -52,7 +31,7 @@ int	main(int ac, char **av)
 	ft_memset(&data, 0, sizeof(t_data));
 	if (ac == 1 || ac > 2)
 		return (print_error(ARG_COUNT_ERROR), 1);
-	if (create_data(&data, av[1]) == 1 || parse_map_border(&data.map) == 1)
+	if (init_data(&data, av[1]) == 1 || parse_map_border(&data.map) == 1)
 		return (1);
 /* 	int i = -1;
  	while (data.map.map_tab[++i])

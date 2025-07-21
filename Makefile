@@ -22,7 +22,9 @@ PARSING =	get_assets.c \
 
 STEF = 		execution.c
 
-EXEC =		minimap.c
+EXEC =		minimap.c \
+			display_wall_bonus.c \
+			draw_ray_bonus.c
 
 SRC =		cub3d.c \
 			$(addprefix $(STEF_DIR), $(STEF)) \
