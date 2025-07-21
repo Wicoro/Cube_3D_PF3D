@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 15:21:57 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/21 16:13:57 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:27:46 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,6 +273,7 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 	hit = 0;
 	side = 0;
 	fov->isdoor = 0;
+
 	while (hit == 0)
 	{
 		if (fov->side_dist_x < fov->side_dist_y)
@@ -318,9 +319,11 @@ void	draw_ray(t_player *player, t_fov *fov, t_map *map)
 	fov->wall_height = HEIGHT / fov->distance;
 	// Calculate exact hit position on the wall for texture mapping
 	if (side == 0)
-		fov->wall_hit_x = player->y + fov->distance * fov->ray_dir_y;
+		fov->wall_hit_x = player->y + (fov->side_dist_x - fov->delta_dist_x)
+			* fov->ray_dir_y;
 	else
-		fov->wall_hit_x = player->x + fov->distance * fov->ray_dir_x;
+		fov->wall_hit_x = player->x + (fov->side_dist_y - fov->delta_dist_y)
+			* fov->ray_dir_x;
 	fov->wall_hit_x -= floor(fov->wall_hit_x);
 }
 
@@ -332,7 +335,6 @@ int	get_rgb_color(int *color)
 void	display_wall(int x, t_fov *fov, t_data *data)
 {
 	t_textures		*tex;
-	double			wall_x;
 	unsigned int	color;
 	int				tex_x;
 	int				tex_y;
@@ -370,7 +372,6 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 	draw_end = wall_height * 0.5 + HEIGHT * 0.5;
 	if (draw_end >= HEIGHT)
 		draw_end = HEIGHT - 1;
-	wall_x = fmod(fov->wall_hit_x, 1.0);
 	tex_x = (int)(fov->wall_hit_x * tex->width) - horizontal_offset;
 	if ((fov->side == 0 && fov->ray_dir_x > 0) || (fov->side == 1 && fov->ray_dir_y < 0))
     	tex_x = tex->width - tex_x - 1;
@@ -425,15 +426,12 @@ void	draw_player_fov(t_data *data)
 	double	step;
 	double	start_angle;
 
-	// reset map
 	ft_memset(data->img[2].addr, 0, MINIMAP_H * MINIMAP_W * 4);
 	display_tiles(&data->map, data->img, &data->player);
 	display_player(data->img);
 	display_border(data->img);
-	// end
 	step = FOV / WIDTH;
 	start_angle = atan2(data->player.dir_y, data->player.dir_x) - (FOV * 0.5);
-	// Example for camera plane (2D vector perpendicular to player direction)
 	i = 0;
 	while (i < WIDTH)
 	{
@@ -441,9 +439,7 @@ void	draw_player_fov(t_data *data)
 		fov.ray_dir_x = cos(fov.ray_angle);
 		fov.ray_dir_y = sin(fov.ray_angle);
 		draw_ray(&data->player, &fov, &data->map);
-		// draw ray on minimap
 		display_ray(&data->player, &fov, data->img, &data->map);
-		// end
 		draw_wall(i, &fov, data);
 		i++;
 	}
@@ -647,7 +643,6 @@ int	key_hook(int keycode, t_data *data)
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
-	// display new minimap
 	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	return (0);
@@ -679,13 +674,14 @@ int	mouse_hook(int x, int y, void *param)
 				/ 10);
 		mlx_mouse_move(data->mlx_p, data->win_p, WIDTH / 2, HEIGHT / 2);
 	}
-			
 	return (0);
 }
 
 int	execution(t_data *data)
 {
-	data->time = get_time_in_ms();
+	int i;
+	
+	i = 0;
 	if (wind_init(data))
 		return (1);
 	init_doors(data);
@@ -702,7 +698,6 @@ int	execution(t_data *data)
 	draw_player_fov(data);
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
-	// display new minimap
 	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
 		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
 	mlx_hook(data->win_p, 17, 0, closer, data);
