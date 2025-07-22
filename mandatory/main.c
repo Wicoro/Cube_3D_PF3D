@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 14:27:13 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 17:27:45 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,5 @@ int	main(int ac, char **av)
 	printf("h : %d", data.map.height);
 	printf(" | w : %d\n", data.map.width); */ 
 	game_loop(&data);
-	free(data.assets.no_path);
-	free(data.assets.so_path);
-	free(data.assets.ea_path);
-	free(data.assets.we_path);
-	ft_free_tab(&data.map.map_tab);
 	return (0);
 }

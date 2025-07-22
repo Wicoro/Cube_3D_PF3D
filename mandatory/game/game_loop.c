@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:48:46 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 14:18:32 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 17:33:22 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,18 @@ static int	closer(t_data *data)
 	ft_printf("the ESC key or red cross has been pressed\n");
 	mlx_destroy_image(data->mlx_p, data->img[0].img_p);
 	mlx_destroy_image(data->mlx_p, data->img[1].img_p);
+	mlx_destroy_image(data->mlx_p, data->textures[0].img);
+	mlx_destroy_image(data->mlx_p, data->textures[1].img);
+	mlx_destroy_image(data->mlx_p, data->textures[2].img);
+	mlx_destroy_image(data->mlx_p, data->textures[3].img);
 	mlx_destroy_window(data->mlx_p, data->win_p);
 	mlx_destroy_display(data->mlx_p);
+	free(data->assets.no_path);
+	free(data->assets.so_path);
+	free(data->assets.ea_path);
+	free(data->assets.we_path);
+	ft_free_tab(&data->map.map_tab);
+	free(data->mlx_p);
 	exit(0);
 }
 
