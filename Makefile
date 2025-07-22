@@ -1,3 +1,5 @@
+# ========================= COLORS ===========================
+
 GREEN = \033[32m
 YELLOW = \033[33m
 BLUE = \033[36m
@@ -7,44 +9,61 @@ BOLD = \033[1m
 UNDERLINE = \033[4m
 ITALIC = \033[3m
 
-OBJ_DIR = obj/
-SRC_DIR = src/
-STEF_DIR = stef/
-PARSING_DIR = parsing/
-EXEC_DIR = exec/
-
-INCLUDE = include
-
-PARSING =	get_assets.c \
-			get_map.c \
-			get_map_utils.c \
-			parse_map_border.c
-
-STEF = 		execution.c
-
-EXEC =		minimap.c \
-			display_wall_bonus.c \
-			draw_ray_bonus.c
-
-SRC =		cub3d.c \
-			$(addprefix $(STEF_DIR), $(STEF)) \
-			$(addprefix $(PARSING_DIR), $(PARSING)) \
-			$(addprefix $(EXEC_DIR), $(EXEC))
-
-OBJ = 		$(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
-
-CFLAGS = -Wall -Wextra -Werror -MMD -MP
-OPTIFLAGS = -O3
-EXTRAFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
-FSANITIZE = #-g3 -fsanitize=address
-MAKE = make --no-print-directory
-
-LIBFT_DIR = libft
-LIBFT = $(LIBFT_DIR)/libft.a
-MLX_DIR = minilibx-linux
-MLX = $(MLX_DIR)/libmlx_Linux.a
+# ========================= NAMES ============================
 
 NAME = cub3D
+NAME_BONUS = cub3D_bonus
+
+# ======================== DIRECTORIES ========================
+
+LIBFT_DIR = libft
+MLX_DIR = minilibx-linux
+INCLUDE = include
+
+SRC_DIR = mandatory/
+OBJ_DIR = $(SRC_DIR)obj/
+
+SRC_DIR_BONUS = bonus/
+OBJ_DIR_BONUS = $(SRC_DIR_BONUS)obj/
+
+# ========================== FILES ===========================
+
+LIBFT = $(LIBFT_DIR)/libft.a
+MLX = $(MLX_DIR)/libmlx_Linux.a
+
+SRC = game/game_loop.c game/init.c game/key_events.c \
+	game/player.c game/utils.c parsing/get_assets.c  \
+	parsing/get_map_utils.c parsing/get_map.c \
+	parsing/parse_map_border.c raycasting/display_wall.c \
+	raycasting/draw_ray.c raycasting/raycasting.c main.c
+
+SRC := $(addprefix $(SRC_DIR), $(SRC))
+OBJ = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
+
+SRC_BONUS = game/game_loop_bonus.c game/init_bonus.c game/key_events_bonus.c \
+	game/mouse_bonus.c game/player_bonus.c game/utils_bonus.c \
+	parsing/get_assets_bonus.c parsing/get_map_utils_bonus.c parsing/get_map_bonus.c \
+	parsing/parse_map_border_bonus.c minimap/minimap_utils_bonus.c minimap/minimap_bonus.c \
+	raycasting/display_wall_bonus.c raycasting/draw_ray_bonus.c raycasting/interact_door_bonus.c \
+	raycasting/raycasting_bonus.c main.c
+
+SRC_BONUS := $(addprefix $(SRC_DIR_BONUS), $(SRC_BONUS))
+OBJ_BONUS = $(SRC_BONUS:$(SRC_DIR_BONUS)%.c=$(OBJ_DIR_BONUS)%.o)
+
+# ========================== FLAGS ===========================
+
+CFLAGS = -Wall -Wextra -Werror -MMD -MP
+EXTRAFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
+
+ifeq ($(SAN),1)
+	FSANITIZE = -g3 -fsanitize=address
+	OPTIFLAGS =
+else
+	FSANITIZE =
+	OPTIFLAGS = -O3
+endif
+
+# ========================= TARGETS ==========================
 
 all: logo $(NAME)
 
@@ -53,26 +72,27 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@echo "📦 $(ITALIC)$(YELLOW)Compiling $< $(RESET)"
 	@cc $(CFLAGS) $(OPTIFLAGS) $(FSANITIZE) -I $(INCLUDE) -c $< -o $@
 
-
 $(NAME): $(LIBFT) $(MLX) $(OBJ)
 	@echo ""
-	@echo "		🚀 $(BOLD)$(YELLOW)Linking $(NAME)...$(RESET)"
+	@echo "	🚀 $(BOLD)$(YELLOW)Linking $(NAME)...$(RESET)"
 	@cc $(CFLAGS) $(OPTIFLAGS) $(FSANITIZE) $(OBJ) -o $(NAME) -I $(INCLUDE) $(LIBFT) $(EXTRAFLAGS)
 	@echo ""
-	@echo "	🎉 $(BOLD)$(GREEN)SUCCESS: $(NAME) has been created$(RESET) ✅ "
+	@echo "	🎉 $(BOLD)$(GREEN)SUCCESS: $(NAME) has been created$(RESET) ✅"
 	@echo ""
 
-$(LIBFT):
-	@$(MAKE) -C $(LIBFT_DIR)
-	@echo "		⚙ $(UNDERLINE)$(BOLD)Building Minilibx $(RESET) ⚙"
-	@echo ""
+bonus: logo $(NAME_BONUS)
 
-$(MLX):
-	@$(MAKE) -C $(MLX_DIR)
+$(OBJ_DIR_BONUS)%.o: $(SRC_DIR_BONUS)%.c
+	@mkdir -p $(dir $@)
+	@echo "📦 $(ITALIC)$(YELLOW)Compiling $< $(RESET)"
+	@cc $(CFLAGS) $(OPTIFLAGS) $(FSANITIZE) -I $(INCLUDE) -c $< -o $@
+
+$(NAME_BONUS): $(LIBFT) $(MLX) $(OBJ_BONUS)
 	@echo ""
-	@echo "    📚 $(BOLD)$(BLUE)SUCCESS: Minilibx has been created$(RESET) 📚"
+	@echo "	🚀 $(BOLD)$(YELLOW)Linking $(NAME_BONUS)...$(RESET)"
+	@cc $(CFLAGS) $(OPTIFLAGS) $(FSANITIZE) $(OBJ_BONUS) -o $(NAME_BONUS) -I $(INCLUDE) $(LIBFT) $(EXTRAFLAGS)
 	@echo ""
-	@echo "		⚙ $(UNDERLINE)$(BOLD)Building $(NAME) $(RESET) ⚙"
+	@echo "	🎉 $(BOLD)$(GREEN)SUCCESS: $(NAME_BONUS) has been created$(RESET) ✅"
 	@echo ""
 
 logo:
@@ -80,31 +100,37 @@ logo:
 	@cat logo.txt
 	@echo ""
 
+$(LIBFT):
+	@$(MAKE) -C $(LIBFT_DIR)
+	@echo "	⚙ $(UNDERLINE)$(BOLD)Building libft $(RESET) ⚙"
+	@echo ""
+
+$(MLX):
+	@$(MAKE) -C $(MLX_DIR)
+	@echo ""
+	@echo "	📚 $(BOLD)$(BLUE)SUCCESS: Minilibx has been created$(RESET) 📚"
+	@echo ""
+
 clean:
 	@echo ""
-	@echo "		🧹 $(BOLD)$(BLUE)Cleaning object files 🧹$(RESET)"
-	@echo ""
+	@echo "	🧹 $(BOLD)$(BLUE)Cleaning object files 🧹$(RESET)"
 	@$(MAKE) -C $(LIBFT_DIR) clean
 	@$(MAKE) -C $(MLX_DIR) clean
-	@rm -rf $(OBJ_DIR)
-	@echo "🗑️ $(YELLOW)$(BOLD) minishell$(RESET)$(YELLOW) object files cleaned$(RESET)"
-
-
+	@rm -rf $(OBJ_DIR) $(OBJ_DIR_BONUS)
+	@echo "🗑️ $(YELLOW)$(BOLD)Object files cleaned$(RESET)"
 
 fclean: clean
 	@echo ""
-	@echo "		🧹 $(BOLD)$(BLUE)Cleaning everything 🧹$(RESET)"
-	@echo ""
+	@echo "	🧹 $(BOLD)$(BLUE)Cleaning everything 🧹$(RESET)"
 	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@echo "💾 $(YELLOW)Cleaning $(NAME)$(RESET)"
-	@echo "↪️ $(YELLOW)$(BOLD)$(NAME) has been cleaned$(RESET) ✅"
-	@rm -f $(NAME)
-	@echo ""
-	@echo "	👉 $(BOLD)$(GREEN)Everything has been cleaned$(RESET) ❎"
+	@rm -f $(NAME) $(NAME_BONUS)
+	@echo "💾 $(YELLOW)Binaries removed$(RESET)"
+	@echo "👉 $(BOLD)$(GREEN)Everything has been cleaned$(RESET) ❎"
 	@echo ""
 
-re: fclean $(NAME)
+re: fclean all
 
-.PHONY: all logo clean fclean re
+.PHONY: all bonus clean fclean re logo
 
 -include $(OBJ:.o=.d)
+-include $(OBJ_BONUS:.o=.d)
