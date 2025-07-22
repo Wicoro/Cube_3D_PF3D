@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 16:24:28 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/22 16:58:02 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,20 @@ int	init_textures(t_data *data)
 {
 	if (init_texture(data, data->assets.no_path, 0) == 1)
 		return (1);
-	init_texture(data, data->assets.so_path, 1);
-	init_texture(data, data->assets.ea_path, 2);
-	init_texture(data, data->assets.we_path, 3);
-	init_texture(data, data->assets.do_path, 4);
+	if (init_texture(data, data->assets.so_path, 1) == 1)
+		return (mlx_destroy_image(data->mlx_p, data->textures[0].img), 1);
+	if (init_texture(data, data->assets.ea_path, 2) == 1)
+		return (mlx_destroy_image(data->mlx_p, data->textures[0].img),
+			mlx_destroy_image(data->mlx_p, data->textures[1].img), 1);
+	if (init_texture(data, data->assets.we_path, 3) == 1)
+		return (mlx_destroy_image(data->mlx_p, data->textures[0].img),
+			mlx_destroy_image(data->mlx_p, data->textures[1].img),
+			mlx_destroy_image(data->mlx_p, data->textures[2].img), 1);
+	if (init_texture(data, data->assets.do_path, 4) == 1)
+		return (mlx_destroy_image(data->mlx_p, data->textures[0].img),
+			mlx_destroy_image(data->mlx_p, data->textures[1].img),
+			mlx_destroy_image(data->mlx_p, data->textures[2].img),
+			mlx_destroy_image(data->mlx_p, data->textures[3].img), 1);
 	return (0);
 }
 
