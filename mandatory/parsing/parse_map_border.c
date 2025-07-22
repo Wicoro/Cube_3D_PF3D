@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map_border.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:26:18 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 13:16:55 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 15:29:43 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ int	parse_map_border(t_map *map)
 		j = -1;
 		while (map->map_tab[i][++j])
 		{
-			if (ft_strchr("NSEW02", map->map_tab[i][j])
+			if (ft_strchr("NSEW0", map->map_tab[i][j])
 				&& check_surround(map->map_tab, j, i) == 1)
 				return (print_error(INVALID_MAP), 1);
 			if (ft_strchr("NSEW", map->map_tab[i][j]))
 				player++;
-			else if (!ft_strchr("012 ", map->map_tab[i][j]))
+			else if (!ft_strchr("01 ", map->map_tab[i][j]))
 				return (print_error(INVALID_MAP), 1);
 		}
 	}
