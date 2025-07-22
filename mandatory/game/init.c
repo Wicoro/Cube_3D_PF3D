@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 13:15:49 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 15:50:57 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,13 @@ int	init_data(t_data *data, char *path)
 	fd = open(path, R_OK);
 	if (fd == -1)
 		return (print_error(ARG_ERROR), 1);
-	if (get_assets(&data->assets, fd) == 1 || get_map(&data->map, fd) == 1)
+	if (get_assets(&data->assets, fd) == 1)
 		return (1);
 	if (!data->assets.no_path || !data->assets.so_path || !data->assets.ea_path
 		|| !data->assets.we_path || data->assets.fl_color[0] == -1
 		|| data->assets.ce_color[0] == -1)
 		return (print_error(ARG_ERROR), 1);
+	if (get_map(&data->map, fd) == 1)
+		return (1);
 	return (0);
 }

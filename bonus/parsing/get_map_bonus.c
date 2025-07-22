@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_map.c                                          :+:      :+:    :+:   */
+/*   get_map_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:58:51 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 13:30:15 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 16:03:27 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,9 @@ int	get_map(t_map *map, int fd)
 	}
 	while (line)
 	{
-		if ((ft_strlen(line) == 1 && line[0] == '\n')
-			|| concat_map(&map->map_tab, line) == 1)
+		if (ft_strlen(line) == 1 && line[0] == '\n')
+			return (print_error(ARG_ERROR), 1);
+		if (concat_map(&map->map_tab, line) == 1)
 			return (1);
 		free(line);
 		line = get_next_line(fd);
