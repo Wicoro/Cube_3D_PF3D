@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:27:08 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 13:17:02 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 16:14:13 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static void	put_wall_pixels(int x, int wall_height,
 		color = *(unsigned int *)(tex->addr
 				+ (tex_y * tex->line_length + tex->tex_x
 					* (tex->bits_per_pixel / 8)));
-		put_pixel(data->img, &data->map, x, y, color);
+		put_pixel(data, x, y, color);
 	}
 }
 

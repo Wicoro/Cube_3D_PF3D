@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:52:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 14:30:32 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 18:21:11 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,12 @@
 # define HEIGHT 720
 # define WIDTH 1280
 
-
 # define TILE_SIZE 16
 # define SPEED 0.2
+
 # define GREEN_C 0x2ecc71
 # define RED_C 0x7b241c
-# ifndef M_PI
-#  define M_PI 3.14159265359
-# endif
-# define FOV (60 * M_PI / 180)
+
+# define FOV 0.69813170079
 
 #endif

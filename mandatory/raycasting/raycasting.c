@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:57:46 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 14:26:57 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 16:15:37 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	get_rgb_color(int *color)
 	return (color[0] << 16 | color[1] << 8 | color[2]);
 }
 
-void	put_pixel(t_imag *img, t_map *map, int x, int y, int color)
+void	put_pixel(t_data *data, int x, int y, int color)
 {
 	int		x_sized;
 	int		y_sized;
@@ -26,18 +26,18 @@ void	put_pixel(t_imag *img, t_map *map, int x, int y, int color)
 
 	x_sized = x;
 	y_sized = y;
-	addr = img[map->check_img].addr;
+	addr = data->img[data->map.check_img].addr;
 	if (x_sized < 0 || x_sized >= WIDTH || y_sized < 0 || y_sized >= HEIGHT)
 		return ;
-	index = y_sized * img[map->check_img].line_lenght + (x_sized
-			* (img[map->check_img].bits_per_pixel / 8));
+	index = y_sized * data->img[data->map.check_img].line_lenght + (x_sized
+			* (data->img[data->map.check_img].bits_per_pixel / 8));
 	*(unsigned int *)(addr + index) = color;
 }
 
 static void	draw_wall(float x, t_fov *fov, t_data *data)
 {
 	int	draw_start;
-	int	draw_end; 
+	int	draw_end;
 	int	i;
 
 	draw_start = -fov->wall_height * 0.5 + HEIGHT * 0.5;
@@ -50,11 +50,9 @@ static void	draw_wall(float x, t_fov *fov, t_data *data)
 	while (i < HEIGHT)
 	{
 		if (i < draw_start)
-			put_pixel(data->img, &data->map, x, i,
-				get_rgb_color(data->assets.ce_color));
+			put_pixel(data, x, i, get_rgb_color(data->assets.ce_color));
 		if (i > draw_end && i < HEIGHT)
-			put_pixel(data->img, &data->map, x, i,
-				get_rgb_color(data->assets.fl_color));
+			put_pixel(data, x, i, get_rgb_color(data->assets.fl_color));
 		i++;
 	}
 	display_wall(x, fov, data);

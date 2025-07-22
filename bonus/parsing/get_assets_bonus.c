@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_assets.c                                       :+:      :+:    :+:   */
+/*   get_assets_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:57:39 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 13:30:15 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 16:06:50 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,14 @@ static int	compare_assets(t_assets *assets, char **split)
 		assets->we_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
 	else if (ft_strncmp(split[0], "DO", 3) == 0)
 		assets->do_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
-	else if (ft_strncmp(split[0], "F", 2) == 0
-		|| ft_strncmp(split[0], "C", 2) == 0)
+	else if (ft_strncmp(split[0], "F", 2) == 0 || ft_strncmp(split[0], "C",
+			2) == 0)
 	{
 		if (get_rgb_assets(assets, split[1], split[0][0]) == 1)
 			return (1);
 	}
 	return (0);
 }
-
 
 int	get_assets(t_assets *assets, int fd)
 {

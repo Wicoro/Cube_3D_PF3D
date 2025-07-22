@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 14:31:32 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 17:33:09 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,12 @@ void	print_error(int id);
 
 /*===============================MINIMAP==================================*/
 
-void	add_minimap_pixel(t_imag *img, int x, int y, int color);
-void	display_tiles(t_map *map, t_imag *img, t_player *player);
-void	display_border(t_imag *img);
-void	display_player(t_imag *img);
-void	display_ray(t_player *player, t_fov *fov, t_imag *img, t_map *map);
+void	add_minimap_pixel(t_data *data, int x, int y, int color);
+void	display_tiles(t_data *data, t_player *player, t_minimap *minimap);
+void	display_border(t_data *data, t_minimap *minimap);
+void	display_player(t_minimap *minimap, t_data *data);
+void	display_ray(t_data *data, t_fov *fov, t_map *map);
+void	minimap(t_data *data);
 
 /*===============================PARSING==================================*/
 
@@ -64,7 +65,7 @@ int		parse_map_border(t_map *map);
 void	interact_door(t_data *data);
 int		get_rgb_color(int *color);
 int		get_color_tile(t_map *map, int x, int y);
-void	put_pixel(t_imag *img, t_map *map, int x, int y, int color);
+void	put_pixel(t_data *data, int x, int y, int color);
 void	raycasting(t_data *data);
 void	display_wall(int x, t_fov *fov, t_data *data);
 void	draw_ray(t_player *player, t_fov *fov, t_map *map);

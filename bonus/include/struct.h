@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:52:55 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 11:37:51 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 18:07:12 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,11 @@ typedef struct s_imag
 	int			endian;
 }				t_imag;
 
-typedef struct s_mouse
+typedef struct s_minimap
 {
-	int			delta_x;
-	int			prev_x;
-}				t_mouse;
+	int			minimap_h;
+	int			minimap_w;
+}				t_minimap;
 
 typedef struct s_data
 {
@@ -107,15 +107,15 @@ typedef struct s_data
 	t_imag		img[3];
 	t_assets	assets;
 	t_textures	textures[5];
-	t_mouse		mouse;
 	t_door		doors[MAX_DOORS];
+	t_minimap	minimap;
 	int			door_count;
 }				t_data;
 
 typedef struct s_map_coord
 {
-	int	x;
-	int	y;
-}	t_map_coord;
+	int			x;
+	int			y;
+}				t_map_coord;
 
 #endif

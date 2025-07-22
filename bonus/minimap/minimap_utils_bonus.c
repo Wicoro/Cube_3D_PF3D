@@ -6,28 +6,47 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:06:26 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 13:30:15 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 18:07:15 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
-void	display_border(t_imag *img)
+void	add_minimap_pixel(t_data *data, int x, int y, int color)
+{
+	int		x_sized;
+	int		y_sized;
+	int		index;
+	char	*addr;
+
+	x_sized = x;
+	y_sized = y;
+	addr = data->img[2].addr;
+	if (x_sized < 0 || x_sized >= data->minimap.minimap_w || y_sized < 0
+		|| y_sized >= data->minimap.minimap_h)
+		return ;
+	index = y_sized * data->img[2].line_lenght + (x_sized
+			* (data->img[2].bits_per_pixel / 8));
+	*(unsigned int *)(addr + index) = color;
+}
+
+void	display_border(t_data *data, t_minimap *minimap)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < MINIMAP_H)
+	while (i < minimap->minimap_h)
 	{
 		j = 0;
-		while (j < MINIMAP_W)
+		while (j < minimap->minimap_w)
 		{
-			if (i < MINIMAP_BORDER_SIZE || i > MINIMAP_H - MINIMAP_BORDER_SIZE)
-				add_minimap_pixel(img, j, i, GREEN_C);
-			else if (j < MINIMAP_BORDER_SIZE
-				|| j > MINIMAP_W - MINIMAP_BORDER_SIZE)
-				add_minimap_pixel(img, j, i, GREEN_C);
+			if (i < MINIMAP_BORDER_SIZE || i > minimap->minimap_h
+				- MINIMAP_BORDER_SIZE)
+				add_minimap_pixel(data, j, i, GREEN_C);
+			else if (j < MINIMAP_BORDER_SIZE || j > minimap->minimap_w
+				- MINIMAP_BORDER_SIZE)
+				add_minimap_pixel(data, j, i, GREEN_C);
 			j++;
 		}
 		i++;

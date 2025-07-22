@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:28:54 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 13:30:15 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 18:13:07 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,29 @@ int	is_wall(t_map *map, int x, int y)
 	if (c == '2')
 		return (2);
 	return (1);
+}
+
+void	init_doors(t_data *data)
+{
+	int	x;
+	int	y;
+
+	data->door_count = 0;
+	y = 0;
+	while (y < data->map.height)
+	{
+		x = 0;
+		while (x < data->map.width)
+		{
+			if (data->map.map_tab[y][x] == '2' && data->door_count < MAX_DOORS)
+			{
+				data->doors[data->door_count].x = x;
+				data->doors[data->door_count].y = y;
+				data->doors[data->door_count].state = 0;
+				data->door_count++;
+			}
+			x++;
+		}
+		y++;
+	}
 }
