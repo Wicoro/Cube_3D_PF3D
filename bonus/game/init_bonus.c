@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 16:58:02 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/22 18:24:22 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,15 @@ int	init_textures(t_data *data)
 	return (0);
 }
 
+static int	minimap_init(t_data *data)
+{
+	data->img[2].img_p = mlx_new_image(data->mlx_p, data->minimap.minimap_w,
+			data->minimap.minimap_h);
+	if (!data->img[2].img_p)
+		return (1);
+	return (0);
+}
+
 int	wind_init(t_data *data)
 {
 	data->mlx_p = mlx_init();
@@ -65,34 +74,12 @@ int	wind_init(t_data *data)
 		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
 			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
 				data->img[0].img_p), 1);
-	data->img[2].img_p = mlx_new_image(data->mlx_p, MINIMAP_W, MINIMAP_H);
-	if (!data->img[2].img_p)
+	if (minimap_init(data))
 		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
 			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
 				data->img[0].img_p), mlx_destroy_image(data->mlx_p,
 				data->img[1].img_p), 1);
 	return (0);
-}
-
-void	init_doors(t_data *data)
-{
-	int	x;
-	int	y;
-
-	data->door_count = 0;
-	for (y = 0; y < data->map.height; y++)
-	{
-		for (x = 0; x < data->map.width; x++)
-		{
-			if (data->map.map_tab[y][x] == '2' && data->door_count < MAX_DOORS)
-			{
-				data->doors[data->door_count].x = x;
-				data->doors[data->door_count].y = y;
-				data->doors[data->door_count].state = 0;
-				data->door_count++;
-			}
-		}
-	}
 }
 
 int	init_data(t_data *data, char *path)
@@ -113,6 +100,8 @@ int	init_data(t_data *data, char *path)
 		|| !data->assets.we_path || data->assets.fl_color[0] == -1
 		|| data->assets.ce_color[0] == -1 || !data->assets.do_path)
 		return (print_error(ARG_ERROR), 1);
+	data->minimap.minimap_h = ((HEIGHT / 100) * 30);
+	data->minimap.minimap_w = data->minimap.minimap_h;
 	if (get_map(&data->map, fd) == 1)
 		return (1);
 	return (0);

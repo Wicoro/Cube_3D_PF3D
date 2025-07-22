@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 17:27:45 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/22 18:26:59 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,6 @@ int	main(int ac, char **av)
 		return (print_error(ARG_COUNT_ERROR), 1);
 	if (init_data(&data, av[1]) == 1 || parse_map_border(&data.map) == 1)
 		return (1);
-/* 	int i = -1;
- 	while (data.map.map_tab[++i])
-	{
-		printf("|%s|\n", data.map.map_tab[i]);
-	}
-	printf("%s", data.assets.no_path);
-	printf("%s", data.assets.so_path);
-	printf("%s", data.assets.ea_path);
-	printf("%s", data.assets.we_path);
-	printf("h : %d", data.map.height);
-	printf(" | w : %d\n", data.map.width); */ 
 	game_loop(&data);
 	return (0);
 }

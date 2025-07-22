@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:52:55 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 17:13:47 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/22 18:27:19 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ typedef struct s_textures
 	int			endian;
 	int			tex_x;
 }				t_textures;
-
 
 typedef struct s_player
 {
@@ -95,6 +94,5 @@ typedef struct s_data
 	t_assets	assets;
 	t_textures	textures[5];
 }				t_data;
-
 
 #endif

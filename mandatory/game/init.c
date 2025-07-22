@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 17:00:52 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/22 18:27:11 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	init_texture(t_data *data, char *path, int i)
 
 int	init_textures(t_data *data)
 {
-if (init_texture(data, data->assets.no_path, 0) == 1)
+	if (init_texture(data, data->assets.no_path, 0) == 1)
 		return (1);
 	if (init_texture(data, data->assets.so_path, 1) == 1)
 		return (mlx_destroy_image(data->mlx_p, data->textures[0].img), 1);

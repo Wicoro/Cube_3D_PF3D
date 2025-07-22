@@ -6,10 +6,9 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:27:08 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 13:30:15 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 16:13:41 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../include/cub3d.h"
 
@@ -69,8 +68,8 @@ static int	get_draw_index(int wall_height, int flag)
 	return (index);
 }
 
-static void	put_wall_pixels(int x, int wall_height,
-	t_data *data, t_textures *tex)
+static void	put_wall_pixels(int x, int wall_height, t_data *data,
+		t_textures *tex)
 {
 	int				y;
 	unsigned int	color;
@@ -81,16 +80,15 @@ static void	put_wall_pixels(int x, int wall_height,
 	draw_end = get_draw_index(wall_height, 1);
 	while (++y <= draw_end)
 	{
-		tex_y = (((y * 256 - HEIGHT * 128 + wall_height * 128)
-					* tex->height) / wall_height) / 256;
+		tex_y = (((y * 256 - HEIGHT * 128 + wall_height * 128) * tex->height)
+				/ wall_height) / 256;
 		if (tex_y >= tex->height)
 			tex_y = tex->height - 1;
 		if (tex_y < 0)
 			tex_y = 0;
-		color = *(unsigned int *)(tex->addr
-				+ (tex_y * tex->line_length + tex->tex_x
-					* (tex->bits_per_pixel / 8)));
-		put_pixel(data->img, &data->map, x, y, color);
+		color = *(unsigned int *)(tex->addr + (tex_y * tex->line_length
+					+ tex->tex_x * (tex->bits_per_pixel / 8)));
+		put_pixel(data, x, y, color);
 	}
 }
 
@@ -106,8 +104,8 @@ void	display_wall(int x, t_fov *fov, t_data *data)
 		return ;
 	wall_height = (int)(HEIGHT / fov->distance);
 	tex_x = (int)(fov->wall_hit_x * tex->width) - check_door(fov, data, tex);
-	if ((fov->side == 0 && fov->ray_dir_x > 0)
-		|| (fov->side == 1 && fov->ray_dir_y < 0))
+	if ((fov->side == 0 && fov->ray_dir_x > 0) || (fov->side == 1
+			&& fov->ray_dir_y < 0))
 		tex_x = tex->width - tex_x - 1;
 	if (tex_x < 0)
 		tex_x = 0;

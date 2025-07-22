@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_loop_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:48:46 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 17:33:17 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/22 18:24:29 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ void	render(t_data *data, Bool check)
 	mlx_put_image_to_window(data->mlx_p, data->win_p,
 		data->img[data->map.check_img].img_p, 0, 0);
 	mlx_put_image_to_window(data->mlx_p, data->win_p, data->img[2].img_p, WIDTH
-		- MINIMAP_W - MINIMAP_W / 10, HEIGHT - MINIMAP_H - MINIMAP_H / 10);
+		- data->minimap.minimap_h - data->minimap.minimap_w / 10, HEIGHT
+		- data->minimap.minimap_w - data->minimap.minimap_h / 10);
 }
 
 static int	key_hook(int keycode, t_data *data)
@@ -96,6 +97,7 @@ int	game_loop(t_data *data)
 	render(data, 0);
 	mlx_hook(data->win_p, 17, 0, closer, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
+	mlx_mouse_hide(data->mlx_p, data->win_p);
 	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH * 0.5, HEIGHT * 0.5);
 	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
 	mlx_loop(data->mlx_p);

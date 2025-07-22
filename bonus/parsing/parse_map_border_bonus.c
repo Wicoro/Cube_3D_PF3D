@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map_border_bonus.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:26:18 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 16:22:30 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/22 18:26:39 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static int	check_surround(char **map, int x, int y)
 	if (y == 0 || x == 0 || !map[y - 1] || !map[y + 1] || !map[y][x + 1]
 		|| !map[y][x - 1])
 		return (1);
-	if (map[y - 1][x] == ' ' || map[y + 1][x] == ' '
-		|| map[y][x + 1] == ' ' || map[y][x - 1] == ' ')
+	if (map[y - 1][x] == ' ' || map[y + 1][x] == ' ' || map[y][x + 1] == ' '
+		|| map[y][x - 1] == ' ')
 		return (1);
 	return (0);
 }

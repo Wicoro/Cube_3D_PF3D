@@ -6,12 +6,11 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:28:54 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 14:28:47 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 18:27:07 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
-
 
 int	is_wall(t_map *map, int x, int y)
 {

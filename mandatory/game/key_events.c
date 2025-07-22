@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:34:00 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 13:16:01 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 18:27:39 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,7 @@ void	strafe_player(t_data *data, int right_or_left)
 		new_x = data->player.x - (perp_x * SPEED);
 		new_y = data->player.y - (perp_y * SPEED);
 	}
-	if (!is_wall(&data->
-		
-		map, (int)new_x, (int)data->player.y))
+	if (!is_wall(&data->map, (int)new_x, (int)data->player.y))
 		data->player.x = new_x;
 	if (!is_wall(&data->map, (int)data->player.x, (int)new_y))
 		data->player.y = new_y;

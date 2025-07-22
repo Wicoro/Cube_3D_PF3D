@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 14:26:34 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 18:27:24 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,13 @@ void	remove_map_nl(t_map *map);
 int		get_map(t_map *map, int fd);
 int		parse_map_border(t_map *map);
 
-
 /*===============================RAYCASTING==================================*/
 
 int		get_rgb_color(int *color);
 int		get_color_tile(t_map *map, int x, int y);
-void	put_pixel(t_imag *img, t_map *map, int x, int y, int color);
+void	put_pixel(t_data *data, int x, int y, int color);
 void	raycasting(t_data *data);
 void	display_wall(int x, t_fov *fov, t_data *data);
 void	draw_ray(t_player *player, t_fov *fov, t_map *map);
-
 
 #endif
