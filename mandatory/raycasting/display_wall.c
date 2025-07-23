@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:27:08 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 16:14:13 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 20:32:36 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ static void	get_texture(t_fov *fov, t_data *data, t_textures **tex)
 	else if (fov->side == 0 && fov->ray_dir_x < 0)
 		*tex = &data->textures[2];
 	else if (fov->side == 1 && fov->ray_dir_y > 0)
-		*tex = &data->textures[1];
-	else if (fov->side == 1 && fov->ray_dir_y < 0)
 		*tex = &data->textures[0];
+	else if (fov->side == 1 && fov->ray_dir_y < 0)
+		*tex = &data->textures[1];
 }
 
 static int	get_draw_index(int wall_height, int flag)
