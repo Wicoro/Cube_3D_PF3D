@@ -1,0 +1,21 @@
+NO ./texture/mossy.xpm
+
+
+F 128,128,128
+
+WE ./path_to_the_west_texture
+EA ./path_to_the_east_texture
+
+
+
+C 51,153,255
+
+SO ./path_to_the_south_texture
+
+111 11
+101 1
+111    1 
+1
+1111
+1E111
+111

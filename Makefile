@@ -56,7 +56,7 @@ CFLAGS = -Wall -Wextra -Werror -MMD -MP -g
 EXTRAFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 ifeq ($(SAN),1)
-	FSANITIZE = -g3 -fsanitize=address
+	FSANITIZE = -g3
 	OPTIFLAGS =
 else
 	FSANITIZE =
