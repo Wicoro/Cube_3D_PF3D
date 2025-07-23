@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/23 13:44:41 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 13:53:49 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	wind_init(t_data *data)
 	if (!data->mlx_p)
 		return (print_error(3), 1);
 	if (init_textures(data) == 1)
-		return (print_error(3), mlx_destroy_display(data->mlx_p), 1);
+		return (print_error(2), mlx_destroy_display(data->mlx_p), 1);
 	data->win_p = mlx_new_window(data->mlx_p, WIDTH, HEIGHT, "Cub3D");
 	if (!data->win_p)
 		return (print_error(3), mlx_destroy_display(data->mlx_p),

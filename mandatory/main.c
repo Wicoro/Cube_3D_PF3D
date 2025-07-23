@@ -6,11 +6,19 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 18:26:59 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 13:49:44 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/cub3d.h"
+
+void	destroy_texture(t_data *data)
+{
+	mlx_destroy_image(data->mlx_p, data->textures[0].img);
+	mlx_destroy_image(data->mlx_p, data->textures[1].img);
+	mlx_destroy_image(data->mlx_p, data->textures[2].img);
+	mlx_destroy_image(data->mlx_p, data->textures[3].img);	
+}
 
 void	print_error(int id)
 {
