@@ -2,6 +2,7 @@ NO ./textures/test/north
 SO ./textures/test/south.xpm
 WE ./textures/test/west.xpm
 EA ./textures/test/east.xpm
+DO ./textures/simonkraft/door.xpm
 
 F 20,20,20
 C 200,200,200
