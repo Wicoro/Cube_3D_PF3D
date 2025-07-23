@@ -1,5 +1,5 @@
-NO ./textures/test/north
-SO ./textures/test/south.xpm
+NO ./textures/test/north.xpm
+SO ./textures/test/south
 WE ./textures/test/west.xpm
 EA ./textures/test/east.xpm
 DO ./textures/simonkraft/door.xpm

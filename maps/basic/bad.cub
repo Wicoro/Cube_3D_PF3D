@@ -4,7 +4,7 @@ EA ./textures/wolfenstein/color_stone.xpm
 WE ./textures/wolfenstein/mossy.xpm
 
 F 102,104,0
-C 0,128,255
+C 0,128,    255
 
  1111111        111111111
 110000011      10000000001

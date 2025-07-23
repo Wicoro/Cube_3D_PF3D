@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/23 17:08:06 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 19:16:21 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	main(int ac, char **av)
 	ft_memset(&data, 0, sizeof(t_data));
 	if (ac == 1 || ac > 2)
 		return (print_error(ARG_COUNT_ERROR), 1);
-	if (init_data(&data, av[1]) == 1 || parse_map_border(&data.map) == 1)
+	if (init_data(&data, av[1]) == 1)
 		return (1);
 	game_loop(&data);
 	return (0);

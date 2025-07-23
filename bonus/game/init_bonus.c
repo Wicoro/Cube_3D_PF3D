@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/23 17:57:30 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 19:16:06 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int	init_data(t_data *data, char *path)
 				end_gnl(fd), 1);
 	data->minimap.minimap_h = ((HEIGHT / 100) * 30);
 	data->minimap.minimap_w = data->minimap.minimap_h;
-	if (get_map(&data->map, fd) == 1)
+	if (get_map(&data->map, fd) == 1 || parse_map_border(&data->map) == 1)
 		return (ft_free_tab(&data->map.map_tab), free(data->assets.no_path),
 				free(data->assets.so_path), free(data->assets.ea_path),
 				free(data->assets.we_path), free(data->assets.do_path), 
