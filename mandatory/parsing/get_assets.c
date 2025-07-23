@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/07/23 20:22:50 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 20:29:00 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 static char	*get_rgb_id(char *line)
 {
-	char	c;
 	int		i;
 
-	c = line[0];
+	i = 1;
+	while (line[i] == ' ')
+		i++;
+	return (ft_substr(line, i, ft_strlen(line) - i));
 }
 
 static int	get_rgb_assets(t_assets *assets, char *line)
@@ -32,7 +34,6 @@ static int	get_rgb_assets(t_assets *assets, char *line)
 		asset_id = assets->fl_color;
 	else
 		asset_id = assets->ce_color;
-	printf("line : %s\n", line);
 	trim_start = get_rgb_id(line);
 	rgb = ft_split(trim_start, ',');
 	if (!rgb)
@@ -46,7 +47,6 @@ static int	get_rgb_assets(t_assets *assets, char *line)
 		tmp = ft_strtrim(rgb[i], " 	\n");
 		if (!tmp)
 			return (asset_id[0] = -1, 0);
-		printf("tmp : %s\n", tmp);
 		asset_id[i] = ft_atoi(tmp);
 		free(tmp);
 		if (asset_id[i] < 0 || asset_id[i] > 255)
@@ -69,9 +69,10 @@ static int	compare_assets(t_assets *assets, char *line)
 	if (trim[0] == 'F' || trim[0] == 'C')
 	{
 		if (get_rgb_assets(assets, trim) == 1)
-			return (1);
+			return (free(trim), 1);
+		return (free(trim), 0);
 	}
-	split = ft_split(line, ' ');
+	split = ft_split(trim, ' ');
 	if (!split)
 		return (free(trim), 1);
 	if (!split[0] || !split[1])
