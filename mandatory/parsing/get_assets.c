@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_assets.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:57:39 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 18:27:28 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 15:32:11 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@ static int	get_rgb_assets(t_assets *assets, char *line, char id)
 	rgb = ft_split(line, ',');
 	if (!rgb)
 		return (print_error(MALLOC_ERROR), 1);
-	if (!rgb[2] || rgb[3])
+	if (!rgb[1] || !rgb[2] || rgb[3])
 		return (ft_free_tab(&rgb), print_error(ARG_ERROR), 1);
 	i = 0;
 	while (i < 3)
 	{
 		asset_id[i] = ft_atoi(rgb[i]);
 		if (asset_id[i] < 0 || asset_id[i] > 255)
-			asset_id[i] = 0;
+			asset_id[0] = -1;
 		i++;
 	}
 	ft_free_tab(&rgb);
@@ -41,13 +41,13 @@ static int	get_rgb_assets(t_assets *assets, char *line, char id)
 
 static int	compare_assets(t_assets *assets, char **split)
 {
-	if (ft_strncmp(split[0], "NO", 3) == 0)
+	if (ft_strncmp(split[0], "NO", 3) == 0 && !assets->no_path)
 		assets->no_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
-	else if (ft_strncmp(split[0], "SO", 3) == 0)
+	else if (ft_strncmp(split[0], "SO", 3) == 0 && !assets->so_path)
 		assets->so_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
-	else if (ft_strncmp(split[0], "EA", 3) == 0)
+	else if (ft_strncmp(split[0], "EA", 3) == 0 && !assets->ea_path)
 		assets->ea_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
-	else if (ft_strncmp(split[0], "WE", 3) == 0)
+	else if (ft_strncmp(split[0], "WE", 3) == 0 && !assets->we_path)
 		assets->we_path = ft_substr(split[1], 0, ft_strlen(split[1]) - 1);
 	else if (ft_strncmp(split[0], "F", 2) == 0 || ft_strncmp(split[0], "C",
 			2) == 0)

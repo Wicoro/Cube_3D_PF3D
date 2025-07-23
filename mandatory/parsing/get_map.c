@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:58:51 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 16:01:32 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 15:35:46 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@ int	get_map(t_map *map, int fd)
 	while (line)
 	{
 		if (ft_strlen(line) == 1 && line[0] == '\n')
-			return (print_error(ARG_ERROR), 1);
+			return (free(line), print_error(ARG_ERROR), 1);
 		if (concat_map(&map->map_tab, line) == 1)
-			return (1);
+			return (free(line), 1);
 		free(line);
 		line = get_next_line(fd);
 	}

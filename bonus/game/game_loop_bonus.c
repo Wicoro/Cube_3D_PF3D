@@ -3,37 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   game_loop_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:48:46 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 18:24:29 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 19:34:05 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
-
-static int	closer(t_data *data)
-{
-	ft_printf("the ESC key or red cross has been pressed\n");
-	mlx_destroy_image(data->mlx_p, data->img[0].img_p);
-	mlx_destroy_image(data->mlx_p, data->img[1].img_p);
-	mlx_destroy_image(data->mlx_p, data->img[2].img_p);
-	mlx_destroy_image(data->mlx_p, data->textures[0].img);
-	mlx_destroy_image(data->mlx_p, data->textures[1].img);
-	mlx_destroy_image(data->mlx_p, data->textures[2].img);
-	mlx_destroy_image(data->mlx_p, data->textures[3].img);
-	mlx_destroy_image(data->mlx_p, data->textures[4].img);
-	mlx_destroy_window(data->mlx_p, data->win_p);
-	mlx_destroy_display(data->mlx_p);
-	free(data->assets.no_path);
-	free(data->assets.so_path);
-	free(data->assets.ea_path);
-	free(data->assets.we_path);
-	free(data->assets.do_path);
-	ft_free_tab(&data->map.map_tab);
-	free(data->mlx_p);
-	exit(0);
-}
 
 static void	clear_image(t_imag *img, t_map *map)
 {
@@ -56,10 +33,17 @@ void	render(t_data *data, Bool check)
 		- data->minimap.minimap_w - data->minimap.minimap_h / 10);
 }
 
+static int	closer_printf(t_data *data)
+{
+	ft_printf("the ESC key or red cross has been pressed\n");
+	closer(data);
+	return (0);
+}
+
 static int	key_hook(int keycode, t_data *data)
 {
 	if (keycode == XK_Escape)
-		closer(data);
+		closer_printf(data);
 	else if (keycode == XK_w)
 		move_player(data, 1);
 	else if (keycode == XK_s)
@@ -84,7 +68,7 @@ int	game_loop(t_data *data)
 
 	i = 0;
 	if (wind_init(data))
-		return (1);
+		closer(data);
 	init_doors(data);
 	while (i < 3)
 	{
@@ -95,9 +79,9 @@ int	game_loop(t_data *data)
 	}
 	where_player(&data->map, &data->player);
 	render(data, 0);
-	mlx_hook(data->win_p, 17, 0, closer, data);
+	mlx_hook(data->win_p, 17, 0, closer_printf, data);
 	mlx_hook(data->win_p, 2, 1L << 0, key_hook, data);
-	mlx_mouse_hide(data->mlx_p, data->win_p);
+	//mlx_mouse_hide(data->mlx_p, data->win_p);
 	mlx_mouse_move(data->mlx_p, data->win_p, WIDTH * 0.5, HEIGHT * 0.5);
 	mlx_hook(data->win_p, 6, 1L << 6, mouse_hook, data);
 	mlx_loop(data->mlx_p);

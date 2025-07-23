@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 17:33:09 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/22 19:32:11 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,12 @@ void	where_player(t_map *map, t_player *player);
 void	ft_sleep(int ms);
 int		is_wall(t_map *map, int x, int y);
 int		init_textures(t_data *data);
+void	destroy_textures(t_data *data);
 int		wind_init(t_data *data);
 void	init_doors(t_data *data);
 int		init_data(t_data *data, char *path);
 void	print_error(int id);
+int		closer(t_data *data);
 
 /*===============================MINIMAP==================================*/
 

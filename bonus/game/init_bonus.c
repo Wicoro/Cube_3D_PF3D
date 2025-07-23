@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/22 18:24:22 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 15:38:12 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,13 @@ int	init_textures(t_data *data)
 	if (init_texture(data, data->assets.no_path, 0) == 1)
 		return (1);
 	if (init_texture(data, data->assets.so_path, 1) == 1)
-		return (mlx_destroy_image(data->mlx_p, data->textures[0].img), 1);
+		return (1);
 	if (init_texture(data, data->assets.ea_path, 2) == 1)
-		return (mlx_destroy_image(data->mlx_p, data->textures[0].img),
-			mlx_destroy_image(data->mlx_p, data->textures[1].img), 1);
+		return (1);
 	if (init_texture(data, data->assets.we_path, 3) == 1)
-		return (mlx_destroy_image(data->mlx_p, data->textures[0].img),
-			mlx_destroy_image(data->mlx_p, data->textures[1].img),
-			mlx_destroy_image(data->mlx_p, data->textures[2].img), 1);
+		return (1);
 	if (init_texture(data, data->assets.do_path, 4) == 1)
-		return (mlx_destroy_image(data->mlx_p, data->textures[0].img),
-			mlx_destroy_image(data->mlx_p, data->textures[1].img),
-			mlx_destroy_image(data->mlx_p, data->textures[2].img),
-			mlx_destroy_image(data->mlx_p, data->textures[3].img), 1);
+		return (1);
 	return (0);
 }
 
@@ -59,34 +53,40 @@ int	wind_init(t_data *data)
 	data->mlx_p = mlx_init();
 	if (!data->mlx_p)
 		return (print_error(3), 1);
+	if (init_textures(data) == 1)
+		return (print_error(INVALID_MAP), 1);
 	data->win_p = mlx_new_window(data->mlx_p, WIDTH, HEIGHT, "Cub3D");
 	if (!data->win_p)
-		return (print_error(3), mlx_destroy_display(data->mlx_p), 1);
-	if (init_textures(data) == 1)
-		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
-			mlx_destroy_display(data->mlx_p), 1);
+		return (print_error(3), 1);
 	data->img[0].img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
 	if (!data->img[0].img_p)
-		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
-			mlx_destroy_display(data->mlx_p), 1);
+		return (print_error(3), 1);
 	data->img[1].img_p = mlx_new_image(data->mlx_p, WIDTH, HEIGHT);
 	if (!data->img[1].img_p)
-		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
-			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
-				data->img[0].img_p), 1);
+		return (print_error(3), 1);
 	if (minimap_init(data))
-		return (print_error(3), mlx_destroy_window(data->mlx_p, data->win_p),
-			mlx_destroy_display(data->mlx_p), mlx_destroy_image(data->mlx_p,
-				data->img[0].img_p), mlx_destroy_image(data->mlx_p,
-				data->img[1].img_p), 1);
+		return (print_error(3), 1);
 	return (0);
+}
+
+void	end_gnl(int fd)
+{
+	char	*line;
+	
+	line = get_next_line(fd);
+	while (line)
+	{
+		free(line);
+		line = get_next_line(fd);
+	}
 }
 
 int	init_data(t_data *data, char *path)
 {
 	int	fd;
 
-	if (path[ft_strlen(path) - 4] != '.' || path[ft_strlen(path) - 3] != 'c'
+	if (ft_strlen(path) <= 4 || (path[ft_strlen(path) - 5] == '/')
+		|| path[ft_strlen(path) - 4] != '.' || path[ft_strlen(path) - 3] != 'c'
 		|| path[ft_strlen(path) - 2] != 'u' || path[ft_strlen(path) - 1] != 'b')
 		return (print_error(ARG_ERROR), 1);
 	data->assets.fl_color[0] = -1;
@@ -99,7 +99,10 @@ int	init_data(t_data *data, char *path)
 	if (!data->assets.no_path || !data->assets.so_path || !data->assets.ea_path
 		|| !data->assets.we_path || data->assets.fl_color[0] == -1
 		|| data->assets.ce_color[0] == -1 || !data->assets.do_path)
-		return (print_error(ARG_ERROR), 1);
+		return (print_error(ARG_ERROR), free(data->assets.no_path),
+				free(data->assets.so_path), free(data->assets.ea_path),
+				free(data->assets.we_path), free(data->assets.do_path),
+				end_gnl(fd), 1);
 	data->minimap.minimap_h = ((HEIGHT / 100) * 30);
 	data->minimap.minimap_w = data->minimap.minimap_h;
 	if (get_map(&data->map, fd) == 1)

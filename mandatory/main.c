@@ -3,14 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 18:26:59 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 15:25:43 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/cub3d.h"
+
+int	closer(t_data *data)
+{
+	if (data->img[0].img_p)
+		mlx_destroy_image(data->mlx_p, data->img[0].img_p);
+	if (data->img[1].img_p)
+		mlx_destroy_image(data->mlx_p, data->img[1].img_p);
+	destroy_textures(data);
+	if (data->win_p)
+		mlx_destroy_window(data->mlx_p, data->win_p);
+	mlx_destroy_display(data->mlx_p);
+	free(data->assets.no_path);
+	free(data->assets.so_path);
+	free(data->assets.ea_path);
+	free(data->assets.we_path);
+	ft_free_tab(&data->map.map_tab);
+	free(data->mlx_p);
+	exit(0);
+}
+
+void	destroy_textures(t_data *data)
+{
+	if (data->textures[0].img)
+		mlx_destroy_image(data->mlx_p, data->textures[0].img);
+	if (data->textures[1].img)
+		mlx_destroy_image(data->mlx_p, data->textures[1].img);
+	if (data->textures[2].img)
+		mlx_destroy_image(data->mlx_p, data->textures[2].img);
+	if (data->textures[3].img)
+		mlx_destroy_image(data->mlx_p, data->textures[3].img);
+}
 
 void	print_error(int id)
 {
