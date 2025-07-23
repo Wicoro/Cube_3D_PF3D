@@ -6,7 +6,7 @@
 /*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:57:39 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 18:27:28 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 14:59:20 by stdevis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	get_rgb_assets(t_assets *assets, char *line, char id)
 	rgb = ft_split(line, ',');
 	if (!rgb)
 		return (print_error(MALLOC_ERROR), 1);
-	if (!rgb[2] || rgb[3])
+	if (!rgb[2] || !rgb[3])
 		return (ft_free_tab(&rgb), print_error(ARG_ERROR), 1);
 	i = 0;
 	while (i < 3)
