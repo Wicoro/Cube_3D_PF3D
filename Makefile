@@ -44,7 +44,7 @@ SRC_BONUS = game/game_loop_bonus.c game/init_bonus.c game/key_events_bonus.c \
 	game/mouse_bonus.c game/player_bonus.c game/utils_bonus.c \
 	parsing/get_assets_bonus.c parsing/get_map_utils_bonus.c parsing/get_map_bonus.c \
 	parsing/parse_map_border_bonus.c minimap/minimap_utils_bonus.c minimap/minimap_bonus.c \
-	raycasting/display_wall_bonus.c raycasting/draw_ray_bonus.c raycasting/interact_door_bonus.c \
+	raycasting/display_wall_bonus.c raycasting/draw_ray_bonus.c game/interact_door_bonus.c \
 	raycasting/raycasting_bonus.c main.c
 
 SRC_BONUS := $(addprefix $(SRC_DIR_BONUS), $(SRC_BONUS))
