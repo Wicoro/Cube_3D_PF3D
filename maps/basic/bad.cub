@@ -1,7 +1,7 @@
-NO texture/wood.xpm
-SO texture/blue_stone.xpm
-EA texture/color_stone.xpm
-WE texture/mossy.xpm
+NO ./textures/wolfenstein/wood.xpm
+SO ./textures/wolfenstein/blue_stone.xpm
+EA ./textures/wolfenstein/color_stone.xpm
+WE ./textures/wolfenstein/mossy.xpm
 
 F 102,104,0
 C 0,128,255
