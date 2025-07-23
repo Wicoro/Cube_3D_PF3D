@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:58:51 by norban            #+#    #+#             */
-/*   Updated: 2025/07/23 17:54:46 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 21:12:00 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,23 @@ static int	concat_map(char ***map, char *line)
 	return (0);
 }
 
+int	line_full_space(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i] && (line[i] == ' ' || line[i] == '\n'))
+		i++;
+	if (!line[i])
+		return (0);
+	return (1);
+}
+
 int	is_it_end(int fd, char *line)
 {
 	free(line);
 	line = get_next_line(fd);
-	while (line && ft_strlen(line) == 1 && line[0] == '\n')
+	while (line && ((ft_strlen(line) == 1 && line[0] == '\n') || !line_full_space(line)))
 	{
 		free(line);
 		line = get_next_line(fd);
