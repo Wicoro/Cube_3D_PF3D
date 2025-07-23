@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 19:32:11 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 15:44:53 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	init_doors(t_data *data);
 int		init_data(t_data *data, char *path);
 void	print_error(int id);
 int		closer(t_data *data);
+void	destroy_texture(t_data *data);
+void	interact_door(t_data *data);
 
 /*===============================MINIMAP==================================*/
 
@@ -72,6 +74,4 @@ void	raycasting(t_data *data);
 void	display_wall(int x, t_fov *fov, t_data *data);
 void	draw_ray(t_player *player, t_fov *fov, t_map *map);
 void	check_map_tiles(double x, double y, t_data *data);
-void	interact_door(t_data *data);
-
 #endif

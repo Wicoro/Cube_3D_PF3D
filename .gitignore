@@ -2,4 +2,5 @@
 *.o
 *.d
 cub3D
+cub3D_bonus
 minilibx-linux.tgz
