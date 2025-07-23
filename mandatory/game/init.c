@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/23 15:45:42 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 17:07:01 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	wind_init(t_data *data)
 	if (!data->mlx_p)
 		return (print_error(3), 1);
 	if (init_textures(data) == 1)
-		return (print_error(INVALID_MAP), 1);
+		return (print_error(ARG_ERROR), 1);
 	data->win_p = mlx_new_window(data->mlx_p, WIDTH, HEIGHT, "Cub3D");
 	if (!data->win_p)
 		return (print_error(3), 1);
@@ -81,8 +81,7 @@ int	init_data(t_data *data, char *path)
 	fd = open(path, R_OK);
 	if (fd == -1)
 		return (print_error(ARG_ERROR), 1);
-	if (get_assets(&data->assets, fd) == 1)
-		return (1);
+	get_assets(&data->assets, fd);
 	if (!data->assets.no_path || !data->assets.so_path || !data->assets.ea_path
 		|| !data->assets.we_path || data->assets.fl_color[0] == -1
 		|| data->assets.ce_color[0] == -1)

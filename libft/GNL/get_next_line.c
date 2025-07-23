@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 17:15:14 by stdevis           #+#    #+#             */
-/*   Updated: 2025/05/30 16:51:41 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 16:47:23 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	*get_the_line(char *rest, char *buff)
 	return (rest);
 }
 
-char	*read_the_line(int fd, char *rest)
+char	*read_the_line(int fd, char **rest)
 {
 	int		byte;
 	char	buff[BUFFER_SIZE + 1];
@@ -63,19 +63,19 @@ char	*read_the_line(int fd, char *rest)
 	{
 		byte = read(fd, buff, BUFFER_SIZE);
 		if (byte == -1)
-			return (gnl_ft_free(&rest), NULL);
+			return (gnl_ft_free(rest), NULL);
 		if (byte == 0)
 			break ;
 		buff[byte] = '\0';
-		rest = get_the_line(rest, buff);
-		if (!rest)
+		*rest = get_the_line(*rest, buff);
+		if (!*rest)
 			return (NULL);
-		if (gnl_ft_strchr(rest, '\n') != -1)
+		if (gnl_ft_strchr(*rest, '\n') != -1)
 			break ;
 	}
-	if (byte == 0 && (!rest || rest[0] == '\0'))
-		return (gnl_ft_free(&rest), NULL);
-	return (rest);
+	if (byte == 0 && (!*rest || *rest[0] == '\0'))
+		return (gnl_ft_free(rest), NULL);
+	return (*rest);
 }
 
 char	*get_next_line(int fd)
@@ -87,7 +87,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
 		return (gnl_ft_free(&rest), NULL);
-	line = read_the_line(fd, rest);
+	line = read_the_line(fd, &rest);
 	if (!line)
 		return (NULL);
 	rest = create_rest(line);

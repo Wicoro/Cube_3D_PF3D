@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stdevis <stdevis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 13:12:47 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/07 17:30:33 by stdevis          ###   ########.fr       */
+/*   Updated: 2025/07/23 16:46:07 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*gnl_ft_strjoin(char *s1, char *s2);
 char	*gnl_ft_substr(char *s, int start, int len);
 char	*gnl_ft_strdup(char *s1);
 char	*create_rest(char *line);
-char	*read_the_line(int fd, char *rest);
+char	*read_the_line(int fd, char **rest);
 char	*get_next_line(int fd);
 void	gnl_ft_free(char **str);
 char	*get_the_line(char *rest, char *buff);

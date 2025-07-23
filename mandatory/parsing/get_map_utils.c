@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 18:14:37 by norban            #+#    #+#             */
-/*   Updated: 2025/07/22 15:50:46 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 16:05:05 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ int	get_squared_map(t_map *map)
 	char	**new_map;
 	int		i;
 
+	if (!map)
+		return (1);
 	new_map = malloc(sizeof(char *) * (map->height + 1));
 	if (!new_map)
 		return (print_error(MALLOC_ERROR), 1);

@@ -52,11 +52,11 @@ OBJ_BONUS = $(SRC_BONUS:$(SRC_DIR_BONUS)%.c=$(OBJ_DIR_BONUS)%.o)
 
 # ========================== FLAGS ===========================
 
-CFLAGS = -Wall -Wextra -Werror -MMD -MP
+CFLAGS = -Wall -Wextra -Werror -MMD -MP -g
 EXTRAFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
 ifeq ($(SAN),1)
-	FSANITIZE = -g3
+	FSANITIZE = -g3 -fsanitize=address
 	OPTIFLAGS =
 else
 	FSANITIZE =

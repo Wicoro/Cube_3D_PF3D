@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:14:16 by norban            #+#    #+#             */
-/*   Updated: 2025/07/23 15:45:26 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 17:08:06 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	closer(t_data *data)
 {
-	ft_printf("the ESC key or red cross has been pressed\n");
 	if (data->img[0].img_p)
 		mlx_destroy_image(data->mlx_p, data->img[0].img_p);
 	if (data->img[1].img_p)

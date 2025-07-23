@@ -5,14 +5,15 @@ F 128,128,128
 
 WE ./path_to_the_west_texture
 EA ./path
+DO ./path
 
-C 51,153,-255
+C 51,153,12
 
 SO                                               ./path_to_the_south_texture
 
-111 11
-101 1
-111    1 
+11111
+1011
+1111 
 1111
 1E111
 111

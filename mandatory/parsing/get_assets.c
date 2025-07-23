@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:57:39 by norban            #+#    #+#             */
-/*   Updated: 2025/07/23 15:46:01 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 17:11:56 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ static int	get_rgb_assets(t_assets *assets, char *line, char id)
 	rgb = ft_split(line, ',');
 	if (!rgb)
 		return (print_error(MALLOC_ERROR), 1);
-	if (!rgb[1] || !rgb[2] || rgb[3])
-		return (ft_free_tab(&rgb), print_error(ARG_ERROR), 1);
+	if (!rgb[1] || !rgb[2] || rgb[3] || rgb[2][0] == '\n'
+		|| rgb[1][0] == '\n')
+		return (asset_id[0] = -1, ft_free_tab(&rgb), 1);
 	i = 0;
 	while (i < 3)
 	{
@@ -83,6 +84,6 @@ int	get_assets(t_assets *assets, int fd)
 			line = get_next_line(fd);
 	}
 	if (count < 6)
-		return (free(line), print_error(ARG_ERROR), 1);
+		return (free(line), 1);
 	return (free(line), 0);
 }
