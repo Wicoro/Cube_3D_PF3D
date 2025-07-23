@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 13:46:54 by norban            #+#    #+#             */
-/*   Updated: 2025/07/23 15:44:53 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 22:09:47 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ void	get_map_dimension(t_map *map);
 void	remove_map_nl(t_map *map);
 int		get_map(t_map *map, int fd);
 int		parse_map_border(t_map *map);
+int		is_it_end(int fd, char *line);
+int		line_full_space(char *line);
+int		get_rgb_assets(t_assets *assets, char *line);
 
 /*===============================RAYCASTING==================================*/
 

@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 18:14:37 by norban            #+#    #+#             */
-/*   Updated: 2025/07/23 16:05:05 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 21:30:29 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,33 @@ int	get_squared_map(t_map *map)
 	}
 	ft_free_tab(&map->map_tab);
 	map->map_tab = new_map;
+	return (0);
+}
+
+int	line_full_space(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i] && (line[i] == ' ' || line[i] == '\n'))
+		i++;
+	if (!line[i])
+		return (0);
+	return (1);
+}
+
+int	is_it_end(int fd, char *line)
+{
+	free(line);
+	line = get_next_line(fd);
+	while (line && ((ft_strlen(line) == 1 && line[0] == '\n')
+			|| !line_full_space(line)))
+	{
+		free(line);
+		line = get_next_line(fd);
+	}
+	if (line && !(ft_strlen(line) == 1 && line[0] == '\n'))
+		return (free(line), print_error(ARG_ERROR), 1);
+	free(line);
 	return (0);
 }

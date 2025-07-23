@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:38:53 by stdevis           #+#    #+#             */
-/*   Updated: 2025/07/23 19:16:06 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 21:58:01 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,48 +66,5 @@ int	wind_init(t_data *data)
 		return (print_error(3), 1);
 	if (minimap_init(data))
 		return (print_error(3), 1);
-	return (0);
-}
-
-void	end_gnl(int fd)
-{
-	char	*line;
-	
-	line = get_next_line(fd);
-	while (line)
-	{
-		free(line);
-		line = get_next_line(fd);
-	}
-}
-
-int	init_data(t_data *data, char *path)
-{
-	int	fd;
-
-	if (ft_strlen(path) <= 4 || (path[ft_strlen(path) - 5] == '/')
-		|| path[ft_strlen(path) - 4] != '.' || path[ft_strlen(path) - 3] != 'c'
-		|| path[ft_strlen(path) - 2] != 'u' || path[ft_strlen(path) - 1] != 'b')
-		return (print_error(ARG_ERROR), 1);
-	data->assets.fl_color[0] = -1;
-	data->assets.ce_color[0] = -1;
-	fd = open(path, R_OK);
-	if (fd == -1)
-		return (print_error(ARG_ERROR), 1);
-	get_assets(&data->assets, fd);
-	if (!data->assets.no_path || !data->assets.so_path || !data->assets.ea_path
-		|| !data->assets.we_path || data->assets.fl_color[0] == -1
-		|| data->assets.ce_color[0] == -1 || !data->assets.do_path)
-		return (print_error(ARG_ERROR), free(data->assets.no_path),
-				free(data->assets.so_path), free(data->assets.ea_path),
-				free(data->assets.we_path), free(data->assets.do_path),
-				end_gnl(fd), 1);
-	data->minimap.minimap_h = ((HEIGHT / 100) * 30);
-	data->minimap.minimap_w = data->minimap.minimap_h;
-	if (get_map(&data->map, fd) == 1 || parse_map_border(&data->map) == 1)
-		return (ft_free_tab(&data->map.map_tab), free(data->assets.no_path),
-				free(data->assets.so_path), free(data->assets.ea_path),
-				free(data->assets.we_path), free(data->assets.do_path), 
-				end_gnl(fd), 1);
 	return (0);
 }

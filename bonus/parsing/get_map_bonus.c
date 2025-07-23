@@ -6,7 +6,7 @@
 /*   By: norban <norban@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 17:58:51 by norban            #+#    #+#             */
-/*   Updated: 2025/07/23 21:13:44 by norban           ###   ########.fr       */
+/*   Updated: 2025/07/23 22:03:04 by norban           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,30 +59,12 @@ static int	concat_map(char ***map, char *line)
 	return (0);
 }
 
-int	line_full_space(char *line)
+static int	end_map_process(t_map *map)
 {
-	int	i;
-
-	i = 0;
-	while (line[i] && (line[i] == ' ' || line[i] == '\n'))
-		i++;
-	if (!line[i])
-		return (0);
-	return (1);
-}
-
-int	is_it_end(int fd, char *line)
-{
-	free(line);
-	line = get_next_line(fd);
-	while (line && ((ft_strlen(line) == 1 && line[0] == '\n') || !line_full_space(line)))
-	{
-		free(line);
-		line = get_next_line(fd);
-	}
-	if (line && !(ft_strlen(line) == 1 && line[0] == '\n'))
-		return (free(line), print_error(INVALID_MAP), 1);
-	free(line);
+	remove_map_nl(map);
+	get_map_dimension(map);
+	if (get_squared_map(map) == 1)
+		return (1);
 	return (0);
 }
 
@@ -111,9 +93,5 @@ int	get_map(t_map *map, int fd)
 		free(line);
 		line = get_next_line(fd);
 	}
-	remove_map_nl(map);
-	get_map_dimension(map);
-	if (get_squared_map(map) == 1)
-		return (1);
-	return (0);
+	return (end_map_process(map));
 }
